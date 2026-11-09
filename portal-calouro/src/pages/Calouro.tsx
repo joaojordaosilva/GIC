@@ -1,296 +1,661 @@
-import { useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
-/* =====================================================================
-   MOLDES DO TYPESCRIPT (Corrige o erro do Netlify)
-   ===================================================================== */
-interface StatData {
-  n: string;
-  d: string;
-}
-
-interface CardData {
-  t?: string;
-  p?: string;
-  p2?: string;
-  li?: string[];
-  link?: string;
-  wide?: boolean;
-  tip?: string;
-  code?: string;
-  stats?: StatData[];
-}
-
-interface SecaoData {
-  id: string;
-  icone: string;
-  nome: string;
-  intro: string;
-  cards: CardData[];
-}
-
-/* =====================================================================
-   DADOS DA PÁGINA DO CALOURO
-   ===================================================================== */
-const SECOES: SecaoData[] = [
-  {
-    id: "sistemas", icone: "🖥️", nome: "Sistemas e burocracia",
-    intro: "SIGAA, DRCA e NTI: onde resolver cada coisa logo nas primeiras semanas.",
-    cards: [
-      { t: "Matrícula Institucional x Matrícula Acadêmica",
-        p: "A **Institucional** é a entrega de documentos (hoje geralmente online) logo depois que você passa no SiSU. A **Acadêmica** é o seu vínculo com as disciplinas, feito no SIGAA a cada novo semestre.",
-        li: ["No **1º período** as matérias já vêm definidas: você não precisa se matricular nas disciplinas agora.", "A partir do **2º semestre**, é você quem monta a própria grade."],
-        link: "" },
-      { t: "Notas, faltas e horários",
-        p: "O **SIGAA** é o sistema principal. É por ele que você acompanha suas turmas, notas e faltas, e emite os documentos mais pedidos no campus.",
-        li: ["**Atestado de Matrícula**: necessário para quase tudo na universidade.", "**Histórico Escolar Analítico**."],
-        link: "" },
-      { t: "E-mail institucional e Wi-Fi da UFAL",
-        p: "Gerenciados pelo **NTI** (Núcleo de Tecnologia da Informação). Você precisa criar suas credenciais de rede para ter o e-mail institucional e conectar seus dispositivos à rede sem fio **Eduroam**.",
-        link: "" },
-      { t: "Trancamento de curso ou disciplina",
-        p: "O pedido é feito à **coordenação do curso**, por formulário, dentro do prazo do Calendário Acadêmico. O curso pode ficar trancado por no máximo **4 semestres (2 anos)**.",
-        link: "" },
-      { t: "Quem resolve o quê?", wide: true,
-        p: "Saber a quem recorrer evita idas e vindas na primeira semana:",
-        li: ["**DRCA**: registro acadêmico e diploma.", "**NTI**: sistemas e internet.", "**Coordenação do curso**: ajustes de grade e trancamento."] }
-    ]
-  },
-  {
-    id: "email-ic", icone: "✉️", nome: "E-mail institucional do IC",
-    intro: "O IC tem infraestrutura de TI própria, independente da reitoria, então os alunos de Computação têm credenciais específicas.",
-    cards: [
-      { t: "Para que serve o e-mail @ic.ufal.br",
-        p: "Não é só uma caixa de entrada: é a credencial para **logar nos computadores dos laboratórios** (que rodam distribuições Linux) e acessar redes e servidores internos do instituto e o Wi-Fi do IC.",
-        link: "" },
-      { t: "Como criar",
-        p: "A solicitação costuma ser feita **no início do semestre** ao Setor de TI do IC. Leve o **Atestado de Matrícula do SIGAA** para comprovar o vínculo e receber suas credenciais.",
-        link: "" },
-      { t: "Vantagens de ter um e-mail .edu.br / .ufal.br", wide: true,
-        p: "Para quem faz Computação, esta é a informação mais valiosa: o e-mail institucional libera dezenas de ferramentas profissionais gratuitas.",
-        li: ["**GitHub Student Developer Pack**: GitHub Copilot, domínios gratuitos por um ano, servidores e dezenas de serviços para desenvolvimento.",
-             "**JetBrains**: licenças originais e gratuitas das melhores IDEs (IntelliJ IDEA para Java, PyCharm, WebStorm).",
-             "**Microsoft Azure e AWS Educate**: créditos de nuvem (hospedagem, banco de dados, máquinas virtuais), fundamentais em Redes e Sistemas Distribuídos.",
-             "**Design**: Notion Premium, Figma for Education e Canva Pro, ótimos para seminários e prototipação.",
-             "**Drive educacional**: a conta costuma ser vinculada ao Google Workspace, com bem mais espaço que uma conta pessoal gratuita."],
-        link: "" }
-    ]
-  },
-  {
-    id: "regras", icone: "⚖️", nome: "As regras do jogo",
-    intro: "Notas, faltas e oportunidades: entenda o sistema de avaliação desde o dia 1 para não passar sufoco no fim do semestre.",
-    cards: [
-      { t: "Avaliação: AB1, AB2 e Reavaliação", wide: true,
-        p: "O semestre tem duas notas, a **AB1** e a **AB2**. O professor decide como compô-las (provas, listas do Huxley, trabalhos...), mas a conta final é sempre a mesma:",
-        stats: [{ n: "≥ 7,0", d: "média de AB1 e AB2: aprovado direto" }, { n: "< 5,0", d: "reprovado por nota, sem recuperação" }, { n: "5,0 a 6,9", d: "vai para a Reavaliação" }, { n: "≥ 5,5", d: "nova média exigida após a Reavaliação" }],
-        p2: "A Reavaliação é uma prova de todo o conteúdo do semestre, e a nota dela **substitui a sua menor AB**.",
-        link: "" },
-      { t: "Limite de faltas: a regra dos 25%",
-        p: "Você precisa de **75% de presença** em cada disciplina. Em uma disciplina de 60 horas (geralmente 2 encontros por semana) só pode faltar **15 horas**, ou seja, cerca de 7 faltas no semestre.",
-        li: ["**Reprovação por Falta (RF)**: estourou o limite, está reprovado, mesmo com 10 em todas as provas.", "Quem reprova por falta **perde o direito à Reavaliação**."],
-        link: "" },
-      { t: "Monitoria: seu maior salva-vidas",
-        p: "Monitores são veteranos que cursaram a disciplina com excelência e ajudam o professor. Têm horários no IC para tirar dúvidas, ajudar com as listas do Huxley e revisar antes das provas. As matérias iniciais (Matemática Discreta, P1, Cálculo) são densas: não tenha vergonha de procurá-los!",
-        li: ["**Como virar monitor**: a partir do 2º período, com nota alta em uma matéria, você pode concorrer nos editais. Pode ser remunerada (bolsa) ou voluntária."],
-        link: "" },
-      { t: "Horas complementares e extensão", wide: true,
-        p: "Para pegar o diploma não basta passar nas disciplinas da grade: é preciso viver a universidade.",
-        li: ["**Atividades Complementares (Horas Flexíveis)**: eventos de tecnologia, maratonas de programação, semanas acadêmicas, artigos, cursos de idiomas, estágio. Guarde todos os certificados em uma pasta na nuvem desde o 1º período!",
-             "**Projetos de Extensão**: com a curricularização da extensão, todos os cursos exigem projetos que levem conhecimento à sociedade, como ensinar programação em escolas públicas ou criar sistemas para ONGs."],
-        link: "" },
-      { t: "Dica de Veterano", wide: true,
-        tip: "Acompanhe os murais do IC e os grupos de WhatsApp das turmas. Sempre que surgir edital de **Extensão**, **Iniciação Científica (PIBIC)** ou **Monitoria**, tente participar. Além de adiantar horas obrigatórias, é nesses projetos que você faz networking com professores e colegas, o que abre portas no mercado." }
-    ]
-  },
-  {
-    id: "campus", icone: "🏫", nome: "Sobrevivência no Campus A.C. Simões",
-    intro: "Alimentação, livros e saúde no dia a dia da universidade.",
-    cards: [
-      { t: "Restaurante Universitário (RU)",
-        p: "Almoço e jantar custam **R$ 3,00** para estudantes de graduação. Leve o **comprovante de matrícula atualizado** e um **documento com foto**. O cardápio do dia costuma sair no Instagram oficial da Ufal (@ufaloficial).",
-        link: "" },
-      { t: "Biblioteca Central (BC)",
-        p: "O empréstimo é gratuito com o cadastro do SIGAA. Atrasos geram multa diária, paga obrigatoriamente via **GRU** (Guia de Recolhimento da União).",
-        li: ["Atenção: **débitos pendentes na biblioteca impedem a colação de grau**."],
-        link: "" },
-      { t: "Atendimento médico",
-        p: "Os estudantes podem agendar consultas no **Hospital Universitário (HU)** apresentando o comprovante de matrícula autenticado pelo DRCA e um documento oficial.",
-        link: "" }
-    ]
-  },
-  {
-    id: "assistencia", icone: "🤝", nome: "Assistência estudantil",
-    intro: "Apoio para permanecer na universidade.",
-    cards: [
-      { t: "PROEST: isenção no RU, bolsas e residência", wide: true,
-        p: "Estudantes em situação de vulnerabilidade social podem pedir **isenção no RU** e concorrer a bolsas pelos editais da **PROEST** (Pró-Reitoria Estudantil). A PROEST também gerencia a **Residência Universitária** e bolsas de apoio.",
-        link: "" }
-    ]
-  },
-  {
-    id: "vamu", icone: "🚌", nome: "Carteira VAMU",
-    intro: "Em Maceió, o Passe Livre Estudantil garante viagens gratuitas nos ônibus urbanos (com limite mensal de embarques) para ir e voltar da universidade.",
-    cards: [
-      { t: "Como solicitar pela primeira vez",
-        p: "Reúna os documentos:",
-        li: ["RG e CPF", "Comprovante de residência (validade de até 3 meses)", "Foto 3x4 atual", "Atestado de Matrícula atualizado"],
-        p2: "O cadastro e o agendamento são feitos no **site oficial do VAMU Maceió**; a retirada é nos postos físicos (como no Centro ou em terminais de integração).",
-        link: "" },
-      { t: "Atestado do SIGAA e recadastramento",
-        p: "O VAMU é rigoroso com a documentação.",
-        li: ["O Atestado de Matrícula do SIGAA deve ter **assinatura digital ou código de verificação** (emitido automaticamente).",
-             "O benefício **não é vitalício**: a cada início de ano letivo, envie o comprovante do novo semestre no site e pague a taxa de recadastramento (geralmente PIX ou boleto). Sem revalidar, o cartão é bloqueado."],
-        link: "" },
-      { t: "Meia-entrada cultural", wide: true,
-        p: "A carteira VAMU **não vale como documento nacional do estudante** para meia-entrada em cinemas e shows. Para eventos culturais, emita a carteira da **UNE** ou use o aplicativo **ID Jovem** (se for elegível).",
-        link: "" }
-    ]
-  },
-  {
-    id: "p1", icone: "🚀", nome: "Primeiro período: o desafio de P1",
-    intro: "A grade do 1º semestre constrói a sua base. Uma das disciplinas mais importantes (e a primeira grande paixão ou dor de cabeça dos calouros) é Programação 1.",
-    cards: [
-      { t: "A linguagem C",
-        p: "Em P1 você mergulha nos fundamentos da lógica de programação com **C**. Se nunca escreveu uma linha de código, não se assuste: as aulas começam do zero. Você vai lidar com variáveis, laços de repetição e os famosos **ponteiros**. Dominar C agora facilita aprender qualquer outra linguagem depois.",
-        link: "" },
-      { t: "Pratique no The Huxley",
-        p: "O Huxley é um **juiz online** muito usado pelos professores do IC para passar listas de exercícios. Há centenas de problemas por nível de dificuldade: você escreve o código em C, envia na plataforma e ela testa automaticamente se a lógica está correta. Ótimo para treinar para as provas e pegar a sintaxe.",
-        link: "" },
-      { t: "Dica de Veterano", wide: true,
-        tip: "Não espere a primeira lista da faculdade sair. Crie sua conta no Huxley, procure os problemas de **nível 1** e comece a brincar com C. A prática constante é o único segredo para passar direto em P1!" }
-    ]
-  },
-  {
-    id: "dev", icone: "🛠️", nome: "Ambiente de desenvolvimento: VS Code e Terminal",
-    intro: "A ferramenta oficial dos professores é o Visual Studio Code, um editor leve, customizável e o mais usado no mercado. Nas aulas do IC, o código em C costuma ser compilado e executado direto no Terminal do Windows.",
-    cards: [
-      { t: "Compilar e executar C no Terminal", wide: true,
-        p: "O Windows não vem com compilador de C: instale o **GCC (via MinGW)**. Em geral os professores ensinam na primeira semana. Com ele instalado, o dia a dia é assim:",
-        li: ["**1. Escreva e salve** o código no VS Code com a extensão `.c` (ex.: `meu_programa.c`), em uma pasta fácil de achar.",
-             "**2. Abra o terminal** no próprio VS Code: Terminal > Novo Terminal (ou `Ctrl + '`).",
-             "**3. Compile** com o comando abaixo (`-o` define o nome do executável):",
-             "**4. Execute** o programa gerado:"],
-        code: "gcc meu_programa.c -o meu_programa\n.\\meu_programa.exe",
-        tip: "A **seta para cima** repete comandos anteriores. Alterou o código? Salve (**Ctrl + S**), compile de novo e só então execute. Se esquecer de compilar, você roda a versão velha!",
-        link: "" }
-    ]
-  }
+// --- DADOS DA PÁGINA ---
+const TOPICOS = [
+  { id: "sistemas", nome: "Sistemas e burocracia" },
+  { id: "emailic", nome: "E-mail do IC" },
+  { id: "regras", nome: "Regras do jogo" },
+  { id: "campus", nome: "Campus" },
+  { id: "assistencia", nome: "Assistência" },
+  { id: "vamu", nome: "Carteira VAMU" },
+  { id: "prog", nome: "Primeiro período" }
 ];
 
-/* Componente para renderizar texto rico (**negrito** e `código`) */
-const TextoRico = ({ texto }: { texto: string }) => {
-  if (!texto) return null;
-  const partes = texto.split(/(\*\*[^*]+\*\*|`[^`]+`)/);
-  return (
-    <>
-      {partes.map((parte, index) => {
-        if (parte.startsWith('**') && parte.endsWith('**')) {
-          return <b key={index}>{parte.slice(2, -2)}</b>;
-        }
-        if (parte.startsWith('`') && parte.endsWith('`')) {
-          return <code key={index}>{parte.slice(1, -1)}</code>;
-        }
-        return <span key={index}>{parte}</span>;
-      })}
-    </>
-  );
+const CARDS = [
+  /* Sistemas e burocracia */
+  { id: "matricula", topic: "sistemas", t: "Matrícula Institucional x Acadêmica",
+    p: "A **Institucional** é a entrega de documentos (hoje geralmente online) logo depois que você passa no SiSU. A **Acadêmica** é o seu vínculo com as disciplinas, feito no SIGAA a cada novo semestre.",
+    li: ["No **1º período** as matérias já vêm definidas: você não precisa se matricular nas disciplinas agora.", "A partir do **2º semestre**, é você quem monta a própria grade."] },
+  { id: "sigaa", topic: "sistemas", t: "SIGAA: notas, faltas, horários e atestado",
+    p: "O **SIGAA** é o sistema principal. É por ele que você acompanha suas turmas, notas e faltas, e emite os documentos mais pedidos no campus.",
+    li: ["**Atestado de Matrícula**: necessário para quase tudo na universidade.", "**Histórico Escolar Analítico**."] },
+  { id: "nti", topic: "sistemas", t: "E-mail institucional e Wi-Fi da UFAL",
+    p: "Gerenciados pelo **NTI** (Núcleo de Tecnologia da Informação). Você precisa criar suas credenciais de rede para ter o e-mail institucional e conectar seus dispositivos à rede sem fio **Eduroam**.", busca: "wifi eduroam internet" },
+  { id: "trancamento", topic: "sistemas", t: "Trancamento de curso ou disciplina",
+    p: "O pedido é feito à **coordenação do curso**, por formulário, dentro do prazo do Calendário Acadêmico. O curso pode ficar trancado por no máximo **4 semestres (2 anos)**." },
+  /* E-mail do IC */
+  { id: "emailic", topic: "emailic", t: "E-mail @ic.ufal.br: para que serve e como criar",
+    p: "O IC tem infraestrutura de TI própria, independente da reitoria. O e-mail @ic.ufal.br não é só uma caixa de entrada: é a credencial para **logar nos computadores dos laboratórios** (distribuições Linux) e acessar redes e servidores internos e o Wi-Fi do IC.",
+    li: ["**Como criar**: a solicitação costuma ser feita no início do semestre ao Setor de TI do IC.", "Leve o **Atestado de Matrícula do SIGAA** para comprovar o vínculo e receber as credenciais."], busca: "laboratório lab linux ti" },
+  { id: "vantagens", topic: "emailic", t: "Vantagens de um e-mail .edu.br / .ufal.br",
+    p: "Para quem faz Computação, esta é a informação mais valiosa: o e-mail institucional libera dezenas de ferramentas profissionais gratuitas.",
+    li: ["**GitHub Student Developer Pack**: GitHub Copilot, domínios gratuitos por um ano, servidores e dezenas de serviços para desenvolvimento.",
+         "**JetBrains**: licenças originais e gratuitas das melhores IDEs (IntelliJ IDEA para Java, PyCharm, WebStorm).",
+         "**Microsoft Azure e AWS Educate**: créditos de nuvem, fundamentais em Redes e Sistemas Distribuídos.",
+         "**Design**: Notion Premium, Figma for Education e Canva Pro.",
+         "**Drive educacional**: costuma vir do Google Workspace, com bem mais espaço que uma conta pessoal gratuita."], busca: "github copilot jetbrains azure aws notion figma canva grátis" },
+  /* Regras do jogo */
+  { id: "notas", topic: "regras", t: "Notas: AB1, AB2 e Reavaliação",
+    p: "O semestre tem duas notas, a **AB1** e a **AB2**. O professor decide como compô-las (provas, listas do Huxley, trabalhos...), mas a conta final é sempre a mesma:",
+    stats: [{ n: "≥ 7,0", d: "média de AB1 e AB2: aprovado direto" }, { n: "< 5,0", d: "reprovado por nota, sem recuperação" }, { n: "5,0 a 6,9", d: "vai para a Reavaliação" }, { n: "≥ 5,5", d: "nova média exigida após a Reavaliação" }],
+    p2: "A Reavaliação é uma prova de todo o conteúdo do semestre e a nota dela **substitui a sua menor AB**. Teste seus números no Simulador de notas.", busca: "média reavaliação final prova" },
+  { id: "faltas", topic: "regras", t: "Limite de faltas: a regra dos 25%",
+    p: "Você precisa de **75% de presença** em cada disciplina. Em uma disciplina de 60 horas (geralmente 2 encontros por semana) só pode faltar **15 horas**, ou seja, cerca de 7 faltas no semestre.",
+    li: ["**Reprovação por Falta (RF)**: estourou o limite, está reprovado, mesmo com 10 em todas as provas.", "Quem reprova por falta **perde o direito à Reavaliação**."], busca: "presença rf reprovação" },
+  { id: "monitoria", topic: "regras", t: "Monitoria: seu maior salva-vidas",
+    p: "Monitores são veteranos que cursaram a disciplina com excelência e ajudam o professor. Têm horários no IC para tirar dúvidas, ajudar com as listas do Huxley e revisar antes das provas. As matérias iniciais (Matemática Discreta, P1, Cálculo) são densas: não tenha vergonha de procurá-los!",
+    li: ["**Como virar monitor**: a partir do 2º período, com nota alta em uma matéria, você pode concorrer nos editais. Pode ser remunerada (bolsa) ou voluntária."] },
+  { id: "horas", topic: "regras", t: "Horas complementares e extensão",
+    p: "Para pegar o diploma não basta passar nas disciplinas da grade: é preciso viver a universidade.",
+    li: ["**Atividades Complementares (Horas Flexíveis)**: eventos de tecnologia, maratonas de programação, semanas acadêmicas, artigos, cursos de idiomas, estágio. Guarde todos os certificados em uma pasta na nuvem desde o 1º período!",
+         "**Projetos de Extensão**: com a curricularização da extensão, todos os cursos exigem projetos que levem conhecimento à sociedade, como ensinar programação em escolas públicas ou criar sistemas para ONGs."],
+    tip: "Acompanhe os murais do IC e os grupos de WhatsApp das turmas. Sempre que surgir edital de **Extensão**, **Iniciação Científica (PIBIC)** ou **Monitoria**, tente participar. Além de adiantar horas obrigatórias, é nesses projetos que você faz networking com professores e colegas.", busca: "pibic iniciação científica extensão horas flexíveis certificados" },
+  /* Campus */
+  { id: "ru", topic: "campus", t: "Restaurante Universitário (RU)",
+    p: "Almoço e jantar custam **R$ 3,00** para estudantes de graduação. Leve o **comprovante de matrícula atualizado** e um **documento com foto**. O cardápio do dia costuma sair no Instagram oficial da Ufal (@ufaloficial).", busca: "almoço jantar comida restaurante" },
+  { id: "bc", topic: "campus", t: "Biblioteca Central (BC)",
+    p: "O empréstimo é gratuito com o cadastro do SIGAA. Atrasos geram multa diária, paga obrigatoriamente via **GRU** (Guia de Recolhimento da União).",
+    li: ["Atenção: **débitos pendentes na biblioteca impedem a colação de grau**."], busca: "livros empréstimo multa" },
+  { id: "hu", topic: "campus", t: "Atendimento médico no HU",
+    p: "Os estudantes podem agendar consultas no **Hospital Universitário (HU)** apresentando o comprovante de matrícula autenticado pelo DRCA e um documento oficial.", busca: "saúde médico hospital" },
+  /* Assistência */
+  { id: "proest", topic: "assistencia", t: "PROEST: isenção no RU, bolsas e residência",
+    p: "Estudantes em situação de vulnerabilidade social podem pedir **isenção no RU** e concorrer a bolsas pelos editais da **PROEST** (Pró-Reitoria Estudantil). A PROEST também gerencia a **Residência Universitária** e bolsas de apoio.", busca: "auxílio bolsa residência moradia" },
+  /* Carteira VAMU */
+  { id: "vamu", topic: "vamu", t: "VAMU: como solicitar pela primeira vez",
+    p: "Em Maceió, o Passe Livre Estudantil garante viagens gratuitas nos ônibus urbanos (com limite mensal de embarques) para ir e voltar da universidade. Reúna os documentos (marque o que já tem):",
+    check: ["RG e CPF", "Comprovante de residência (validade de até 3 meses)", "Foto 3x4 atual", "Atestado de Matrícula atualizado"],
+    p2: "O cadastro e o agendamento são feitos no **site oficial do VAMU Maceió**; a retirada é nos postos físicos (como no Centro ou em terminais de integração).", busca: "ônibus passe livre transporte carteirinha" },
+  { id: "vamu2", topic: "vamu", t: "VAMU: Atestado do SIGAA e recadastramento",
+    p: "O VAMU é rigoroso com a documentação.",
+    li: ["O Atestado de Matrícula do SIGAA deve ter **assinatura digital ou código de verificação** (emitido automaticamente).",
+         "A cada início de ano letivo, envie o comprovante do novo semestre no site e pague a taxa de recadastramento (geralmente PIX ou boleto). **Sem revalidar, o cartão é bloqueado.**"], busca: "ônibus passe livre transporte carteirinha" },
+  { id: "meia", topic: "vamu", t: "Meia-entrada cultural: o VAMU não vale",
+    p: "A carteira VAMU **não vale como documento nacional do estudante** para meia-entrada em cinemas e shows. Para eventos culturais, emita a carteira da **UNE** ou use o aplicativo **ID Jovem** (se for elegível).", busca: "cinema show une dne" },
+  /* Primeiro período */
+  { id: "c", topic: "prog", t: "P1 e a linguagem C",
+    p: "Em P1 você mergulha nos fundamentos da lógica de programação com **C**. Se nunca escreveu uma linha de código, não se assuste: as aulas começam do zero. Você vai lidar com variáveis, laços de repetição e os famosos **ponteiros**. Dominar C agora facilita aprender qualquer outra linguagem depois.", busca: "programação 1 p1" },
+  { id: "huxley", topic: "prog", t: "Pratique no The Huxley",
+    p: "O Huxley é um **juiz online** muito usado pelos professores do IC para passar listas de exercícios. Há centenas de problemas por nível de dificuldade: você escreve o código em C, envia na plataforma e ela testa automaticamente se a lógica está correta. Ótimo para treinar para as provas e pegar a sintaxe.",
+    tip: "Não espere a primeira lista da faculdade sair. Crie sua conta no Huxley, procure os problemas de **nível 1** e comece a brincar com C. A prática constante é o único segredo para passar direto em P1!", busca: "the huxley juiz online exercícios" },
+  { id: "terminal", topic: "prog", t: "VS Code e terminal: compilar C",
+    p: "A ferramenta oficial dos professores é o **Visual Studio Code**, um editor leve e o mais usado no mercado. Nas aulas do IC, o código em C costuma ser compilado e executado direto no **Terminal do Windows**. Antes, instale o compilador **GCC (via MinGW)**; em geral os professores ensinam na primeira semana.",
+    li: ["**1.** Escreva e salve o código com a extensão `.c` (ex.: `meu_programa.c`).", "**2.** Abra o terminal no VS Code: Terminal > Novo Terminal (ou `Ctrl + '`).", "**3.** Compile: `gcc meu_programa.c -o meu_programa` (`-o` define o nome do executável).", "**4.** Execute: `.\\meu_programa.exe`."],
+    tip: "A **seta para cima** repete comandos anteriores. Alterou o código? Salve (**Ctrl + S**), compile de novo e só então execute. Se esquecer de compilar, você roda a versão velha!", busca: "vscode gcc mingw compilar executar terminal", sim: true }
+];
+
+const QUEM = [
+  { id: "q1", q: "Quero trancar uma disciplina ou o curso", a: "Coordenação do curso", d: "O pedido é feito por formulário, dentro do prazo do Calendário Acadêmico.", card: "trancamento" },
+  { id: "q2", q: "Quero ajustar minha grade", a: "Coordenação do curso", d: "Ajustes de grade passam pela coordenação. A partir do 2º semestre a matrícula nas disciplinas é feita por você no SIGAA.", card: "matricula" },
+  { id: "q3", q: "Preciso do meu diploma ou de registro acadêmico", a: "DRCA", d: "O DRCA cuida de registro acadêmico e diploma.", card: "sigaa" },
+  { id: "q4", q: "Preciso do Atestado de Matrícula", a: "SIGAA (você mesmo emite)", d: "Emita pelo SIGAA. O atestado precisa ter assinatura digital ou código de verificação.", card: "sigaa" },
+  { id: "q5", q: "Não consigo acessar o Wi-Fi ou o e-mail da UFAL", a: "NTI", d: "O NTI gerencia suas credenciais de rede, o e-mail institucional e o Eduroam.", card: "nti" },
+  { id: "q6", q: "Quero logar nos computadores do laboratório", a: "Setor de TI do IC", d: "Peça o e-mail @ic.ufal.br no início do semestre, levando o Atestado de Matrícula.", card: "emailic" },
+  { id: "q7", q: "Preciso de comprovante autenticado para o HU", a: "DRCA", d: "O HU pede o comprovante de matrícula autenticado pelo DRCA e um documento oficial.", card: "hu" },
+  { id: "q8", q: "Preciso de isenção no RU ou de uma bolsa", a: "PROEST", d: "Acompanhe os editais da Pró-Reitoria Estudantil. Ela também cuida da Residência Universitária.", card: "proest" }
+];
+
+const SIM = [
+  { t: "Escreva e salve", d: "No VS Code, crie um arquivo, escreva o código em C e salve com a extensão .c, em uma pasta fácil de achar.", cmd: null },
+  { t: "Abra o terminal", d: "No VS Code: Terminal > Novo Terminal (ou Ctrl + '). Uma aba preta abre embaixo, já apontando para a pasta do arquivo.", cmd: null },
+  { t: "Compile", d: "O gcc traduz o seu código para algo que o computador executa. Se não aparecer erro, deu certo.", cmd: "gcc meu_programa.c -o meu_programa", out: "" },
+  { t: "Execute", d: "Agora rode o programa gerado. O resultado aparece ali mesmo no terminal.", cmd: ".\\meu_programa.exe", out: "Olá, calouro!" }
+];
+const CODIGO = '#include <stdio.h>\n\nint main() {\n    printf("Olá, calouro!\\n");\n    return 0;\n}';
+const PROMPT = "PS C:\\Users\\voce\\codigos> ";
+
+// --- FUNÇÕES UTILITÁRIAS ---
+const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+// Converte markdown básico (**negrito** e `código`) para JSX
+const formatText = (text) => {
+  return text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, i) => {
+    if (part.startsWith('**')) return <b key={i}>{part.slice(2, -2)}</b>;
+    if (part.startsWith('`')) return <code key={i}>{part.slice(1, -1)}</code>;
+    return part;
+  });
 };
 
-/* Componente para a "Dica de Veterano" */
-const DicaVeterano = ({ texto }: { texto: string }) => (
-  <div className="tip">
-    <span className="em">💡</span>
-    <div>
-      <b>Dica de Veterano: </b>
-      <TextoRico texto={texto} />
-    </div>
-  </div>
-);
+export default function Calouro({ setPaginaAtiva }) {
+  const [topico, setTopico] = useState('todos');
+  const [busca, setBusca] = useState('');
+  const [tabAtiva, setTabAtiva] = useState('notas');
 
-/* =====================================================================
-   PÁGINA PRINCIPAL
-   ===================================================================== */
-export default function Calouro() {
+  // Estado: Simulador de Notas
+  const [ab1, setAb1] = useState('');
+  const [ab2, setAb2] = useState('');
+
+  // Estado: Calculadora de Faltas
+  const [ch, setCh] = useState(60);
+  const [faltas, setFaltas] = useState(0);
+
+  // Estado: Quem Resolve
+  const [quemSel, setQuemSel] = useState(null);
+
+  // Estado: Terminal
+  const [termStep, setTermStep] = useState(0);
+  const [termTyped, setTermTyped] = useState(0);
+
+  // Estado: Acordeão & Checkboxes
+  const [abertos, setAbertos] = useState(new Set());
+  const [checks, setChecks] = useState(new Set());
+
   useEffect(() => {
-    window.scrollTo(0, 0);
+    try {
+      const saved = localStorage.getItem("gic-calouro-docs");
+      if (saved) setChecks(new Set(JSON.parse(saved)));
+    } catch (e) { console.error(e); }
   }, []);
+
+  const toggleCheck = (key) => {
+    const newChecks = new Set(checks);
+    if (newChecks.has(key)) newChecks.delete(key);
+    else newChecks.add(key);
+    setChecks(newChecks);
+    localStorage.setItem("gic-calouro-docs", JSON.stringify(Array.from(newChecks)));
+  };
+
+  const toggleAccordion = (id) => {
+    setAbertos(prev => {
+      const newAbertos = new Set(prev);
+      if (newAbertos.has(id)) newAbertos.delete(id);
+      else newAbertos.add(id);
+      return newAbertos;
+    });
+  };
+
+  const abreCard = (id) => {
+    setTopico('todos');
+    setBusca('');
+    setAbertos(prev => new Set(prev).add(id));
+    setTimeout(() => {
+      const el = document.getElementById("g-" + id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.classList.add('flash-anim');
+        setTimeout(() => el.classList.remove('flash-anim'), 1500);
+      }
+    }, 100);
+  };
+
+  const mudaFerramenta = (id) => {
+    setTabAtiva(id);
+    document.getElementById("ferramentas")?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // Previne caracteres inválidos na nota, permitindo usar "vírgula"
+  const handleNotaChange = (setter) => (e) => {
+    const val = e.target.value;
+    if (val === '' || /^[0-9]+(,[0-9]*)?$/.test(val)) {
+        setter(val);
+    }
+  };
+
+  // Lógica do Simulador de Notas
+  const renderNotas = () => {
+    const valA = ab1 === '' ? null : parseFloat(ab1.replace(',', '.'));
+    const valB = ab2 === '' ? null : parseFloat(ab2.replace(',', '.'));
+    let ptLeft = 0;
+    
+    if (valA === null && valB === null) {
+      return { ptLeft: 0, cls: "", bg: "", txt: "Digite suas notas para ver o resultado." };
+    }
+    
+    if (valA === null || valB === null) {
+      const x = valA === null ? valB : valA;
+      const o = valA === null ? "AB1" : "AB2";
+      const f = valA === null ? "AB2" : "AB1";
+      ptLeft = (x / 2) * 10;
+      const dir = 14 - x;
+      const min = 10 - x;
+      return {
+        ptLeft, cls: "warn", bg: "Atenção",
+        txt: `Com ${f} = ${x.toFixed(1).replace('.', ',')}, falta a ${o}. ` + 
+             (dir <= 10 ? `Para aprovar direto, tire pelo menos ${dir.toFixed(1).replace('.', ',')}. ` : "Aprovação direta não é mais possível; seu caminho é a Reavaliação. ") +
+             `Para não reprovar por nota, tire pelo menos ${min.toFixed(1).replace('.', ',')}.`
+      };
+    }
+    
+    const m = (valA + valB) / 2;
+    ptLeft = m * 10;
+    
+    if (m >= 7) return { ptLeft, cls: "ok", bg: `Aprovado direto. Média ${m.toFixed(1).replace('.', ',')}`, txt: "Parabéns, já pode curtir as férias!" };
+    if (m < 5) return { ptLeft, cls: "bad", bg: `Reprovado por nota. Média ${m.toFixed(1).replace('.', ',')}`, txt: "Média abaixo de 5,0: não há prova de recuperação." };
+    
+    const mx = Math.max(valA, valB);
+    const need = 11 - mx;
+    return { 
+      ptLeft, cls: "warn", bg: `Reavaliação. Média ${m.toFixed(1).replace('.', ',')}`, 
+      txt: `A prova substitui a sua menor AB. Você mantém a ${mx.toFixed(1).replace('.', ',')} e precisa de pelo menos ${need.toFixed(1).replace('.', ',')} na Reavaliação para chegar a 5,5.` 
+    };
+  };
+  const notasStatus = renderNotas();
+
+  // Lógica de Faltas
+  const lim = ch * 0.25;
+  const maxF = Math.floor(lim / 2);
+  const faltasMax = maxF + 4;
+  const horasFalta = faltas * 2;
+  const pctFaltas = Math.min(100, (horasFalta / lim) * 100);
+  
+  let faltasCls = "ok", faltasBg = "Tranquilo", faltasTxt = `Você ainda pode faltar ${maxF - faltas} vezes.`;
+  let barCor = "#2e7d32";
+  
+  if (faltas > maxF) {
+    faltasCls = "bad"; faltasBg = "Reprovação por Falta (RF)"; 
+    faltasTxt = "Você passou do limite: reprova mesmo com nota alta e perde a Reavaliação."; barCor = "#c62828";
+  } else if (faltas >= maxF - 1) {
+    faltasCls = "warn"; faltasBg = "Atenção: no limite"; 
+    faltasTxt = `Você ainda pode faltar ${maxF - faltas} vez(es). Guarde o resto para imprevistos.`; barCor = "#e0a82e";
+  }
+
+  // Lógica Terminal Animação
+  useEffect(() => {
+    let timer;
+    if (tabAtiva === 'term' && termStep > 1) {
+      const cmdLength = SIM[termStep].cmd?.length || 0;
+      setTermTyped(0);
+      timer = setInterval(() => {
+        setTermTyped(prev => {
+          if (prev >= cmdLength) { clearInterval(timer); return prev; }
+          return prev + 1;
+        });
+      }, 35);
+    }
+    return () => clearInterval(timer);
+  }, [termStep, tabAtiva]);
+
+  // Filtro
+  const cardsFiltrados = useMemo(() => {
+    return CARDS.filter(c => {
+      if (topico !== 'todos' && c.topic !== topico) return false;
+      if (!busca) return true;
+      const txt = norm([c.t, c.p || "", c.p2 || "", (c.li || []).join(" "), (c.check || []).join(" "), c.tip || "", c.busca || ""].join(" "));
+      return busca.split(/\s+/).every(w => txt.includes(w));
+    });
+  }, [topico, busca]);
 
   return (
     <div className="page-calouro">
+      {/* CSS Renomeado para blindar 100% contra conflitos com o indexcss.txt */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .page-calouro {
+            --blue: #0056b3; --blue-dark: #004085; --blue-deep: #003a7d;
+            --ink: #1d2b44; --mu: #5a6578; --ln: #d9dfea; --bg: #f4f4f9; --amber: #e0a82e;
+            --ok: #2e7d32; --ok-bg: #e3f3e7; --bad: #c62828; --bad-bg: #fdeaea; --warn-bg: #fff3d6;
+        }
+
+        /* --- Busca e Filtros --- */
+        .calouro-search { position: relative; max-width: 520px; margin-bottom: 20px; margin-top: 10px; }
+        .calouro-search input { width: 100%; min-height: 50px; padding: 0 44px 0 18px; border-radius: 999px; border: 2px solid transparent; font: 500 15px 'Montserrat', sans-serif; color: var(--ink); background: #fff; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
+        .calouro-search input:focus { border-color: var(--amber); }
+        .calouro-search button { position: absolute; right: 6px; top: 6px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: #eaf2fc; color: var(--blue); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        .calouro-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        .calouro-pills button { font: 700 14px 'Montserrat', sans-serif; min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.8); transition: background 0.15s, color 0.15s, border-color 0.15s; margin: 0; }
+        .calouro-pills button:hover { background: rgba(255,255,255,0.15); }
+        .calouro-pills button[aria-pressed="true"] { background: #fff; color: var(--blue); border-color: #fff; }
+
+        /* --- Ferramentas --- */
+        .calouro-tools { background: #fff; border: 1px solid var(--ln); border-radius: 12px; overflow: hidden; }
+        .calouro-tabs { display: flex; gap: 8px; padding: 12px; overflow-x: auto; background: #fafbfd; border-bottom: 1px solid var(--ln); scrollbar-width: none; }
+        .calouro-tabs::-webkit-scrollbar { display: none; }
+        .calouro-tabs button { flex: none; font: 700 14px 'Montserrat', sans-serif; min-height: 42px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: #fff; color: var(--blue); border: 2px solid var(--ln); transition: 0.2s; margin: 0; }
+        .calouro-tabs button:hover { border-color: var(--blue); }
+        .calouro-tabs button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
+        
+        /* Renomeado de .panel para evitar o erro do position:absolute do banner da Home */
+        .calouro-tool-panel { padding: 22px; position: static !important; width: auto !important; clip-path: none !important; }
+        
+        .calouro-tool-panel .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-bottom: 14px; }
+        .calouro-tool-panel .fields div { display: flex; flex-direction: column; gap: 4px; }
+        .calouro-tool-panel label { font-size: 13px; font-weight: 600; color: var(--mu); }
+        .calouro-tool-panel select, .calouro-tool-panel input[type="text"] { font: 500 16px 'Montserrat', sans-serif; padding: 10px 12px; min-height: 46px; border: 1px solid var(--ln); border-radius: 8px; background: #fff; color: var(--ink); width: 130px; box-sizing: border-box; }
+        .calouro-tool-panel select { width: auto; min-width: 160px; }
+        .calouro-tool-panel input[type="range"] { width: min(360px, 100%); accent-color: var(--blue); height: 32px; margin-top: 8px; }
+        
+        .calouro-meter { position: relative; height: 16px; border-radius: 999px; margin: 26px 0 30px; background: linear-gradient(90deg, #f3b3b3 0 50%, #ffe2a1 50% 70%, #b7e0bb 70% 100%); }
+        .calouro-meter .pt { position: absolute; top: -6px; width: 6px; height: 28px; border-radius: 3px; background: var(--ink); transform: translateX(-3px); transition: left .3s ease-out; }
+        .calouro-meter span { position: absolute; top: 22px; font-size: 11.5px; color: var(--mu); transform: translateX(-50%); font-weight: 600; }
+        
+        .calouro-res { padding: 14px 16px; border-radius: 10px; font-size: 14.5px; line-height: 1.6; border: 1px solid var(--ln); background: #fafbfd; transition: all 0.3s ease; }
+        .calouro-res b.big { display: block; font-size: 18px; margin-bottom: 4px; }
+        .calouro-res.ok { background: var(--ok-bg); border-color: #b7e0bb; } .calouro-res.ok b.big { color: var(--ok); }
+        .calouro-res.warn { background: var(--warn-bg); border-color: #f0d58a; } .calouro-res.warn b.big { color: #8a5a00; }
+        .calouro-res.bad { background: var(--bad-bg); border-color: #f2b8b8; } .calouro-res.bad b.big { color: var(--bad); }
+        .calouro-bar { height: 14px; border-radius: 999px; background: #e3eaf5; overflow: hidden; margin: 12px 0; }
+        .calouro-bar i { display: block; height: 100%; width: 0; border-radius: 999px; transition: width .35s, background .35s; }
+        
+        .calouro-qs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .calouro-qs button { text-align: left; font: 600 14px/1.35 'Montserrat', sans-serif; padding: 12px 14px; border-radius: 10px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; }
+        .calouro-qs button:hover { border-color: var(--blue); }
+        .calouro-qs button[aria-pressed="true"] { background: #eef4fb; outline: 3px solid var(--amber); outline-offset: 1px; }
+
+        /* --- Terminal Animado --- */
+        .calouro-sim { display: grid; grid-template-columns: 220px 1fr; gap: 16px; }
+        .calouro-steps { display: grid; gap: 8px; align-content: start; }
+        .calouro-steps button { text-align: left; font: 600 13.5px/1.3 'Montserrat', Arial, sans-serif; padding: 10px 12px; border-radius: 8px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; display: flex; gap: 8px; align-items: center; }
+        .calouro-steps button i { font-style: normal; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .calouro-steps button[aria-pressed="true"] { background: #eef4fb; outline: 3px solid var(--amber); outline-offset: 1px; }
+        .calouro-steps button.past i { background: var(--ok); }
+        .calouro-scr { min-width: 0; display: grid; gap: 10px; align-content: start; }
+        
+        /* Renomeado de .win para não conflitar com Oportunidades */
+        .calouro-win { border-radius: 10px; overflow: hidden; background: #0f1f38; color: #cfe3ff; font-family: Consolas, monospace; font-size: 13.5px; line-height: 1.6; }
+        .calouro-win .bar2 { background: #1b2f52; padding: 6px 12px; font: 600 12px 'Montserrat', sans-serif; color: #9cc8f5; display: flex; gap: 6px; align-items: center; }
+        .calouro-win .bar2 s { width: 10px; height: 10px; border-radius: 50%; background: #5b7aa8; display: inline-block; }
+        .calouro-win pre { margin: 0; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; min-height: 56px; }
+        .calouro-win .pr { color: #ffc107; }
+        .caret::after { content: "▌"; animation: bl 1s steps(1) infinite; }
+        @keyframes bl { 50% { opacity: 0; } }
+
+        /* --- GUIA COMPLETO ACORDEÃO (Resgatado dos estilos globais errados) --- */
+        .calouro-acc { display: grid; gap: 10px; }
+        
+        /* Renomeado de details para evitar os estilos vazados de Tutoriais */
+        details.calouro-details { background: #fff; border: 1px solid var(--ln); border-left: 4px solid var(--blue); border-radius: 10px; margin-bottom: 0; box-shadow: none; overflow: visible; transition: box-shadow 0.3s; }
+        details.calouro-details[open] { border-color: var(--blue); }
+        details.calouro-details.flash-anim { animation: fl 1.4s; }
+        
+        /* Renomeado summary para evitar conflito global */
+        details.calouro-details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 14px 16px; font-weight: 700; font-size: 15px; color: var(--blue-dark); background-color: transparent; }
+        details.calouro-details > summary::-webkit-details-marker { display: none; }
+        details.calouro-details > summary::after { content: ""; margin-left: auto; width: 9px; height: 9px; border-right: 2px solid var(--mu); border-bottom: 2px solid var(--mu); transform: rotate(45deg); transition: transform .2s; flex: none; }
+        details.calouro-details[open] > summary::after { transform: rotate(225deg); }
+        details.calouro-details > summary:hover { background-color: #fafbfd; }
+
+        .calouro-tag { display: inline-block; font-size: 11.5px; font-weight: 600; border: 1px solid var(--ln); border-radius: 12px; padding: 2px 10px; white-space: nowrap; color: var(--mu); background: #fafbfd; }
+        
+        .calouro-body { padding: 0 18px 18px; }
+        .calouro-body p { margin: 0 0 12px; font-size: 15px; line-height: 1.65; color: var(--mu); }
+        .calouro-body ul { margin: 0 0 14px; padding-left: 20px; color: var(--mu); font-size: 15px; line-height: 1.6; }
+        .calouro-body li { margin-bottom: 6px; }
+        .calouro-body .chk { list-style: none; padding: 0; display: grid; gap: 8px; }
+        .calouro-body .chk label { display: flex; gap: 10px; align-items: center; font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; padding: 8px 12px; border: 1px solid var(--ln); border-radius: 8px; background: #fafbfd; }
+        .calouro-body .chk input { width: 20px; height: 20px; accent-color: var(--ok); flex: none; cursor: pointer; }
+        .calouro-body .chk input:checked + span { text-decoration: line-through; color: var(--mu); }
+        .calouro-body .row { display: flex; flex-wrap: wrap; gap: 10px; }
+        
+        /* Renomeado de .btn para evitar os botões gigantes da Home */
+        .calouro-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 20px; border-radius: 999px; font: 700 14px 'Montserrat', sans-serif; cursor: pointer; text-decoration: none; border: 2px solid var(--blue); background: var(--blue); color: #fff; transition: 0.15s; }
+        .calouro-btn:hover { background: var(--blue-dark); border-color: var(--blue-dark); transform: translateY(-1px); }
+        .calouro-btn.ghost { background: #fff; color: var(--blue); }
+        .calouro-btn.ghost:hover { background: #eaf2fc; }
+
+        @media (max-width: 760px) {
+          .calouro-sim { grid-template-columns: 1fr; }
+          .calouro-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+      `}} />
+
       <div className="page-hero">
         <div className="wrap">
+          <div className="hero-top-actions" style={{marginBottom: '20px'}}>
+            <button className="btn-voltar" onClick={() => setPaginaAtiva('inicio')}>
+              ← Voltar ao Início
+            </button>
+          </div>
+          
           <h1>Bem-vindo, calouro!</h1>
-          <p>O essencial para começar a vida académica no Instituto de Computação: sistemas, regras de nota e falta, vida no campus, carteirinha e os primeiros passos em programação. Nos cartões com “Saiba mais” há um tutorial passo a passo.</p>
-          <nav className="jump" aria-label="Ir para um assunto">
-            {SECOES.map((s) => (
-              <a key={s.id} href={`#${s.id}`}>{s.nome.split(":")[0]}</a>
+          <p>Teste as regras de nota e falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.</p>
+          
+          <div className="calouro-search">
+            <input type="search" placeholder="Buscar: SIGAA, VAMU, faltas, Huxley..." value={busca} onChange={e => setBusca(e.target.value)} />
+            {busca && <button type="button" onClick={() => setBusca('')}>×</button>}
+          </div>
+          
+          <div className="calouro-pills">
+            <button aria-pressed={topico === 'todos'} onClick={() => setTopico('todos')}>Todos</button>
+            {TOPICOS.map(t => (
+              <button key={t.id} aria-pressed={topico === t.id} onClick={() => setTopico(t.id)}>{t.nome}</button>
             ))}
-          </nav>
+          </div>
         </div>
       </div>
 
       <main className="calouro-main">
-        {SECOES.map((secao) => (
-          <section className="sec" id={secao.id} key={secao.id}>
-            <div className="sec__head">
-              <span className="sec__ico">{secao.icone}</span>
-              <h2>{secao.nome}</h2>
+        <section id="ferramentas" className="sec">
+          <div className="sec__head">
+            <span className="sec__ico">🛠️</span>
+            <h2>Ferramentas rápidas</h2>
+          </div>
+          <p className="sec__intro" style={{marginBottom: '20px'}}>Simule sua situação antes que ela aconteça.</p>
+          
+          <div className="calouro-tools">
+            <div className="calouro-tabs">
+              <button aria-pressed={tabAtiva === 'notas'} onClick={() => mudaFerramenta('notas')}>Simulador de notas</button>
+              <button aria-pressed={tabAtiva === 'faltas'} onClick={() => mudaFerramenta('faltas')}>Calculadora de faltas</button>
+              <button aria-pressed={tabAtiva === 'quem'} onClick={() => mudaFerramenta('quem')}>Quem resolve o quê?</button>
+              <button aria-pressed={tabAtiva === 'term'} onClick={() => mudaFerramenta('term')}>Terminal passo a passo</button>
             </div>
-            <p className="sec__intro">{secao.intro}</p>
-            
-            <div className="grid">
-              {secao.cards.map((card, idx) => (
-                <article className={`card ${card.wide ? 'wide' : ''}`} key={idx}>
-                  {/* Se for APENAS uma dica (sem parágrafos ou listas) */}
-                  {card.tip && !card.p && !card.li ? (
-                    <DicaVeterano texto={card.tip} />
-                  ) : (
-                    <>
-                      <h3>{card.t}</h3>
-                      {card.p && <p><TextoRico texto={card.p} /></p>}
-                      
-                      {card.stats && (
-                        <div className="stats">
-                          {card.stats.map((st, i) => (
-                            <div className="stat" key={i}>
-                              <b>{st.n}</b>
-                              <span>{st.d}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
 
-                      {card.li && (
-                        <ul>
-                          {card.li.map((item, i) => (
-                            <li key={i}><TextoRico texto={item} /></li>
-                          ))}
-                        </ul>
-                      )}
-                      
-                      {card.p2 && <p><TextoRico texto={card.p2} /></p>}
-                      {card.code && <pre className="code">{card.code}</pre>}
-                      {card.tip && <DicaVeterano texto={card.tip} />}
+            {/* TAB: NOTAS */}
+            {tabAtiva === 'notas' && (
+              <div className="calouro-tool-panel">
+                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Simulador de notas</h3>
+                <p style={{color: '#5a6578', marginBottom: '16px'}}>Preencha as duas notas, ou só a AB1 para saber quanto precisa tirar na AB2. Regra: média ≥ 7,0 aprova; média &lt; 5,0 reprova; entre 5,0 e 6,9 vai para a Reavaliação.</p>
+                <div className="fields">
+                  <div>
+                    <label>AB1</label>
+                    <input type="text" inputMode="decimal" value={ab1} onChange={handleNotaChange(setAb1)} placeholder="Ex: 6,5" />
+                  </div>
+                  <div>
+                    <label>AB2</label>
+                    <input type="text" inputMode="decimal" value={ab2} onChange={handleNotaChange(setAb2)} placeholder="Ex: 6,5" />
+                  </div>
+                </div>
+                <div className="calouro-meter">
+                  <i className="pt" style={{left: `${notasStatus.ptLeft}%`}}></i>
+                  <span style={{left: '0%'}}>0</span>
+                  <span style={{left: '50%'}}>5,0</span>
+                  <span style={{left: '70%'}}>7,0</span>
+                  <span style={{left: '100%'}}>10</span>
+                </div>
+                {notasStatus.txt && (
+                  <div className={`calouro-res ${notasStatus.cls}`}>
+                    {notasStatus.bg && <b className="big">{notasStatus.bg}</b>}
+                    {notasStatus.txt}
+                  </div>
+                )}
+              </div>
+            )}
 
-                      {typeof card.link === "string" && (
-                        <>
-                          <div className="spacer"></div>
-                          <a 
-                            className="btn-more" 
-                            href={card.link || "#"} 
-                            onClick={(e) => !card.link && e.preventDefault()}
-                            title={!card.link ? "Link ainda não definido" : undefined}
-                          >
-                            Saiba mais
-                          </a>
-                        </>
+            {/* TAB: FALTAS */}
+            {tabAtiva === 'faltas' && (
+              <div className="calouro-tool-panel">
+                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Calculadora de faltas</h3>
+                <p style={{color: '#5a6578', marginBottom: '16px'}}>Você precisa de 75% de presença. Estourou o limite? É Reprovação por Falta (RF), mesmo com 10 nas provas, e sem direito à Reavaliação.</p>
+                <div className="fields">
+                  <div>
+                    <label>Carga horária da disciplina</label>
+                    <select value={ch} onChange={e => { setCh(Number(e.target.value)); setFaltas(0); }}>
+                      <option value="30">30 horas</option>
+                      <option value="45">45 horas</option>
+                      <option value="60">60 horas</option>
+                      <option value="90">90 horas</option>
+                    </select>
+                  </div>
+                </div>
+                <label>Faltas (cada encontro conta 2 horas): <b>{faltas} ({horasFalta} h)</b></label><br/>
+                <input type="range" min="0" max={faltasMax} step="1" value={faltas} onChange={e => setFaltas(Number(e.target.value))} />
+                <div className="calouro-bar"><i style={{width: `${pctFaltas}%`, backgroundColor: barCor}}></i></div>
+                <div className={`calouro-res ${faltasCls}`}>
+                  <b className="big">{faltasBg}</b>
+                  Em {ch} h o limite é de {lim.toString().replace('.', ',')} h, cerca de {maxF} faltas. {faltasTxt}
+                </div>
+                <p style={{fontSize: '12.5px', color: '#5a6578', marginTop: '10px'}}>Considera encontros de 2 horas; confirme no SIGAA como o professor registra as faltas.</p>
+              </div>
+            )}
+
+            {/* TAB: QUEM */}
+            {tabAtiva === 'quem' && (
+              <div className="calouro-tool-panel">
+                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Quem resolve o quê?</h3>
+                <p style={{color: '#5a6578', marginBottom: '16px'}}>Escolha a sua situação e veja a quem recorrer. Em geral: DRCA cuida de registro e diploma, NTI de sistemas e internet, e a Coordenação de ajustes de grade.</p>
+                <div className="calouro-qs">
+                  {QUEM.map(q => (
+                    <button key={q.id} aria-pressed={quemSel?.id === q.id} onClick={() => setQuemSel(q)}>
+                      {q.q}
+                    </button>
+                  ))}
+                </div>
+                {quemSel ? (
+                  <div className="calouro-res ok">
+                    <b className="big">Procure: {quemSel.a}</b>
+                    {quemSel.d}
+                    <button className="calouro-btn ghost" style={{display: 'flex', marginTop: '10px'}} onClick={() => abreCard(quemSel.card)}>
+                      Ver no guia
+                    </button>
+                  </div>
+                ) : (
+                  <div className="calouro-res">Escolha uma situação acima.</div>
+                )}
+              </div>
+            )}
+
+            {/* TAB: TERMINAL */}
+            {tabAtiva === 'term' && (
+              <div className="calouro-tool-panel">
+                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Compilar C no terminal</h3>
+                <p style={{color: '#5a6578', marginBottom: '16px'}}>Passo a passo do dia a dia nas aulas de P1. Antes, instale o compilador GCC (via MinGW). Clique nos passos, ou use Próximo.</p>
+                <div className="calouro-sim">
+                  <div className="calouro-steps">
+                    {SIM.map((s, i) => (
+                      <button key={i} aria-pressed={termStep === i} className={i < termStep ? 'past' : ''} onClick={() => setTermStep(i)}>
+                        <i>{i + 1}</i> <span>{s.t}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <div className="calouro-scr">
+                    <p style={{fontSize: '14.5px', color: '#1d2b44', margin: '0 0 10px 0'}}><b>Passo {termStep + 1}:</b> {SIM[termStep].d}</p>
+                    <div className="calouro-win">
+                      <div className="bar2"><s></s><s></s><s></s> VS Code: meu_programa.c</div>
+                      <pre>{CODIGO}</pre>
+                    </div>
+                    {termStep >= 1 && (
+                      <div className="calouro-win">
+                        <div className="bar2"><s></s><s></s><s></s> Terminal</div>
+                        <pre className={termStep > 1 && termTyped < SIM[termStep].cmd.length ? 'caret' : ''}>
+                          {SIM.slice(2, termStep + 1).map((l, i, arr) => {
+                            const isLast = i === arr.length - 1;
+                            const currentTyped = isLast ? l.cmd.slice(0, termTyped) : l.cmd;
+                            return (
+                              <div key={i}>
+                                <span className="pr">{PROMPT}</span>{currentTyped}
+                                {!isLast && l.out && <div>{l.out}</div>}
+                                {isLast && termTyped >= l.cmd.length && l.out && <div>{l.out}</div>}
+                              </div>
+                            );
+                          })}
+                          {termStep > 1 && termTyped >= SIM[termStep].cmd.length && (
+                            <div><span className="pr">{PROMPT}</span></div>
+                          )}
+                          {termStep === 1 && <span className="pr">{PROMPT}</span>}
+                        </pre>
+                      </div>
+                    )}
+                    <div className="row" style={{marginTop: '10px'}}>
+                      <button className="calouro-btn ghost" disabled={termStep === 0} style={{opacity: termStep === 0 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.max(0, p - 1))}>← Anterior</button>
+                      <button className="calouro-btn" disabled={termStep === SIM.length - 1} style={{opacity: termStep === SIM.length - 1 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.min(SIM.length - 1, p + 1))}>Próximo →</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section id="guia" className="sec">
+          <div className="sec__head">
+            <span className="sec__ico">📚</span>
+            <h2>Guia completo</h2>
+          </div>
+          <p className="sec__intro" style={{marginBottom: '20px'}}>Tudo o que você precisa saber, por assunto. Use a busca ou os filtros no topo da página.</p>
+          <p style={{fontSize: '13px', color: '#5a6578', marginBottom: '10px'}}>
+            {cardsFiltrados.length === CARDS.length ? `${CARDS.length} itens` : `Mostrando ${cardsFiltrados.length} de ${CARDS.length} itens`}
+          </p>
+
+          <div className="calouro-acc">
+            {cardsFiltrados.length === 0 ? (
+              <div style={{padding: '24px', textAlign: 'center', color: '#5a6578', background: '#fff', border: '1px dashed #d9dfea', borderRadius: '10px'}}>
+                Nada encontrado. Tente outra palavra ou escolha “Todos” nos assuntos.
+              </div>
+            ) : (
+              cardsFiltrados.map(c => (
+                <details key={c.id} id={`g-${c.id}`} className="calouro-details" open={abertos.has(c.id)}>
+                  <summary onClick={(e) => { e.preventDefault(); toggleAccordion(c.id); }}>
+                    <span>{c.t}</span>
+                    <span className="calouro-tag">{TOPICOS.find(t => t.id === c.topic)?.nome}</span>
+                  </summary>
+                  
+                  <div className="calouro-body">
+                    {c.p && <p>{formatText(c.p)}</p>}
+                    
+                    {c.stats && (
+                      <div className="stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '10px', margin: '4px 0 14px' }}>
+                        {c.stats.map((s, i) => (
+                          <div key={i} style={{ background: '#eaf2fc', border: '1px solid #c9d6ea', borderRadius: '12px', padding: '12px 10px', textAlign: 'center' }}> 
+                            <b style={{ display: 'block', fontSize: '22px', fontWeight: '800', color: '#0056b3', margin: 0 }}>{s.n}</b>
+                            <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', lineHeight: '1.35', color: '#5a6578', fontWeight: '600' }}>{s.d}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {c.li && (
+                      <ul>
+                        {c.li.map((liText, i) => <li key={i}>{formatText(liText)}</li>)}
+                      </ul>
+                    )}
+
+                    {c.check && (
+                      <ul className="chk">
+                        {c.check.map((item, i) => {
+                          const key = `${c.id}:${i}`;
+                          return (
+                            <li key={i}>
+                              <label>
+                                <input type="checkbox" checked={checks.has(key)} onChange={() => toggleCheck(key)} />
+                                <span>{item}</span>
+                              </label>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+
+                    {c.p2 && <p>{formatText(c.p2)}</p>}
+
+                    {c.tip && (
+                      <div style={{ display: 'flex', gap: '12px', background: '#fff7e0', border: '1px solid #f0d58a', borderLeft: '5px solid #e0a82e', borderRadius: '10px', padding: '12px 14px', margin: '0 0 14px', fontSize: '14.5px', lineHeight: '1.6', color: '#5b4a12' }}>
+                        <span style={{ fontSize: '20px', lineHeight: '1.3', flex: 'none' }}>💡</span>
+                        <div><b style={{ color: '#3f3208' }}>Dica de Veterano:</b> {formatText(c.tip)}</div>
+                      </div>
+                    )}
+
+                    <div className="row">
+                      {c.sim && (
+                        <button className="calouro-btn ghost" onClick={() => { mudaFerramenta("term"); setTermStep(0); }}>
+                          Ver o passo a passo animado
+                        </button>
                       )}
-                    </>
-                  )}
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
+                      {(c.id === "notas" || c.id === "faltas") && (
+                        <button className="calouro-btn ghost" onClick={() => mudaFerramenta(c.id)}>
+                          Abrir {c.id === "notas" ? "simulador de notas" : "calculadora de faltas"}
+                        </button>
+                      )}
+                      {c.link !== undefined && (
+                        <a href={c.link || "#"} onClick={e => !c.link && e.preventDefault()} className="calouro-btn" title={!c.link ? "Link ainda não definido" : ""}>
+                          Saiba mais
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </details>
+              ))
+            )}
+          </div>
+        </section>
       </main>
     </div>
   );

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 
 function Home({ setPaginaAtiva }: { setPaginaAtiva: (pagina: string) => void }) {
-  // Este useEffect recria a lógica de redimensionamento do seu script HTML original
+  
   useEffect(() => {
     const W = 1440, H = 560, MOBILE = 900;
     const viewport = document.getElementById('viewport');
