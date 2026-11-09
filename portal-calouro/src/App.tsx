@@ -13,7 +13,7 @@ function App() {
   const renderizarPagina = () => {
     switch (paginaAtiva) {
       case 'inicio': return <Home setPaginaAtiva={setPaginaAtiva} />;
-      case 'calouro': return <Calouro />;
+      case 'calouro': return <Calouro setPaginaAtiva={setPaginaAtiva} />
       case 'oportunidades': return <Oportunidades />;
       case 'tutoriais': return <Tutoriais />;
       case 'disciplinas': return <Disciplinas />;

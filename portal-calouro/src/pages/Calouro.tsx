@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useMemo } from 'react';
 
 // --- DADOS DA PÁGINA ---
@@ -140,6 +141,7 @@ export default function Calouro({ setPaginaAtiva }) {
   const [abertos, setAbertos] = useState(new Set());
   const [checks, setChecks] = useState(new Set());
 
+  // Carrega checkboxes do LocalStorage ao montar o componente
   useEffect(() => {
     try {
       const saved = localStorage.getItem("gic-calouro-docs");
@@ -156,12 +158,10 @@ export default function Calouro({ setPaginaAtiva }) {
   };
 
   const toggleAccordion = (id) => {
-    setAbertos(prev => {
-      const newAbertos = new Set(prev);
-      if (newAbertos.has(id)) newAbertos.delete(id);
-      else newAbertos.add(id);
-      return newAbertos;
-    });
+    const newAbertos = new Set(abertos);
+    if (newAbertos.has(id)) newAbertos.delete(id);
+    else newAbertos.add(id);
+    setAbertos(newAbertos);
   };
 
   const abreCard = (id) => {
@@ -183,14 +183,6 @@ export default function Calouro({ setPaginaAtiva }) {
     document.getElementById("ferramentas")?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Previne caracteres inválidos na nota, permitindo usar "vírgula"
-  const handleNotaChange = (setter) => (e) => {
-    const val = e.target.value;
-    if (val === '' || /^[0-9]+(,[0-9]*)?$/.test(val)) {
-        setter(val);
-    }
-  };
-
   // Lógica do Simulador de Notas
   const renderNotas = () => {
     const valA = ab1 === '' ? null : parseFloat(ab1.replace(',', '.'));
@@ -210,23 +202,23 @@ export default function Calouro({ setPaginaAtiva }) {
       const min = 10 - x;
       return {
         ptLeft, cls: "warn", bg: "Atenção",
-        txt: `Com ${f} = ${x.toFixed(1).replace('.', ',')}, falta a ${o}. ` + 
-             (dir <= 10 ? `Para aprovar direto, tire pelo menos ${dir.toFixed(1).replace('.', ',')}. ` : "Aprovação direta não é mais possível; seu caminho é a Reavaliação. ") +
-             `Para não reprovar por nota, tire pelo menos ${min.toFixed(1).replace('.', ',')}.`
+        txt: `Com ${f} = ${x.toFixed(1)}, falta a ${o}. ` + 
+             (dir <= 10 ? `Para aprovar direto, tire pelo menos ${dir.toFixed(1)}. ` : "Aprovação direta não é mais possível; seu caminho é a Reavaliação. ") +
+             `Para não reprovar por nota, tire pelo menos ${min.toFixed(1)}.`
       };
     }
     
     const m = (valA + valB) / 2;
     ptLeft = m * 10;
     
-    if (m >= 7) return { ptLeft, cls: "ok", bg: `Aprovado direto. Média ${m.toFixed(1).replace('.', ',')}`, txt: "Parabéns, já pode curtir as férias!" };
-    if (m < 5) return { ptLeft, cls: "bad", bg: `Reprovado por nota. Média ${m.toFixed(1).replace('.', ',')}`, txt: "Média abaixo de 5,0: não há prova de recuperação." };
+    if (m >= 7) return { ptLeft, cls: "ok", bg: `Aprovado direto. Média ${m.toFixed(1)}`, txt: "Parabéns, já pode curtir as férias!" };
+    if (m < 5) return { ptLeft, cls: "bad", bg: `Reprovado por nota. Média ${m.toFixed(1)}`, txt: "Média abaixo de 5,0: não há prova de recuperação." };
     
     const mx = Math.max(valA, valB);
     const need = 11 - mx;
     return { 
-      ptLeft, cls: "warn", bg: `Reavaliação. Média ${m.toFixed(1).replace('.', ',')}`, 
-      txt: `A prova substitui a sua menor AB. Você mantém a ${mx.toFixed(1).replace('.', ',')} e precisa de pelo menos ${need.toFixed(1).replace('.', ',')} na Reavaliação para chegar a 5,5.` 
+      ptLeft, cls: "warn", bg: `Reavaliação. Média ${m.toFixed(1)}`, 
+      txt: `A prova substitui a sua menor AB. Você mantém a ${mx.toFixed(1)} e precisa de pelo menos ${need.toFixed(1)} na Reavaliação para chegar a 5,5.` 
     };
   };
   const notasStatus = renderNotas();
@@ -277,134 +269,116 @@ export default function Calouro({ setPaginaAtiva }) {
 
   return (
     <div className="page-calouro">
-      {/* CSS Renomeado para blindar 100% contra conflitos com o indexcss.txt */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .page-calouro {
-            --blue: #0056b3; --blue-dark: #004085; --blue-deep: #003a7d;
-            --ink: #1d2b44; --mu: #5a6578; --ln: #d9dfea; --bg: #f4f4f9; --amber: #e0a82e;
-            --ok: #2e7d32; --ok-bg: #e3f3e7; --bad: #c62828; --bad-bg: #fdeaea; --warn-bg: #fff3d6;
-        }
+      <style>{`
+        /* --- Estilos da Busca e Filtros (Pills) --- */
+        .page-calouro .search { position: relative; max-width: 520px; margin-bottom: 20px; margin-top: 10px; }
+        .page-calouro .search input { width: 100%; min-height: 50px; padding: 0 44px 0 18px; border-radius: 999px; border: 2px solid transparent; font: 500 15px 'Montserrat', sans-serif; color: var(--ink); background: #fff; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
+        .page-calouro .search input:focus { border-color: var(--amber); }
+        .page-calouro .search button { position: absolute; right: 6px; top: 6px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: #eaf2fc; color: var(--blue); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        .page-calouro .pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+        .page-calouro .pills button { font: 700 14px 'Montserrat', sans-serif; min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.8); transition: background 0.15s, color 0.15s, border-color 0.15s; margin: 0; }
+        .page-calouro .pills button:hover { background: rgba(255,255,255,0.15); }
+        .page-calouro .pills button[aria-pressed="true"] { background: #fff; color: var(--blue); border-color: #fff; }
 
-        /* --- Busca e Filtros --- */
-        .calouro-search { position: relative; max-width: 520px; margin-bottom: 20px; margin-top: 10px; }
-        .calouro-search input { width: 100%; min-height: 50px; padding: 0 44px 0 18px; border-radius: 999px; border: 2px solid transparent; font: 500 15px 'Montserrat', sans-serif; color: var(--ink); background: #fff; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
-        .calouro-search input:focus { border-color: var(--amber); }
-        .calouro-search button { position: absolute; right: 6px; top: 6px; width: 38px; height: 38px; border: 0; border-radius: 50%; background: #eaf2fc; color: var(--blue); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
-        .calouro-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-        .calouro-pills button { font: 700 14px 'Montserrat', sans-serif; min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.8); transition: background 0.15s, color 0.15s, border-color 0.15s; margin: 0; }
-        .calouro-pills button:hover { background: rgba(255,255,255,0.15); }
-        .calouro-pills button[aria-pressed="true"] { background: #fff; color: var(--blue); border-color: #fff; }
-
-        /* --- Ferramentas --- */
-        .calouro-tools { background: #fff; border: 1px solid var(--ln); border-radius: 12px; overflow: hidden; }
-        .calouro-tabs { display: flex; gap: 8px; padding: 12px; overflow-x: auto; background: #fafbfd; border-bottom: 1px solid var(--ln); scrollbar-width: none; }
-        .calouro-tabs::-webkit-scrollbar { display: none; }
-        .calouro-tabs button { flex: none; font: 700 14px 'Montserrat', sans-serif; min-height: 42px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: #fff; color: var(--blue); border: 2px solid var(--ln); transition: 0.2s; margin: 0; }
-        .calouro-tabs button:hover { border-color: var(--blue); }
-        .calouro-tabs button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
-        
-        /* Renomeado de .panel para evitar o erro do position:absolute do banner da Home */
-        .calouro-tool-panel { padding: 22px; position: static !important; width: auto !important; clip-path: none !important; }
-        
-        .calouro-tool-panel .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-bottom: 14px; }
-        .calouro-tool-panel .fields div { display: flex; flex-direction: column; gap: 4px; }
-        .calouro-tool-panel label { font-size: 13px; font-weight: 600; color: var(--mu); }
-        .calouro-tool-panel select, .calouro-tool-panel input[type="text"] { font: 500 16px 'Montserrat', sans-serif; padding: 10px 12px; min-height: 46px; border: 1px solid var(--ln); border-radius: 8px; background: #fff; color: var(--ink); width: 130px; box-sizing: border-box; }
-        .calouro-tool-panel select { width: auto; min-width: 160px; }
-        .calouro-tool-panel input[type="range"] { width: min(360px, 100%); accent-color: var(--blue); height: 32px; margin-top: 8px; }
-        
-        .calouro-meter { position: relative; height: 16px; border-radius: 999px; margin: 26px 0 30px; background: linear-gradient(90deg, #f3b3b3 0 50%, #ffe2a1 50% 70%, #b7e0bb 70% 100%); }
-        .calouro-meter .pt { position: absolute; top: -6px; width: 6px; height: 28px; border-radius: 3px; background: var(--ink); transform: translateX(-3px); transition: left .3s ease-out; }
-        .calouro-meter span { position: absolute; top: 22px; font-size: 11.5px; color: var(--mu); transform: translateX(-50%); font-weight: 600; }
-        
-        .calouro-res { padding: 14px 16px; border-radius: 10px; font-size: 14.5px; line-height: 1.6; border: 1px solid var(--ln); background: #fafbfd; transition: all 0.3s ease; }
-        .calouro-res b.big { display: block; font-size: 18px; margin-bottom: 4px; }
-        .calouro-res.ok { background: var(--ok-bg); border-color: #b7e0bb; } .calouro-res.ok b.big { color: var(--ok); }
-        .calouro-res.warn { background: var(--warn-bg); border-color: #f0d58a; } .calouro-res.warn b.big { color: #8a5a00; }
-        .calouro-res.bad { background: var(--bad-bg); border-color: #f2b8b8; } .calouro-res.bad b.big { color: var(--bad); }
-        .calouro-bar { height: 14px; border-radius: 999px; background: #e3eaf5; overflow: hidden; margin: 12px 0; }
-        .calouro-bar i { display: block; height: 100%; width: 0; border-radius: 999px; transition: width .35s, background .35s; }
-        
-        .calouro-qs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 14px; }
-        .calouro-qs button { text-align: left; font: 600 14px/1.35 'Montserrat', sans-serif; padding: 12px 14px; border-radius: 10px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; }
-        .calouro-qs button:hover { border-color: var(--blue); }
-        .calouro-qs button[aria-pressed="true"] { background: #eef4fb; outline: 3px solid var(--amber); outline-offset: 1px; }
-
-        /* --- Terminal Animado --- */
-        .calouro-sim { display: grid; grid-template-columns: 220px 1fr; gap: 16px; }
-        .calouro-steps { display: grid; gap: 8px; align-content: start; }
-        .calouro-steps button { text-align: left; font: 600 13.5px/1.3 'Montserrat', Arial, sans-serif; padding: 10px 12px; border-radius: 8px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; display: flex; gap: 8px; align-items: center; }
-        .calouro-steps button i { font-style: normal; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
-        .calouro-steps button[aria-pressed="true"] { background: #eef4fb; outline: 3px solid var(--amber); outline-offset: 1px; }
-        .calouro-steps button.past i { background: var(--ok); }
-        .calouro-scr { min-width: 0; display: grid; gap: 10px; align-content: start; }
-        
-        /* Renomeado de .win para não conflitar com Oportunidades */
-        .calouro-win { border-radius: 10px; overflow: hidden; background: #0f1f38; color: #cfe3ff; font-family: Consolas, monospace; font-size: 13.5px; line-height: 1.6; }
-        .calouro-win .bar2 { background: #1b2f52; padding: 6px 12px; font: 600 12px 'Montserrat', sans-serif; color: #9cc8f5; display: flex; gap: 6px; align-items: center; }
-        .calouro-win .bar2 s { width: 10px; height: 10px; border-radius: 50%; background: #5b7aa8; display: inline-block; }
-        .calouro-win pre { margin: 0; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; min-height: 56px; }
-        .calouro-win .pr { color: #ffc107; }
-        .caret::after { content: "▌"; animation: bl 1s steps(1) infinite; }
+        /* --- RESTANTES ESTILOS (Ferramentas, Terminal, etc.) --- */
+        .page-calouro .sim { display: grid; grid-template-columns: 220px 1fr; gap: 16px; }
+        .page-calouro .steps { display: grid; gap: 8px; align-content: start; }
+        .page-calouro .steps button { text-align: left; font: 600 13.5px/1.3 'Montserrat', Arial, sans-serif; padding: 10px 12px; border-radius: 8px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; display: flex; gap: 8px; align-items: center; }
+        .page-calouro .steps button i { font-style: normal; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .page-calouro .steps button[aria-pressed="true"] { background: #eef4fb; outline: 3px solid var(--amber); outline-offset: 1px; }
+        .page-calouro .steps button.past i { background: #2e7d32; }
+        .page-calouro .scr { min-width: 0; display: grid; gap: 10px; align-content: start; }
+        .page-calouro .win { border-radius: 10px; overflow: hidden; background: #0f1f38; color: #cfe3ff; font-family: Consolas, monospace; font-size: 13.5px; line-height: 1.6; }
+        .page-calouro .win .bar2 { background: #1b2f52; padding: 6px 12px; font: 600 12px 'Montserrat', sans-serif; color: #9cc8f5; display: flex; gap: 6px; align-items: center; }
+        .page-calouro .win .bar2 s { width: 10px; height: 10px; border-radius: 50%; background: #5b7aa8; display: inline-block; }
+        .page-calouro .win pre { margin: 0; padding: 12px 14px; white-space: pre-wrap; word-break: break-word; min-height: 56px; }
+        .page-calouro .win .pr { color: #ffc107; }
+        .page-calouro .caret::after { content: "▌"; animation: bl 1s steps(1) infinite; }
         @keyframes bl { 50% { opacity: 0; } }
 
-        /* --- GUIA COMPLETO ACORDEÃO (Resgatado dos estilos globais errados) --- */
-        .calouro-acc { display: grid; gap: 10px; }
+        .page-calouro .tools { background: #fff; border: 1px solid var(--ln); border-radius: 12px; overflow: hidden; }
+        .page-calouro .tabs { display: flex; gap: 8px; padding: 12px; overflow-x: auto; background: #fafbfd; border-bottom: 1px solid var(--ln); scrollbar-width: none; }
+        .page-calouro .tabs::-webkit-scrollbar { display: none; }
+        .page-calouro .tabs button { flex: none; font: 700 14px 'Montserrat', sans-serif; min-height: 42px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: #fff; color: var(--blue); border: 2px solid var(--ln); transition: 0.2s; margin: 0; }
+        .page-calouro .tabs button:hover { border-color: var(--blue); }
+        .page-calouro .tabs button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
         
-        /* Renomeado de details para evitar os estilos vazados de Tutoriais */
-        details.calouro-details { background: #fff; border: 1px solid var(--ln); border-left: 4px solid var(--blue); border-radius: 10px; margin-bottom: 0; box-shadow: none; overflow: visible; transition: box-shadow 0.3s; }
-        details.calouro-details[open] { border-color: var(--blue); }
-        details.calouro-details.flash-anim { animation: fl 1.4s; }
+        /* CORREÇÃO DO CONFLITO COM O INDEX.CSS: calouro-panel em vez de panel */
+        .page-calouro .calouro-panel { padding: 22px; }
         
-        /* Renomeado summary para evitar conflito global */
-        details.calouro-details > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 14px 16px; font-weight: 700; font-size: 15px; color: var(--blue-dark); background-color: transparent; }
-        details.calouro-details > summary::-webkit-details-marker { display: none; }
-        details.calouro-details > summary::after { content: ""; margin-left: auto; width: 9px; height: 9px; border-right: 2px solid var(--mu); border-bottom: 2px solid var(--mu); transform: rotate(45deg); transition: transform .2s; flex: none; }
-        details.calouro-details[open] > summary::after { transform: rotate(225deg); }
-        details.calouro-details > summary:hover { background-color: #fafbfd; }
+        .page-calouro .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-bottom: 14px; }
+        .page-calouro .fields div { display: flex; flex-direction: column; gap: 4px; }
+        .page-calouro label { font-size: 13px; font-weight: 600; color: var(--mu); }
+        .page-calouro select, .page-calouro input[type="number"] { font: 500 16px 'Montserrat', sans-serif; padding: 10px 12px; min-height: 46px; border: 1px solid var(--ln); border-radius: 8px; background: #fff; color: var(--ink); width: 130px; box-sizing: border-box; }
+        .page-calouro select { width: auto; min-width: 160px; }
+        .page-calouro input[type="range"] { width: min(360px, 100%); accent-color: var(--blue); height: 32px; margin-top: 8px; }
+        
+        .page-calouro .meter { position: relative; height: 16px; border-radius: 999px; margin: 26px 0 30px; background: linear-gradient(90deg, #f3b3b3 0 50%, #ffe2a1 50% 70%, #b7e0bb 70% 100%); }
+        .page-calouro .meter .pt { position: absolute; top: -6px; width: 6px; height: 28px; border-radius: 3px; background: var(--ink); transform: translateX(-3px); transition: left .3s ease-out; }
+        .page-calouro .meter span { position: absolute; top: 22px; font-size: 11.5px; color: var(--mu); transform: translateX(-50%); font-weight: 600; }
+        
+        .page-calouro .res { padding: 14px 16px; border-radius: 10px; font-size: 14.5px; line-height: 1.6; border: 1px solid var(--ln); background: #fafbfd; transition: all 0.3s ease; }
+        .page-calouro .res b.big { display: block; font-size: 18px; margin-bottom: 4px; }
+        .page-calouro .res.ok { background: #e3f3e7; border-color: #b7e0bb; } .page-calouro .res.ok b.big { color: #2e7d32; }
+        .page-calouro .res.warn { background: #fff3d6; border-color: #f0d58a; } .page-calouro .res.warn b.big { color: #8a5a00; }
+        .page-calouro .res.bad { background: #fdeaea; border-color: #f2b8b8; } .page-calouro .res.bad b.big { color: #c62828; }
+        .page-calouro .bar { height: 14px; border-radius: 999px; background: #e3eaf5; overflow: hidden; margin: 12px 0; }
+        .page-calouro .bar i { display: block; height: 100%; width: 0; border-radius: 999px; transition: width .35s, background .35s; }
+        
+        .page-calouro .qs { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .page-calouro .qs button { text-align: left; font: 600 14px/1.35 'Montserrat', sans-serif; padding: 12px 14px; border-radius: 10px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; }
+        .page-calouro .qs button:hover { border-color: var(--blue); }
+        .page-calouro .qs button[aria-pressed="true"] { background: #eef4fb; outline: 3px solid var(--amber); outline-offset: 1px; }
 
-        .calouro-tag { display: inline-block; font-size: 11.5px; font-weight: 600; border: 1px solid var(--ln); border-radius: 12px; padding: 2px 10px; white-space: nowrap; color: var(--mu); background: #fafbfd; }
+        .page-calouro details.it { background: #fff; border: 1px solid var(--ln); border-left: 4px solid var(--blue); border-radius: 10px; margin-bottom: 10px; transition: box-shadow 0.3s; }
+        .page-calouro details.it[open] { border-color: var(--blue); }
+        .page-calouro details.it.flash-anim { animation: fl 1.4s; }
+        @keyframes fl { 0%,60% { box-shadow: 0 0 0 4px var(--amber); } 100% { box-shadow: none; } }
+        .page-calouro details.it > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 14px 16px; font-weight: 700; font-size: 15px; color: var(--blue-dark); }
+        .page-calouro details.it > summary::-webkit-details-marker { display: none; }
+        .page-calouro details.it > summary::after { content: ""; margin-left: auto; width: 9px; height: 9px; border-right: 2px solid var(--mu); border-bottom: 2px solid var(--mu); transform: rotate(45deg); transition: transform .2s; flex: none; }
+        .page-calouro details.it[open] > summary::after { transform: rotate(225deg); }
+        .page-calouro .tag { display: inline-block; font-size: 11.5px; font-weight: 600; border: 1px solid var(--ln); border-radius: 12px; padding: 2px 10px; white-space: nowrap; color: var(--mu); background: #fafbfd; }
         
-        .calouro-body { padding: 0 18px 18px; }
-        .calouro-body p { margin: 0 0 12px; font-size: 15px; line-height: 1.65; color: var(--mu); }
-        .calouro-body ul { margin: 0 0 14px; padding-left: 20px; color: var(--mu); font-size: 15px; line-height: 1.6; }
-        .calouro-body li { margin-bottom: 6px; }
-        .calouro-body .chk { list-style: none; padding: 0; display: grid; gap: 8px; }
-        .calouro-body .chk label { display: flex; gap: 10px; align-items: center; font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; padding: 8px 12px; border: 1px solid var(--ln); border-radius: 8px; background: #fafbfd; }
-        .calouro-body .chk input { width: 20px; height: 20px; accent-color: var(--ok); flex: none; cursor: pointer; }
-        .calouro-body .chk input:checked + span { text-decoration: line-through; color: var(--mu); }
-        .calouro-body .row { display: flex; flex-wrap: wrap; gap: 10px; }
-        
-        /* Renomeado de .btn para evitar os botões gigantes da Home */
-        .calouro-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 20px; border-radius: 999px; font: 700 14px 'Montserrat', sans-serif; cursor: pointer; text-decoration: none; border: 2px solid var(--blue); background: var(--blue); color: #fff; transition: 0.15s; }
-        .calouro-btn:hover { background: var(--blue-dark); border-color: var(--blue-dark); transform: translateY(-1px); }
-        .calouro-btn.ghost { background: #fff; color: var(--blue); }
-        .calouro-btn.ghost:hover { background: #eaf2fc; }
+        .page-calouro .body { padding: 0 18px 18px; }
+        .page-calouro .body p { margin: 0 0 12px; font-size: 15px; line-height: 1.65; color: var(--mu); }
+        .page-calouro .body ul { margin: 0 0 14px; padding-left: 20px; color: var(--mu); font-size: 15px; line-height: 1.6; }
+        .page-calouro .body li { margin-bottom: 6px; }
+        .page-calouro .chk { list-style: none; padding: 0; display: grid; gap: 8px; }
+        .page-calouro .chk label { display: flex; gap: 10px; align-items: center; font-size: 15px; font-weight: 500; color: var(--ink); cursor: pointer; padding: 8px 12px; border: 1px solid var(--ln); border-radius: 8px; background: #fafbfd; }
+        .page-calouro .chk input { width: 20px; height: 20px; accent-color: #2e7d32; flex: none; cursor: pointer; }
+        .page-calouro .chk input:checked + span { text-decoration: line-through; color: var(--mu); }
+        .page-calouro .row { display: flex; flex-wrap: wrap; gap: 10px; }
+        .page-calouro .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 20px; border-radius: 999px; font: 700 14px 'Montserrat', sans-serif; cursor: pointer; text-decoration: none; border: 2px solid var(--blue); background: var(--blue); color: #fff; transition: 0.15s; }
+        .page-calouro .btn:hover { background: var(--blue-dark); border-color: var(--blue-dark); transform: translateY(-1px); }
+        .page-calouro .btn.ghost { background: #fff; color: var(--blue); }
+        .page-calouro .btn.ghost:hover { background: #eaf2fc; }
 
         @media (max-width: 760px) {
-          .calouro-sim { grid-template-columns: 1fr; }
-          .calouro-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .page-calouro .sim { grid-template-columns: 1fr; }
+          .page-calouro .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
-      `}} />
+      `}</style>
 
       <div className="page-hero">
         <div className="wrap">
+          {/* Botão Voltar unificado com o estilo do Chatbot */}
           <div className="hero-top-actions" style={{marginBottom: '20px'}}>
             <button className="btn-voltar" onClick={() => setPaginaAtiva('inicio')}>
-              ← Voltar ao Início
+              ← Voltar
             </button>
           </div>
           
           <h1>Bem-vindo, calouro!</h1>
           <p>Teste as regras de nota e falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.</p>
           
-          <div className="calouro-search">
+          <div className="search">
             <input type="search" placeholder="Buscar: SIGAA, VAMU, faltas, Huxley..." value={busca} onChange={e => setBusca(e.target.value)} />
             {busca && <button type="button" onClick={() => setBusca('')}>×</button>}
           </div>
           
-          <div className="calouro-pills">
+          <div className="pills">
             <button aria-pressed={topico === 'todos'} onClick={() => setTopico('todos')}>Todos</button>
             {TOPICOS.map(t => (
               <button key={t.id} aria-pressed={topico === t.id} onClick={() => setTopico(t.id)}>{t.nome}</button>
@@ -414,37 +388,36 @@ export default function Calouro({ setPaginaAtiva }) {
       </div>
 
       <main className="calouro-main">
-        <section id="ferramentas" className="sec">
+        <section id="ferramentas" className="sec" style={{paddingTop: '20px'}}>
           <div className="sec__head">
-            <span className="sec__ico">🛠️</span>
             <h2>Ferramentas rápidas</h2>
           </div>
           <p className="sec__intro" style={{marginBottom: '20px'}}>Simule sua situação antes que ela aconteça.</p>
           
-          <div className="calouro-tools">
-            <div className="calouro-tabs">
+          <div className="tools">
+            <div className="tabs">
               <button aria-pressed={tabAtiva === 'notas'} onClick={() => mudaFerramenta('notas')}>Simulador de notas</button>
               <button aria-pressed={tabAtiva === 'faltas'} onClick={() => mudaFerramenta('faltas')}>Calculadora de faltas</button>
               <button aria-pressed={tabAtiva === 'quem'} onClick={() => mudaFerramenta('quem')}>Quem resolve o quê?</button>
               <button aria-pressed={tabAtiva === 'term'} onClick={() => mudaFerramenta('term')}>Terminal passo a passo</button>
             </div>
 
-            {/* TAB: NOTAS */}
+            {/* TAB: NOTAS  */}
             {tabAtiva === 'notas' && (
-              <div className="calouro-tool-panel">
+              <div className="calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Simulador de notas</h3>
                 <p style={{color: '#5a6578', marginBottom: '16px'}}>Preencha as duas notas, ou só a AB1 para saber quanto precisa tirar na AB2. Regra: média ≥ 7,0 aprova; média &lt; 5,0 reprova; entre 5,0 e 6,9 vai para a Reavaliação.</p>
                 <div className="fields">
                   <div>
                     <label>AB1</label>
-                    <input type="text" inputMode="decimal" value={ab1} onChange={handleNotaChange(setAb1)} placeholder="Ex: 6,5" />
+                    <input type="number" min="0" max="10" step="0.1" value={ab1} onChange={e => setAb1(e.target.value)} placeholder="Ex: 6,5" />
                   </div>
                   <div>
                     <label>AB2</label>
-                    <input type="text" inputMode="decimal" value={ab2} onChange={handleNotaChange(setAb2)} placeholder="Ex: 6,5" />
+                    <input type="number" min="0" max="10" step="0.1" value={ab2} onChange={e => setAb2(e.target.value)} />
                   </div>
                 </div>
-                <div className="calouro-meter">
+                <div className="meter">
                   <i className="pt" style={{left: `${notasStatus.ptLeft}%`}}></i>
                   <span style={{left: '0%'}}>0</span>
                   <span style={{left: '50%'}}>5,0</span>
@@ -452,7 +425,7 @@ export default function Calouro({ setPaginaAtiva }) {
                   <span style={{left: '100%'}}>10</span>
                 </div>
                 {notasStatus.txt && (
-                  <div className={`calouro-res ${notasStatus.cls}`}>
+                  <div className={`res ${notasStatus.cls}`}>
                     {notasStatus.bg && <b className="big">{notasStatus.bg}</b>}
                     {notasStatus.txt}
                   </div>
@@ -460,9 +433,9 @@ export default function Calouro({ setPaginaAtiva }) {
               </div>
             )}
 
-            {/* TAB: FALTAS */}
+            {/* TAB: FALTAS  */}
             {tabAtiva === 'faltas' && (
-              <div className="calouro-tool-panel">
+              <div className="calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Calculadora de faltas</h3>
                 <p style={{color: '#5a6578', marginBottom: '16px'}}>Você precisa de 75% de presença. Estourou o limite? É Reprovação por Falta (RF), mesmo com 10 nas provas, e sem direito à Reavaliação.</p>
                 <div className="fields">
@@ -478,8 +451,8 @@ export default function Calouro({ setPaginaAtiva }) {
                 </div>
                 <label>Faltas (cada encontro conta 2 horas): <b>{faltas} ({horasFalta} h)</b></label><br/>
                 <input type="range" min="0" max={faltasMax} step="1" value={faltas} onChange={e => setFaltas(Number(e.target.value))} />
-                <div className="calouro-bar"><i style={{width: `${pctFaltas}%`, backgroundColor: barCor}}></i></div>
-                <div className={`calouro-res ${faltasCls}`}>
+                <div className="bar"><i style={{width: `${pctFaltas}%`, backgroundColor: barCor}}></i></div>
+                <div className={`res ${faltasCls}`}>
                   <b className="big">{faltasBg}</b>
                   Em {ch} h o limite é de {lim.toString().replace('.', ',')} h, cerca de {maxF} faltas. {faltasTxt}
                 </div>
@@ -487,12 +460,12 @@ export default function Calouro({ setPaginaAtiva }) {
               </div>
             )}
 
-            {/* TAB: QUEM */}
+            {/* TAB: QUEM  */}
             {tabAtiva === 'quem' && (
-              <div className="calouro-tool-panel">
+              <div className="calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Quem resolve o quê?</h3>
                 <p style={{color: '#5a6578', marginBottom: '16px'}}>Escolha a sua situação e veja a quem recorrer. Em geral: DRCA cuida de registro e diploma, NTI de sistemas e internet, e a Coordenação de ajustes de grade.</p>
-                <div className="calouro-qs">
+                <div className="qs">
                   {QUEM.map(q => (
                     <button key={q.id} aria-pressed={quemSel?.id === q.id} onClick={() => setQuemSel(q)}>
                       {q.q}
@@ -500,40 +473,40 @@ export default function Calouro({ setPaginaAtiva }) {
                   ))}
                 </div>
                 {quemSel ? (
-                  <div className="calouro-res ok">
+                  <div className="res ok">
                     <b className="big">Procure: {quemSel.a}</b>
                     {quemSel.d}
-                    <button className="calouro-btn ghost" style={{display: 'flex', marginTop: '10px'}} onClick={() => abreCard(quemSel.card)}>
+                    <button className="btn ghost" style={{display: 'flex', marginTop: '10px'}} onClick={() => abreCard(quemSel.card)}>
                       Ver no guia
                     </button>
                   </div>
                 ) : (
-                  <div className="calouro-res">Escolha uma situação acima.</div>
+                  <div className="res">Escolha uma situação acima.</div>
                 )}
               </div>
             )}
 
             {/* TAB: TERMINAL */}
             {tabAtiva === 'term' && (
-              <div className="calouro-tool-panel">
+              <div className="calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Compilar C no terminal</h3>
                 <p style={{color: '#5a6578', marginBottom: '16px'}}>Passo a passo do dia a dia nas aulas de P1. Antes, instale o compilador GCC (via MinGW). Clique nos passos, ou use Próximo.</p>
-                <div className="calouro-sim">
-                  <div className="calouro-steps">
+                <div className="sim">
+                  <div className="steps">
                     {SIM.map((s, i) => (
                       <button key={i} aria-pressed={termStep === i} className={i < termStep ? 'past' : ''} onClick={() => setTermStep(i)}>
                         <i>{i + 1}</i> <span>{s.t}</span>
                       </button>
                     ))}
                   </div>
-                  <div className="calouro-scr">
-                    <p style={{fontSize: '14.5px', color: '#1d2b44', margin: '0 0 10px 0'}}><b>Passo {termStep + 1}:</b> {SIM[termStep].d}</p>
-                    <div className="calouro-win">
+                  <div className="scr">
+                    <p style={{fontSize: '14.5px', color: '#1d2b44', margin: 0}}><b>Passo {termStep + 1}:</b> {SIM[termStep].d}</p>
+                    <div className="win">
                       <div className="bar2"><s></s><s></s><s></s> VS Code: meu_programa.c</div>
                       <pre>{CODIGO}</pre>
                     </div>
                     {termStep >= 1 && (
-                      <div className="calouro-win">
+                      <div className="win">
                         <div className="bar2"><s></s><s></s><s></s> Terminal</div>
                         <pre className={termStep > 1 && termTyped < SIM[termStep].cmd.length ? 'caret' : ''}>
                           {SIM.slice(2, termStep + 1).map((l, i, arr) => {
@@ -555,8 +528,8 @@ export default function Calouro({ setPaginaAtiva }) {
                       </div>
                     )}
                     <div className="row" style={{marginTop: '10px'}}>
-                      <button className="calouro-btn ghost" disabled={termStep === 0} style={{opacity: termStep === 0 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.max(0, p - 1))}>← Anterior</button>
-                      <button className="calouro-btn" disabled={termStep === SIM.length - 1} style={{opacity: termStep === SIM.length - 1 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.min(SIM.length - 1, p + 1))}>Próximo →</button>
+                      <button className="btn ghost" disabled={termStep === 0} style={{opacity: termStep === 0 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.max(0, p - 1))}>← Anterior</button>
+                      <button className="btn" disabled={termStep === SIM.length - 1} style={{opacity: termStep === SIM.length - 1 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.min(SIM.length - 1, p + 1))}>Próximo →</button>
                     </div>
                   </div>
                 </div>
@@ -567,7 +540,6 @@ export default function Calouro({ setPaginaAtiva }) {
 
         <section id="guia" className="sec">
           <div className="sec__head">
-            <span className="sec__ico">📚</span>
             <h2>Guia completo</h2>
           </div>
           <p className="sec__intro" style={{marginBottom: '20px'}}>Tudo o que você precisa saber, por assunto. Use a busca ou os filtros no topo da página.</p>
@@ -575,28 +547,27 @@ export default function Calouro({ setPaginaAtiva }) {
             {cardsFiltrados.length === CARDS.length ? `${CARDS.length} itens` : `Mostrando ${cardsFiltrados.length} de ${CARDS.length} itens`}
           </p>
 
-          <div className="calouro-acc">
+          <div className="acc">
             {cardsFiltrados.length === 0 ? (
               <div style={{padding: '24px', textAlign: 'center', color: '#5a6578', background: '#fff', border: '1px dashed #d9dfea', borderRadius: '10px'}}>
                 Nada encontrado. Tente outra palavra ou escolha “Todos” nos assuntos.
               </div>
             ) : (
               cardsFiltrados.map(c => (
-                <details key={c.id} id={`g-${c.id}`} className="calouro-details" open={abertos.has(c.id)}>
-                  <summary onClick={(e) => { e.preventDefault(); toggleAccordion(c.id); }}>
+                <details key={c.id} id={`g-${c.id}`} className="it" open={abertos.has(c.id)} onToggle={() => toggleAccordion(c.id)}>
+                  <summary>
                     <span>{c.t}</span>
-                    <span className="calouro-tag">{TOPICOS.find(t => t.id === c.topic)?.nome}</span>
+                    <span className="tag">{TOPICOS.find(t => t.id === c.topic)?.nome}</span>
                   </summary>
-                  
-                  <div className="calouro-body">
+                  <div className="body">
                     {c.p && <p>{formatText(c.p)}</p>}
                     
                     {c.stats && (
-                      <div className="stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '10px', margin: '4px 0 14px' }}>
+                      <div className="stats">
                         {c.stats.map((s, i) => (
-                          <div key={i} style={{ background: '#eaf2fc', border: '1px solid #c9d6ea', borderRadius: '12px', padding: '12px 10px', textAlign: 'center' }}> 
-                            <b style={{ display: 'block', fontSize: '22px', fontWeight: '800', color: '#0056b3', margin: 0 }}>{s.n}</b>
-                            <span style={{ display: 'block', marginTop: '4px', fontSize: '12px', lineHeight: '1.35', color: '#5a6578', fontWeight: '600' }}>{s.d}</span>
+                          <div key={i}>
+                            <b>{s.n}</b>
+                            <span>{s.d}</span>
                           </div>
                         ))}
                       </div>
@@ -627,25 +598,25 @@ export default function Calouro({ setPaginaAtiva }) {
                     {c.p2 && <p>{formatText(c.p2)}</p>}
 
                     {c.tip && (
-                      <div style={{ display: 'flex', gap: '12px', background: '#fff7e0', border: '1px solid #f0d58a', borderLeft: '5px solid #e0a82e', borderRadius: '10px', padding: '12px 14px', margin: '0 0 14px', fontSize: '14.5px', lineHeight: '1.6', color: '#5b4a12' }}>
-                        <span style={{ fontSize: '20px', lineHeight: '1.3', flex: 'none' }}>💡</span>
-                        <div><b style={{ color: '#3f3208' }}>Dica de Veterano:</b> {formatText(c.tip)}</div>
+                      <div className="tip">
+                        <span className="em">💡</span>
+                        <div><b>Dica de Veterano:</b> {formatText(c.tip)}</div>
                       </div>
                     )}
 
                     <div className="row">
                       {c.sim && (
-                        <button className="calouro-btn ghost" onClick={() => { mudaFerramenta("term"); setTermStep(0); }}>
+                        <button className="btn ghost" onClick={() => { mudaFerramenta("term"); setTermStep(0); }}>
                           Ver o passo a passo animado
                         </button>
                       )}
                       {(c.id === "notas" || c.id === "faltas") && (
-                        <button className="calouro-btn ghost" onClick={() => mudaFerramenta(c.id)}>
+                        <button className="btn ghost" onClick={() => mudaFerramenta(c.id)}>
                           Abrir {c.id === "notas" ? "simulador de notas" : "calculadora de faltas"}
                         </button>
                       )}
                       {c.link !== undefined && (
-                        <a href={c.link || "#"} onClick={e => !c.link && e.preventDefault()} className="calouro-btn" title={!c.link ? "Link ainda não definido" : ""}>
+                        <a href={c.link || "#"} onClick={e => !c.link && e.preventDefault()} className="btn" title={!c.link ? "Link ainda não definido" : ""}>
                           Saiba mais
                         </a>
                       )}
