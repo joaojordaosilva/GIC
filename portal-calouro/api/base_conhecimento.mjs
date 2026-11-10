@@ -160,4 +160,68 @@ O preenchimento das vagas ocorre em duas etapas: primeiro para alunos do curso/m
 5. Discente Eletivo: Aluno a solicitar componente fora da sua estrutura curricular.
 - Critérios de Desempate (dentro de cada grupo): 1º O aluno que nunca trancou a disciplina; 2º O aluno que nunca reprovou por falta na disciplina; 3º Maior Índice de Rendimento Académico (IRA).
 
+## 26. Passe Estudantil (Cartão VAMU) - Regras e Solicitação
+- Emissão do Formulário: O formulário de Cadastro/Recadastro deve ser gerado através da solicitação via SIGAA (Caminho: Outros > Solicitar Carteira Estudantil > Clicar em "Solicitar"). A libertação no site do VAMU depende do envio anual de dados pela UFAL, então pode demorar alguns dias para que o seu formulário fique disponível no site da VAMU.
+- Depois de solicitar a carteira no SIGAA, o aluno deverá preencher o formulário de Cadastro/Recadastro, através do link abaixo: 
+https://ficha.vamumobilidade.com.br/?_ga=2.173274531.1813860414.1770137272-613881265.1770137272&_gl=1*1r3e0w9*_ga*NjEzODgxMjY1LjE3NzAxMzcyNzI.*_ga_W3GMBBELQT*czE3NzAxMzcyNzEkbzEkZzAkdDE3NzAxMzcyNzEkajYwJGwwJGgw 
+
+- Assinatura Obrigatória (Regras da Secretaria do IC): O formulário precisa de ser carimbado e assinado pela coordenação/direção do curso. O aluno **deve imprimir o documento e entregá-lo presencialmente** na Secretaria do IC. **Atenção:** Documentos enviados por e-mail NÃO serão assinados nem carimbados.
+- Cadastro Presencial (1ª Vez): Destinado a quem nunca teve o cartão. 
+  - **Onde:** Postos do Vamu Mobilidade.
+  - **Documentos:** Formulário atualizado(assinado/carimbado pelo IC), RG e CPF (originais e cópias), Comprovante de residência com CEP (máximo 3 meses, original e cópia) e 1 foto 3x4 colorida atual. 
+  - **Taxa:** R$ 18,00 (apenas em espécie).
+- Recadastro Presencial (Renovação): Destinado a quem já possui o cartão. 
+  - **Onde:** Postos do Vamu Mobilidade.
+  - **Documentos:** Formulário atualizado (assinado/carimbado pelo IC), Cartão Escolar atual, RG e CPF (originais e cópias) e Comprovante de residência com CEP (máximo 3 meses, original e cópia). 
+  - **Taxa:** R$ 9,00 (apenas em espécie).
+- Alternativa 100% Digital (App Vamu Escolar):Se o aluno preferir, com o formulário assinado ele não precisa necessáriamente ir presencialmente em um posto VAMU, ele pode fazer o cadastro ou recadastro de forma online pelo aplicativo "Vamu Escolar" (Android e iOS). Basta enviar os documentos necessários, uma selfie atual, e pagar a taxa correspondente via Pix.
+
+## 27. Iniciação Científica e Tecnológica (PIBIC e PIBITI) - O que são?
+- PIBIC (Iniciação Científica): Programa focado no desenvolvimento do pensamento científico. O objetivo é gerar novo conhecimento a partir de descobertas e pesquisa teórica ou aplicada.
+- PIBITI (Iniciação Tecnológica): Focado no desenvolvimento e transferência de novas tecnologias e inovação. O objetivo é utilizar o conhecimento para criar, inventar ou aperfeiçoar um produto, processo ou serviço para o mercado.
+- Como Participar: O estudante deve procurar um professor/pesquisador da UFAL (com titulação de doutor) para elaborarem juntos um Plano de Trabalho. É o professor orientador quem submete o projeto no edital anual.
+
+## 28. PIBIC / PIBITI - Regras e Obrigações do Aluno
+- Dedicação Exclusiva (Bolsistas): É proibido ter vínculo empregatício ou fazer estágio remunerado durante a vigência da bolsa (a única exceção permitida é o estágio obrigatório exigido pelo curso).
+- Exclusividade de Projeto: O estudante só pode participar de um único projeto de pesquisa e ser orientado por apenas um professor (seja na condição de bolsista ou voluntário).
+- Carga Horária e Férias: A carga horária semanal é combinada diretamente com o orientador. Não há direito a férias, pois a participação não configura vínculo trabalhista (CLT).
+- Requisitos de Cadastro: É obrigatório manter o currículo atualizado na Plataforma Lattes e estar cadastrado no grupo de pesquisa do orientador.
+
+## 29. PIBIC / PIBITI - Duração e Pagamento da Bolsa
+- Vigência e Renovação: A bolsa tem duração de 12 meses. Não existe renovação automática. Para o aluno continuar no ciclo seguinte, o orientador precisa submeter um novo projeto no próximo edital.
+- Conta Bancária: Para receber a bolsa (ex: cotas CNPq), o aluno precisa ter uma conta corrente individual, ativa e no seu nome, obrigatoriamente no Banco do Brasil (não são aceites contas poupança, conjuntas, de terceiros ou contas digitais).
+- Liberação do Pagamento: O pagamento cai até o 5º dia útil do mês subsequente, mas depende da aceitação do Termo de Compromisso pelo aluno na plataforma online correspondente.
+
+## 30. PIBIC / PIBITI - Relatórios, Eventos e Sigilo
+- Relatórios (Parcial e Final): A entrega é obrigatória. Os relatórios devem ser escritos individualmente por cada aluno (não podem ser iguais aos do colega de projeto). O atraso gera suspensão do pagamento (para bolsistas) ou desligamento (para voluntários).
+- Congresso Acadêmico: A apresentação dos resultados no congresso anual da UFAL é obrigatória. A ausência não justificada faz com que o aluno perca o direito ao certificado do programa.
+- Regra de Sigilo (Apenas PIBITI): Como envolvem inovação e mercado, os projetos PIBITI são tratados como confidenciais. Os pesquisadores e bolsistas precisam assinar um Termo de Confidencialidade.
+
+> Nota de contexto para o assistente: Os tópicos a seguir (31 a 34) foram extraídos da RESOLUÇÃO Nº 95/2019-CONSUNI/UFAL da UFAL. Utilize esses nomes institucionais para embasar suas respostas.
+
+## 31. O Que É o Estágio Curricular Supervisionado (ECS)?
+- Definição: O estágio é uma atividade educativa supervisionada, desenvolvida no ambiente de trabalho, que visa preparar o aluno para o mercado de trabalho (não gera vínculo empregatício)[cite: 111, 115].
+- Tipos de Estágio: Pode ser **Obrigatório** (quando exigido pelo currículo do curso para a graduação) ou **Não-obrigatório** (atividade opcional e complementar à formação profissional)[cite: 111].
+- Requisitos de Formalização: Para que o estágio seja válido, é estritamente necessária a assinatura do Termo de Compromisso de Estágio (TCE), o seguro contra acidentes pessoais e o convênio/acordo entre a UFAL e a Instituição Concedente[cite: 113, 115].
+- Acompanhamento Tríplice: Todo estágio deve ser acompanhado pelo Professor Orientador (UFAL), pelo Supervisor da empresa (que deve ter formação/experiência na área) e, administrativamente, pelo Coordenador de Estágios do Curso[cite: 112].
+
+## 32. Regras para o Estágio Não-Obrigatório
+- Período Mínimo: Só pode ser iniciado a partir do 3º período letivo do curso (exceto para estudantes com deficiência, com notório saber ou que já possuam diploma técnico correlato)[cite: 118].
+- Critérios Académicos para Ingressar: O estudante deve ter frequência mínima de 75%, aprovação em disciplinas que somem pelo menos 75% da carga horária cursada no semestre anterior e Coeficiente de Rendimento Acumulado (CRA/IRA) igual ou superior a 5,0[cite: 118].
+- Carga Horária: Limite máximo de 30 horas semanais e 6 horas diárias[cite: 116]. (Pode chegar a 40h semanais/8h diárias em situações excepcionais, caso o aluno esteja a cursar apenas 1 disciplina obrigatória, sem choque de horários e com autorização prévia)[cite: 116, 117].
+- Duração Máxima: O aluno pode estagiar na mesma instituição concedente por, no máximo, 24 meses consecutivos (exceto estudantes com deficiência)[cite: 117].
+- Critérios para Renovação: Para renovar o contrato de estágio, o estudante tem de manter a frequência mínima (75%), a aprovação proporcional (75%) e o CRA igual ou superior a 5,0. Caso reprove nestes critérios, será desligado do programa de estágio por 1 período letivo[cite: 118, 119].
+
+## 33. Regras para o Estágio Obrigatório
+- Liberação: É permitido apenas para alunos que estejam matriculados em disciplinas e com frequência efetiva. 
+- Alunos sem disciplinas: Podem realizar o estágio obrigatório alunos que já cursaram todas as matérias e têm apenas o estágio como pendência, ou alunos com matrícula-vínculo de TCC[cite: 118].
+- Carga Horária e Flexibilidade: A carga horária é definida pelo Projeto Pedagógico do Curso. Em alguns casos autorizados, pode superar as 30h semanais, desde que o aluno curse no máximo duas matérias e não haja sobreposição de horários com as aulas da faculdade[cite: 117]. Pode também ser realizado no período de férias, desde que previsto no currículo[cite: 117].
+- Seguro e TCE: Para estágios obrigatórios, o seguro de vida pode ser custeado pela UFAL (se a empresa não o fizer). O plano de estágio deve ser feito em conjunto com o orientador e o supervisor e anexado ao TCE[cite: 115, 116].
+
+## 34. Obrigações e Documentação do Estágio
+- Seguro Obrigatório: Nenhum aluno pode iniciar as atividades sem a cobertura do seguro. A data de início do estágio no contrato (TCE) deve coincidir com o início da apólice[cite: 113, 116, 119].
+- Assinatura do Contrato: As atividades de estágio NUNCA podem ter início antes da assinatura formal do Termo de Compromisso (TCE) por todas as partes (aluno, empresa e UFAL)[cite: 119].
+- Avaliações e Relatórios: O aluno precisa apresentar relatórios de atividades, num intervalo não superior a 6 meses, ao seu professor orientador[cite: 113, 115].
+- Desligamento Antecipado: Caso o aluno ou a empresa termine o estágio antes da data combinada, é obrigatório entregar o Termo de Rescisão de Estágio e o relatório final contendo o resumo das atividades desenvolvidas e o número total de horas estagiadas[cite: 116].
+
 `;

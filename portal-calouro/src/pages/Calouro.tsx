@@ -231,6 +231,10 @@ export default function Calouro({ setPaginaAtiva }) {
   return (
     <div className="page-calouro">
       <style>{`
+        /* --- ESTILOS DO BOTÃO VOLTAR E OUTRAS REGRAS QUE FALTAVAM --- */
+        .btn-voltar { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 999px; cursor: pointer; font: 700 14px 'Montserrat', sans-serif; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-voltar:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+        
         .page-calouro .search { position: relative; max-width: 520px; margin-bottom: 20px; margin-top: 10px; }
         .page-calouro .search input { width: 100%; min-height: 50px; padding: 0 44px 0 18px; border-radius: 999px; border: 2px solid transparent; font: 500 15px 'Montserrat', sans-serif; color: var(--ink); background: #fff; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
         .page-calouro .search input:focus { border-color: var(--amber); }
@@ -263,7 +267,7 @@ export default function Calouro({ setPaginaAtiva }) {
         .page-calouro .tabs button:hover { border-color: var(--blue); }
         .page-calouro .tabs button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
         
-        .page-calouro .calouro-panel { padding: 22px; }
+        .page-calouro .my-calouro-panel { padding: 22px; }
         
         .page-calouro .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-bottom: 14px; }
         .page-calouro .fields div { display: flex; flex-direction: column; gap: 4px; }
@@ -360,11 +364,11 @@ export default function Calouro({ setPaginaAtiva }) {
 
             {/* TAB: FALTAS */}
             {tabAtiva === 'faltas' && (
-              <div className="calouro-panel">
+              <div className="my-calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Calculadora de faltas (Aulas)</h3>
                 <div style={{background: '#fff3d6', borderLeft: '4px solid #e0a82e', padding: '12px 16px', borderRadius: '6px', marginBottom: '16px'}}>
                   <p style={{margin: 0, fontSize: '14px', color: '#5b4a12'}}>
-                    <b>Atenção:</b> Na UFAL, é exigida 75% de presença. O limite exato de faltas permitidas em uma matéria de {ch}h é {maxFaltas}. Mas como você normalmente assiste a <b>duas aulas seguidas no mesmo dia</b>, as suas faltas vêm em pares. Faltar {diasSeguros} dias = {faltasSeguras} faltas (seguro). Faltar {diasReprova} dias = {faltasReprova} faltas (<b>Reprovação direta</b>). 
+                    <b>Atenção à "Pegadinha dos Pares":</b> Na UFAL, é exigida 75% de presença. O limite exato de faltas permitidas em uma matéria de {ch}h é {maxFaltas}. Mas como você normalmente assiste a <b>duas aulas seguidas no mesmo dia</b>, as suas faltas vêm em pares. Faltar {diasSeguros} dias = {faltasSeguras} faltas (seguro). Faltar {diasReprova} dias = {faltasReprova} faltas (<b>Reprovação direta</b>). 
                   </p>
                 </div>
                 <p style={{color: '#5a6578', marginBottom: '16px', fontSize: '14px'}}>
@@ -395,7 +399,7 @@ export default function Calouro({ setPaginaAtiva }) {
 
             {/* TAB: QUEM */}
             {tabAtiva === 'quem' && (
-              <div className="calouro-panel">
+              <div className="my-calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Quem resolve o quê?</h3>
                 <p style={{color: '#5a6578', marginBottom: '16px'}}>Escolha a sua situação e veja a quem recorrer. Em geral: DRCA cuida de registro e diploma, NTI de sistemas e internet, e a Coordenação de ajustes de grade.</p>
                 <div className="qs">
@@ -428,7 +432,7 @@ export default function Calouro({ setPaginaAtiva }) {
           </div>
           <p className="sec__intro" style={{marginBottom: '20px'}}>Passo a passo do dia a dia nas aulas de P1. Antes, instale o compilador GCC (via MinGW). Clique nos passos, ou use Próximo.</p>
           
-          <div className="calouro-panel" style={{ background: '#fff', border: '1px solid var(--ln)', borderRadius: '12px' }}>
+          <div className="my-calouro-panel" style={{ background: '#fff', border: '1px solid var(--ln)', borderRadius: '12px' }}>
             <div className="sim">
               <div className="steps">
                 {SIM.map((s, i) => (
