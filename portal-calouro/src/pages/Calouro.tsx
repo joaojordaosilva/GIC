@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from 'react';
 const TOPICOS = [
   { id: "sistemas", nome: "Sistemas e burocracia" },
   { id: "emailic", nome: "E-mail do IC" },
-  { id: "regras", nome: "Regras do jogo" },
+  { id: "regras", nome: "Regras da UFAL" },
   { id: "campus", nome: "Campus" },
   { id: "assistencia", nome: "Assistência" },
   { id: "vamu", nome: "Carteira VAMU" },
@@ -35,14 +35,14 @@ const CARDS = [
          "**Microsoft Azure e AWS Educate**: créditos de nuvem, fundamentais em Redes e Sistemas Distribuídos.",
          "**Design**: Notion Premium, Figma for Education e Canva Pro.",
          "**Drive educacional**: costuma vir do Google Workspace, com bem mais espaço que uma conta pessoal gratuita."], busca: "github copilot jetbrains azure aws notion figma canva grátis" },
-  /* Regras do jogo */
+  /* Regras da UFAL */
   { id: "notas", topic: "regras", t: "Notas: AB1, AB2 e Reavaliação",
     p: "O semestre tem duas notas, a **AB1** e a **AB2**. O professor decide como compô-las (provas, listas do Huxley, trabalhos...), mas a conta final é sempre a mesma:",
     stats: [{ n: "≥ 7,0", d: "média de AB1 e AB2: aprovado direto" }, { n: "< 5,0", d: "reprovado por nota, sem recuperação" }, { n: "5,0 a 6,9", d: "vai para a Reavaliação" }, { n: "≥ 5,5", d: "nova média exigida após a Reavaliação" }],
-    p2: "A Reavaliação é uma prova de todo o conteúdo do semestre e a nota dela **substitui a sua menor AB**. Teste seus números no Simulador de notas.", busca: "média reavaliação final prova" },
+    p2: "A Reavaliação é uma prova de todo o conteúdo do semestre e a nota dela **substitui a sua menor AB**. Acesse a aba **Calculadora** no menu para simular suas notas.", busca: "média reavaliação final prova" },
   { id: "faltas", topic: "regras", t: "Limite de faltas: a regra dos 25%",
-    p: "Você precisa de **75% de presença** em cada disciplina. Em uma disciplina de 60 horas (geralmente 2 encontros por semana) só pode faltar **15 horas**, ou seja, cerca de 7 faltas no semestre.",
-    li: ["**Reprovação por Falta (RF)**: estourou o limite, está reprovado, mesmo com 10 em todas as provas.", "Quem reprova por falta **perde o direito à Reavaliação**."], busca: "presença rf reprovação" },
+    p: "Você precisa de **75% de presença** nas aulas. Como a conta na UFAL leva em consideração as aulas, certifique-se da sua assiduidade.",
+    li: ["**Reprovação por Falta (RF)**: estourou o limite de 25%, está reprovado, mesmo com 10 em todas as provas.", "Quem reprova por falta **perde o direito à Reavaliação**."], busca: "presença rf reprovação" },
   { id: "monitoria", topic: "regras", t: "Monitoria: seu maior salva-vidas",
     p: "Monitores são veteranos que cursaram a disciplina com excelência e ajudam o professor. Têm horários no IC para tirar dúvidas, ajudar com as listas do Huxley e revisar antes das provas. As matérias iniciais (Matemática Discreta, P1, Cálculo) são densas: não tenha vergonha de procurá-los!",
     li: ["**Como virar monitor**: a partir do 2º período, com nota alta em uma matéria, você pode concorrer nos editais. Pode ser remunerada (bolsa) ou voluntária."] },
@@ -108,7 +108,6 @@ const PROMPT = "PS C:\\Users\\voce\\codigos> ";
 // --- FUNÇÕES UTILITÁRIAS ---
 const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-// Converte markdown básico (**negrito** e `código`) para JSX
 const formatText = (text) => {
   return text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, i) => {
     if (part.startsWith('**')) return <b key={i}>{part.slice(2, -2)}</b>;
@@ -120,14 +119,10 @@ const formatText = (text) => {
 export default function Calouro({ setPaginaAtiva }) {
   const [topico, setTopico] = useState('todos');
   const [busca, setBusca] = useState('');
-  const [tabAtiva, setTabAtiva] = useState('notas');
+  const [tabAtiva, setTabAtiva] = useState('faltas');
 
-  // Estado: Simulador de Notas
-  const [ab1, setAb1] = useState('');
-  const [ab2, setAb2] = useState('');
-
-  // Estado: Calculadora de Faltas
-  const [ch, setCh] = useState(60);
+  // Estado: Calculadora de Faltas (72h é o padrão mais comum em CC)
+  const [ch, setCh] = useState(72);
   const [faltas, setFaltas] = useState(0);
 
   // Estado: Quem Resolve
@@ -141,7 +136,6 @@ export default function Calouro({ setPaginaAtiva }) {
   const [abertos, setAbertos] = useState(new Set());
   const [checks, setChecks] = useState(new Set());
 
-  // Carrega checkboxes do LocalStorage ao montar o componente
   useEffect(() => {
     try {
       const saved = localStorage.getItem("gic-calouro-docs");
@@ -183,68 +177,35 @@ export default function Calouro({ setPaginaAtiva }) {
     document.getElementById("ferramentas")?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Lógica do Simulador de Notas
-  const renderNotas = () => {
-    const valA = ab1 === '' ? null : parseFloat(ab1.replace(',', '.'));
-    const valB = ab2 === '' ? null : parseFloat(ab2.replace(',', '.'));
-    let ptLeft = 0;
-    
-    if (valA === null && valB === null) {
-      return { ptLeft: 0, cls: "", bg: "", txt: "Digite suas notas para ver o resultado." };
-    }
-    
-    if (valA === null || valB === null) {
-      const x = valA === null ? valB : valA;
-      const o = valA === null ? "AB1" : "AB2";
-      const f = valA === null ? "AB2" : "AB1";
-      ptLeft = (x / 2) * 10;
-      const dir = 14 - x;
-      const min = 10 - x;
-      return {
-        ptLeft, cls: "warn", bg: "Atenção",
-        txt: `Com ${f} = ${x.toFixed(1)}, falta a ${o}. ` + 
-             (dir <= 10 ? `Para aprovar direto, tire pelo menos ${dir.toFixed(1)}. ` : "Aprovação direta não é mais possível; seu caminho é a Reavaliação. ") +
-             `Para não reprovar por nota, tire pelo menos ${min.toFixed(1)}.`
-      };
-    }
-    
-    const m = (valA + valB) / 2;
-    ptLeft = m * 10;
-    
-    if (m >= 7) return { ptLeft, cls: "ok", bg: `Aprovado direto. Média ${m.toFixed(1)}`, txt: "Parabéns, já pode curtir as férias!" };
-    if (m < 5) return { ptLeft, cls: "bad", bg: `Reprovado por nota. Média ${m.toFixed(1)}`, txt: "Média abaixo de 5,0: não há prova de recuperação." };
-    
-    const mx = Math.max(valA, valB);
-    const need = 11 - mx;
-    return { 
-      ptLeft, cls: "warn", bg: `Reavaliação. Média ${m.toFixed(1)}`, 
-      txt: `A prova substitui a sua menor AB. Você mantém a ${mx.toFixed(1)} e precisa de pelo menos ${need.toFixed(1)} na Reavaliação para chegar a 5,5.` 
-    };
-  };
-  const notasStatus = renderNotas();
-
-  // Lógica de Faltas
-  const lim = ch * 0.25;
-  const maxF = Math.floor(lim / 2);
-  const faltasMax = maxF + 4;
-  const horasFalta = faltas * 2;
-  const pctFaltas = Math.min(100, (horasFalta / lim) * 100);
+  // --- Lógica de Faltas (Regra UFAL) ---
+  const totalAulas = ch;
+  const maxFaltas = Math.floor(totalAulas * 0.25); // Ex: 72h -> 18 faltas permitidas no total
+  const faltasMaxSlider = maxFaltas + 8;
+  const pctFaltas = Math.min(100, (faltas / maxFaltas) * 100);
   
-  let faltasCls = "ok", faltasBg = "Tranquilo", faltasTxt = `Você ainda pode faltar ${maxF - faltas} vezes.`;
+  // Variáveis dinâmicas para a explicação textual 
+  const diasSeguros = Math.floor(maxFaltas / 2);
+  const faltasSeguras = diasSeguros * 2;
+  const diasReprova = diasSeguros + 1;
+  const faltasReprova = diasReprova * 2;
+
+  let faltasCls = "ok", faltasBg = "Tranquilo", faltasTxt = `Você ainda pode faltar ${maxFaltas - faltas} aulas.`;
   let barCor = "#2e7d32";
   
-  if (faltas > maxF) {
+  if (faltas > maxFaltas) {
     faltasCls = "bad"; faltasBg = "Reprovação por Falta (RF)"; 
-    faltasTxt = "Você passou do limite: reprova mesmo com nota alta e perde a Reavaliação."; barCor = "#c62828";
-  } else if (faltas >= maxF - 1) {
+    faltasTxt = "Você passou do limite de faltas permitidas (25%). Estourando o limite, você é reprovado por falta mesmo com nota alta nas avaliações."; 
+    barCor = "#c62828";
+  } else if (faltas >= maxFaltas - 2) {
     faltasCls = "warn"; faltasBg = "Atenção: no limite"; 
-    faltasTxt = `Você ainda pode faltar ${maxF - faltas} vez(es). Guarde o resto para imprevistos.`; barCor = "#e0a82e";
+    faltasTxt = `Você ainda pode faltar ${maxFaltas - faltas} aula(s). Guarde o resto para imprevistos.`; 
+    barCor = "#e0a82e";
   }
 
-  // Lógica Terminal Animação
+  // --- Lógica Terminal Animação ---
   useEffect(() => {
     let timer;
-    if (tabAtiva === 'term' && termStep > 1) {
+    if (termStep > 1) {
       const cmdLength = SIM[termStep].cmd?.length || 0;
       setTermTyped(0);
       timer = setInterval(() => {
@@ -255,9 +216,9 @@ export default function Calouro({ setPaginaAtiva }) {
       }, 35);
     }
     return () => clearInterval(timer);
-  }, [termStep, tabAtiva]);
+  }, [termStep]);
 
-  // Filtro
+  // --- Filtro ---
   const cardsFiltrados = useMemo(() => {
     return CARDS.filter(c => {
       if (topico !== 'todos' && c.topic !== topico) return false;
@@ -270,7 +231,6 @@ export default function Calouro({ setPaginaAtiva }) {
   return (
     <div className="page-calouro">
       <style>{`
-        /* --- Estilos da Busca e Filtros (Pills) --- */
         .page-calouro .search { position: relative; max-width: 520px; margin-bottom: 20px; margin-top: 10px; }
         .page-calouro .search input { width: 100%; min-height: 50px; padding: 0 44px 0 18px; border-radius: 999px; border: 2px solid transparent; font: 500 15px 'Montserrat', sans-serif; color: var(--ink); background: #fff; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
         .page-calouro .search input:focus { border-color: var(--amber); }
@@ -281,7 +241,6 @@ export default function Calouro({ setPaginaAtiva }) {
         .page-calouro .pills button:hover { background: rgba(255,255,255,0.15); }
         .page-calouro .pills button[aria-pressed="true"] { background: #fff; color: var(--blue); border-color: #fff; }
 
-        /* --- RESTANTES ESTILOS (Ferramentas, Terminal, etc.) --- */
         .page-calouro .sim { display: grid; grid-template-columns: 220px 1fr; gap: 16px; }
         .page-calouro .steps { display: grid; gap: 8px; align-content: start; }
         .page-calouro .steps button { text-align: left; font: 600 13.5px/1.3 'Montserrat', Arial, sans-serif; padding: 10px 12px; border-radius: 8px; background: #fff; color: var(--ink); border: 1px solid var(--ln); border-left: 4px solid var(--blue); cursor: pointer; display: flex; gap: 8px; align-items: center; }
@@ -304,7 +263,6 @@ export default function Calouro({ setPaginaAtiva }) {
         .page-calouro .tabs button:hover { border-color: var(--blue); }
         .page-calouro .tabs button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
         
-        /* CORREÇÃO DO CONFLITO COM O INDEX.CSS: calouro-panel em vez de panel */
         .page-calouro .calouro-panel { padding: 22px; }
         
         .page-calouro .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-bottom: 14px; }
@@ -363,15 +321,14 @@ export default function Calouro({ setPaginaAtiva }) {
 
       <div className="page-hero">
         <div className="wrap">
-          {/* Botão Voltar unificado com o estilo do Chatbot */}
           <div className="hero-top-actions" style={{marginBottom: '20px'}}>
             <button className="btn-voltar" onClick={() => setPaginaAtiva('inicio')}>
-              ← Voltar
+              ← Voltar ao Início
             </button>
           </div>
           
           <h1>Bem-vindo, calouro!</h1>
-          <p>Teste as regras de nota e falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.</p>
+          <p>Teste as regras de falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.</p>
           
           <div className="search">
             <input type="search" placeholder="Buscar: SIGAA, VAMU, faltas, Huxley..." value={busca} onChange={e => setBusca(e.target.value)} />
@@ -388,6 +345,7 @@ export default function Calouro({ setPaginaAtiva }) {
       </div>
 
       <main className="calouro-main">
+        {/* FERRAMENTAS BÁSICAS */}
         <section id="ferramentas" className="sec" style={{paddingTop: '20px'}}>
           <div className="sec__head">
             <h2>Ferramentas rápidas</h2>
@@ -396,71 +354,46 @@ export default function Calouro({ setPaginaAtiva }) {
           
           <div className="tools">
             <div className="tabs">
-              <button aria-pressed={tabAtiva === 'notas'} onClick={() => mudaFerramenta('notas')}>Simulador de notas</button>
               <button aria-pressed={tabAtiva === 'faltas'} onClick={() => mudaFerramenta('faltas')}>Calculadora de faltas</button>
               <button aria-pressed={tabAtiva === 'quem'} onClick={() => mudaFerramenta('quem')}>Quem resolve o quê?</button>
-              <button aria-pressed={tabAtiva === 'term'} onClick={() => mudaFerramenta('term')}>Terminal passo a passo</button>
             </div>
 
-            {/* TAB: NOTAS  */}
-            {tabAtiva === 'notas' && (
-              <div className="calouro-panel">
-                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Simulador de notas</h3>
-                <p style={{color: '#5a6578', marginBottom: '16px'}}>Preencha as duas notas, ou só a AB1 para saber quanto precisa tirar na AB2. Regra: média ≥ 7,0 aprova; média &lt; 5,0 reprova; entre 5,0 e 6,9 vai para a Reavaliação.</p>
-                <div className="fields">
-                  <div>
-                    <label>AB1</label>
-                    <input type="number" min="0" max="10" step="0.1" value={ab1} onChange={e => setAb1(e.target.value)} placeholder="Ex: 6,5" />
-                  </div>
-                  <div>
-                    <label>AB2</label>
-                    <input type="number" min="0" max="10" step="0.1" value={ab2} onChange={e => setAb2(e.target.value)} />
-                  </div>
-                </div>
-                <div className="meter">
-                  <i className="pt" style={{left: `${notasStatus.ptLeft}%`}}></i>
-                  <span style={{left: '0%'}}>0</span>
-                  <span style={{left: '50%'}}>5,0</span>
-                  <span style={{left: '70%'}}>7,0</span>
-                  <span style={{left: '100%'}}>10</span>
-                </div>
-                {notasStatus.txt && (
-                  <div className={`res ${notasStatus.cls}`}>
-                    {notasStatus.bg && <b className="big">{notasStatus.bg}</b>}
-                    {notasStatus.txt}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* TAB: FALTAS  */}
+            {/* TAB: FALTAS */}
             {tabAtiva === 'faltas' && (
               <div className="calouro-panel">
-                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Calculadora de faltas</h3>
-                <p style={{color: '#5a6578', marginBottom: '16px'}}>Você precisa de 75% de presença. Estourou o limite? É Reprovação por Falta (RF), mesmo com 10 nas provas, e sem direito à Reavaliação.</p>
+                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Calculadora de faltas (Aulas)</h3>
+                <div style={{background: '#fff3d6', borderLeft: '4px solid #e0a82e', padding: '12px 16px', borderRadius: '6px', marginBottom: '16px'}}>
+                  <p style={{margin: 0, fontSize: '14px', color: '#5b4a12'}}>
+                    <b>Atenção:</b> Na UFAL, é exigida 75% de presença. O limite exato de faltas permitidas em uma matéria de {ch}h é {maxFaltas}. Mas como você normalmente assiste a <b>duas aulas seguidas no mesmo dia</b>, as suas faltas vêm em pares. Faltar {diasSeguros} dias = {faltasSeguras} faltas (seguro). Faltar {diasReprova} dias = {faltasReprova} faltas (<b>Reprovação direta</b>). 
+                  </p>
+                </div>
+                <p style={{color: '#5a6578', marginBottom: '16px', fontSize: '14px'}}>
+                  Lembre-se: em turmas intensivas de férias, você pode ter mais de duas aulas num mesmo dia. Cada aula contabilizada pelo professor possui 50 minutos.
+                </p>
+                
                 <div className="fields">
                   <div>
-                    <label>Carga horária da disciplina</label>
+                    <label>Carga horária da disciplina (no SIGAA)</label>
                     <select value={ch} onChange={e => { setCh(Number(e.target.value)); setFaltas(0); }}>
-                      <option value="30">30 horas</option>
-                      <option value="45">45 horas</option>
-                      <option value="60">60 horas</option>
-                      <option value="90">90 horas</option>
+                      <option value="30">30 horas/aulas</option>
+                      <option value="36">36 horas/aulas</option>
+                      <option value="72">72 horas/aulas</option>
+                      <option value="144">144 horas/aulas</option>
+                      <option value="288">288 horas/aulas</option>
                     </select>
                   </div>
                 </div>
-                <label>Faltas (cada encontro conta 2 horas): <b>{faltas} ({horasFalta} h)</b></label><br/>
-                <input type="range" min="0" max={faltasMax} step="1" value={faltas} onChange={e => setFaltas(Number(e.target.value))} />
+                <label>Quantidade de faltas registradas: <b>{faltas}</b></label><br/>
+                <input type="range" min="0" max={faltasMaxSlider} step="1" value={faltas} onChange={e => setFaltas(Number(e.target.value))} />
                 <div className="bar"><i style={{width: `${pctFaltas}%`, backgroundColor: barCor}}></i></div>
                 <div className={`res ${faltasCls}`}>
                   <b className="big">{faltasBg}</b>
-                  Em {ch} h o limite é de {lim.toString().replace('.', ',')} h, cerca de {maxF} faltas. {faltasTxt}
+                  Em uma disciplina de {ch} aulas, o limite é de {maxFaltas} faltas. {faltasTxt}
                 </div>
-                <p style={{fontSize: '12.5px', color: '#5a6578', marginTop: '10px'}}>Considera encontros de 2 horas; confirme no SIGAA como o professor registra as faltas.</p>
               </div>
             )}
 
-            {/* TAB: QUEM  */}
+            {/* TAB: QUEM */}
             {tabAtiva === 'quem' && (
               <div className="calouro-panel">
                 <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Quem resolve o quê?</h3>
@@ -485,59 +418,63 @@ export default function Calouro({ setPaginaAtiva }) {
                 )}
               </div>
             )}
-
-            {/* TAB: TERMINAL */}
-            {tabAtiva === 'term' && (
-              <div className="calouro-panel">
-                <h3 style={{fontSize: '18px', color: '#004085', margin: '0 0 4px'}}>Compilar C no terminal</h3>
-                <p style={{color: '#5a6578', marginBottom: '16px'}}>Passo a passo do dia a dia nas aulas de P1. Antes, instale o compilador GCC (via MinGW). Clique nos passos, ou use Próximo.</p>
-                <div className="sim">
-                  <div className="steps">
-                    {SIM.map((s, i) => (
-                      <button key={i} aria-pressed={termStep === i} className={i < termStep ? 'past' : ''} onClick={() => setTermStep(i)}>
-                        <i>{i + 1}</i> <span>{s.t}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="scr">
-                    <p style={{fontSize: '14.5px', color: '#1d2b44', margin: 0}}><b>Passo {termStep + 1}:</b> {SIM[termStep].d}</p>
-                    <div className="win">
-                      <div className="bar2"><s></s><s></s><s></s> VS Code: meu_programa.c</div>
-                      <pre>{CODIGO}</pre>
-                    </div>
-                    {termStep >= 1 && (
-                      <div className="win">
-                        <div className="bar2"><s></s><s></s><s></s> Terminal</div>
-                        <pre className={termStep > 1 && termTyped < SIM[termStep].cmd.length ? 'caret' : ''}>
-                          {SIM.slice(2, termStep + 1).map((l, i, arr) => {
-                            const isLast = i === arr.length - 1;
-                            const currentTyped = isLast ? l.cmd.slice(0, termTyped) : l.cmd;
-                            return (
-                              <div key={i}>
-                                <span className="pr">{PROMPT}</span>{currentTyped}
-                                {!isLast && l.out && <div>{l.out}</div>}
-                                {isLast && termTyped >= l.cmd.length && l.out && <div>{l.out}</div>}
-                              </div>
-                            );
-                          })}
-                          {termStep > 1 && termTyped >= SIM[termStep].cmd.length && (
-                            <div><span className="pr">{PROMPT}</span></div>
-                          )}
-                          {termStep === 1 && <span className="pr">{PROMPT}</span>}
-                        </pre>
-                      </div>
-                    )}
-                    <div className="row" style={{marginTop: '10px'}}>
-                      <button className="btn ghost" disabled={termStep === 0} style={{opacity: termStep === 0 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.max(0, p - 1))}>← Anterior</button>
-                      <button className="btn" disabled={termStep === SIM.length - 1} style={{opacity: termStep === SIM.length - 1 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.min(SIM.length - 1, p + 1))}>Próximo →</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </section>
 
+        {/* DICA EXTRA: TERMINAL (Separado) */}
+        <section id="dica-terminal" className="sec" style={{paddingTop: '40px'}}>
+          <div className="sec__head">
+            <h2 style={{fontSize: '1.4rem', textTransform: 'uppercase', letterSpacing: '1px'}}>Dica Extra: Compilar C no terminal</h2>
+          </div>
+          <p className="sec__intro" style={{marginBottom: '20px'}}>Passo a passo do dia a dia nas aulas de P1. Antes, instale o compilador GCC (via MinGW). Clique nos passos, ou use Próximo.</p>
+          
+          <div className="calouro-panel" style={{ background: '#fff', border: '1px solid var(--ln)', borderRadius: '12px' }}>
+            <div className="sim">
+              <div className="steps">
+                {SIM.map((s, i) => (
+                  <button key={i} aria-pressed={termStep === i} className={i < termStep ? 'past' : ''} onClick={() => setTermStep(i)}>
+                    <i>{i + 1}</i> <span>{s.t}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="scr">
+                <p style={{fontSize: '14.5px', color: '#1d2b44', margin: 0}}><b>Passo {termStep + 1}:</b> {SIM[termStep].d}</p>
+                <div className="win">
+                  <div className="bar2"><s></s><s></s><s></s> VS Code: meu_programa.c</div>
+                  <pre>{CODIGO}</pre>
+                </div>
+                {termStep >= 1 && (
+                  <div className="win">
+                    <div className="bar2"><s></s><s></s><s></s> Terminal</div>
+                    <pre className={termStep > 1 && termTyped < SIM[termStep].cmd.length ? 'caret' : ''}>
+                      {SIM.slice(2, termStep + 1).map((l, i, arr) => {
+                        const isLast = i === arr.length - 1;
+                        const currentTyped = isLast ? l.cmd.slice(0, termTyped) : l.cmd;
+                        return (
+                          <div key={i}>
+                            <span className="pr">{PROMPT}</span>{currentTyped}
+                            {!isLast && l.out && <div>{l.out}</div>}
+                            {isLast && termTyped >= l.cmd.length && l.out && <div>{l.out}</div>}
+                          </div>
+                        );
+                      })}
+                      {termStep > 1 && termTyped >= SIM[termStep].cmd.length && (
+                        <div><span className="pr">{PROMPT}</span></div>
+                      )}
+                      {termStep === 1 && <span className="pr">{PROMPT}</span>}
+                    </pre>
+                  </div>
+                )}
+                <div className="row" style={{marginTop: '10px'}}>
+                  <button className="btn ghost" disabled={termStep === 0} style={{opacity: termStep === 0 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.max(0, p - 1))}>← Anterior</button>
+                  <button className="btn" disabled={termStep === SIM.length - 1} style={{opacity: termStep === SIM.length - 1 ? 0.5 : 1}} onClick={() => setTermStep(p => Math.min(SIM.length - 1, p + 1))}>Próximo →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* GUIA COMPLETO */}
         <section id="guia" className="sec">
           <div className="sec__head">
             <h2>Guia completo</h2>
@@ -606,13 +543,13 @@ export default function Calouro({ setPaginaAtiva }) {
 
                     <div className="row">
                       {c.sim && (
-                        <button className="btn ghost" onClick={() => { mudaFerramenta("term"); setTermStep(0); }}>
+                        <button className="btn ghost" onClick={() => { document.getElementById("dica-terminal")?.scrollIntoView({ behavior: 'smooth', block: 'start' }); setTermStep(0); }}>
                           Ver o passo a passo animado
                         </button>
                       )}
-                      {(c.id === "notas" || c.id === "faltas") && (
-                        <button className="btn ghost" onClick={() => mudaFerramenta(c.id)}>
-                          Abrir {c.id === "notas" ? "simulador de notas" : "calculadora de faltas"}
+                      {c.id === "faltas" && (
+                        <button className="btn ghost" onClick={() => { mudaFerramenta("faltas"); document.getElementById("ferramentas")?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}>
+                          Abrir calculadora de faltas
                         </button>
                       )}
                       {c.link !== undefined && (

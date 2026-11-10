@@ -19,6 +19,25 @@ const SUGESTOES = [
   "O que é o PIBIC?"
 ];
 
+// --- FUNÇÃO ADICIONADA: Formatação de texto (Negrito, Código e Quebra de linha) ---
+const formatText = (text: string) => {
+  if (!text) return "";
+  
+  // Divide o texto pelos asteriscos duplos ou crases (para código)
+  return text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, i) => {
+    if (part.startsWith('**')) return <b key={i}>{part.slice(2, -2)}</b>;
+    if (part.startsWith('`')) return <code key={i} className="code-inline">{part.slice(1, -1)}</code>;
+    
+    // Tratamento para quebras de linha funcionarem (\n)
+    return part.split('\n').map((line, j, arr) => (
+      <span key={`${i}-${j}`}>
+        {line}
+        {j !== arr.length - 1 && <br />}
+      </span>
+    ));
+  });
+};
+
 export default function Chatbot({
   setPaginaAtiva
 }: {
@@ -28,8 +47,7 @@ export default function Chatbot({
   const [mensagens, setMensagens] = useState<Mensagem[]>([
     {
       id: '1',
-      texto:
-        'Olá, calouro! Sou o assistente virtual do GIC. Como posso te ajudar hoje?',
+      texto: 'Olá, calouro! Sou o assistente virtual do GIC. Como posso te ajudar hoje?',
       remetente: 'bot'
     }
   ]);
@@ -101,10 +119,8 @@ export default function Chatbot({
        * Se a IA não conseguiu resolver,
        * adicionamos automaticamente o encaminhamento.
        */
-
-      if (!dados.resolvido) {
-
-        textoResposta += `\n\n Recomendo procurar: ${dados.setor}.`;
+      if (!dados.resolvido && dados.setor && dados.setor !== "Nenhum") {
+        textoResposta += `\n\n**Recomendo procurar:** ${dados.setor}.`;
       }
 
       const mensagemBot: Mensagem = {
@@ -126,7 +142,7 @@ export default function Chatbot({
         id: `${Date.now()}-erro`,
         texto:
           'Não consegui acessar o assistente de IA neste momento.\n\n' +
-          'Para obter orientação, recomendo procurar a Secretaria ou a Coordenação do curso.',
+          'Para obter orientação, recomendo procurar a **Secretaria** ou a **Coordenação do curso**.',
         remetente: 'bot'
       };
 
@@ -223,17 +239,9 @@ export default function Chatbot({
               >
 
                 <div className="message-bubble">
-
-                  {msg.texto.split('\n').map((linha, index) => (
-                    <span key={index}>
-                      {linha}
-
-                      {index <
-                        msg.texto.split('\n').length - 1 && (
-                        <br />
-                      )}
-                    </span>
-                  ))}
+                  
+                  {/* --- CORREÇÃO AQUI: Chamamos a função formatText --- */}
+                  {formatText(msg.texto)}
 
                 </div>
 
@@ -332,7 +340,6 @@ export default function Chatbot({
         </div>
 
       </main>
-
 
     </div>
   );
