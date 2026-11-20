@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Oportunidades from './pages/Oportunidades';
 import Home from './pages/Home';
 import Tutoriais from './pages/Tutoriais';
@@ -6,14 +6,31 @@ import Disciplinas from './pages/Disciplinas';
 import Calculadora from './pages/Calculadora';
 import Calouro from './pages/Calouro';
 import Chatbot from './pages/Chatbot';
+import AreaAdmin from './admin/AreaAdmin';
+
+const naAreaAdmin = () => window.location.hash.startsWith('#/admin');
 
 function App() {
   const [paginaAtiva, setPaginaAtiva] = useState('inicio');
+  const [emAdmin, setEmAdmin] = useState(naAreaAdmin);
+
+  useEffect(() => {
+    const aoMudarHash = () => setEmAdmin(naAreaAdmin());
+    window.addEventListener('hashchange', aoMudarHash);
+    return () => window.removeEventListener('hashchange', aoMudarHash);
+  }, []);
+
+  const voltarParaGic = () => {
+    window.location.hash = '';
+    setEmAdmin(false);
+    setPaginaAtiva('inicio');
+    window.scrollTo(0, 0);
+  };
 
   const renderizarPagina = () => {
     switch (paginaAtiva) {
       case 'inicio': return <Home setPaginaAtiva={setPaginaAtiva} />;
-      case 'calouro': return <Calouro setPaginaAtiva={setPaginaAtiva} />
+      case 'calouro': return <Calouro setPaginaAtiva={setPaginaAtiva} />;
       case 'oportunidades': return <Oportunidades />;
       case 'tutoriais': return <Tutoriais />;
       case 'disciplinas': return <Disciplinas />;
@@ -22,6 +39,10 @@ function App() {
       default: return <Home setPaginaAtiva={setPaginaAtiva} />;
     }
   };
+
+  if (emAdmin) {
+    return <AreaAdmin onVoltarSite={voltarParaGic} />;
+  }
 
   return (
     <>
@@ -47,21 +68,26 @@ function App() {
       {paginaAtiva !== 'chatbot' && (
         <footer className="site-footer">
           <div className="footer-content">
-              <div className="footer-section">
-                  <h4>Equipe de Desenvolvimento</h4>
-                  <p><strong>João:</strong> Front-end & UI/UX<br/>
-                     <strong>Josivaldo:</strong> Back-end & Arquitetura<br/>
-                     <strong>Dárcio:</strong> Banco de Dados & Gestão</p>
-              </div>
-              <div className="footer-section">
-                  <h4>Suporte e Links Úteis</h4>
-                  <p>Email: suporte-calouros@ic.br<br/>
-                     Coordenação: (00) 0000-0000<br/>
-                     <a href="#" style={{color: '#ffc107', textDecoration: 'none'}}>Portal Institucional Oficial</a></p>
-              </div>
+            <div className="footer-section">
+              <h4>Equipe de Desenvolvimento</h4>
+              <p><strong>João:</strong> Front-end & UI/UX<br />
+                <strong>Josivaldo:</strong> Back-end & Arquitetura<br />
+                <strong>Dárcio:</strong> Banco de Dados & Gestão</p>
+            </div>
+            <div className="footer-section">
+              <h4>Suporte e Links Úteis</h4>
+              <p>Email: suporte-calouros@ic.br<br />
+                Coordenação: (00) 0000-0000<br />
+                <a href="#" style={{ color: '#ffc107', textDecoration: 'none' }}>Portal Institucional Oficial</a></p>
+            </div>
           </div>
           <div className="footer-bottom">
-              <p>&copy; 2026 Instituto de Computação - Portal do Calouro</p>
+            <p>
+              &copy; 2026 Instituto de Computação - Portal do Calouro ·{' '}
+              <a href="#/admin" style={{ color: '#999', textDecoration: 'underline' }}>
+                Área administrativa
+              </a>
+            </p>
           </div>
         </footer>
       )}
