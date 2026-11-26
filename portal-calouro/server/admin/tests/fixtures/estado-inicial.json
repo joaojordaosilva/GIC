@@ -1,0 +1,2848 @@
+{
+ "home_hero": {
+  "marca": "GIC",
+  "titulo": "Guia do Ingressante em Computação",
+  "texto": "Encontre aqui todos os guias, mapas e dicas essenciais para se orientar no instituto e na universidade. Tudo o que você precisa saber no seu primeiro período reunido em um só lugar.",
+  "botaoLabel": "Sou calouro",
+  "botaoDestino": "calouro",
+  "painelCodigo": [
+   "curso1 = \"CC\";",
+   "curso2 = \"EC\";",
+   "curso3 = \"IA\";"
+  ]
+ },
+ "home_noticias": [
+  {
+   "id": "n1",
+   "ativo": true,
+   "titulo": "Bem-vindo ao semestre!",
+   "descricao": "Mensagem de boas-vindas e informações iniciais para os novos alunos.",
+   "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcQEada5uJkQhYaFCpTQsNUVAW2FOGIJ15x8-prG0c42noVd4SGh7mPQkF&s=10",
+   "link": "https://site-oficial-do-ic.br"
+  },
+  {
+   "id": "n2",
+   "ativo": true,
+   "titulo": "Calendário Acadêmico",
+   "descricao": "Confira as datas importantes e os prazos do ano letivo de 2026.",
+   "img": "https://noticias.ufal.br/estudante/noticias/2025/10/ufal-aprova-calendario-academico-2026-com-inicio-em-23-de-fevereiro/@@images/image-400-9e740ca6b4901d3daf2be2c98cb3ca65.jpeg",
+   "link": "https://site-oficial-do-ic.br"
+  }
+ ],
+ "c_config": {
+  "titulo": "Bem-vindo, calouro!",
+  "intro": "Teste as regras de falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.",
+  "placeholderBusca": "Buscar: SIGAA, VAMU, faltas, Huxley...",
+  "faltasPct": 25,
+  "cargas": [
+   "30",
+   "36",
+   "72",
+   "144",
+   "288"
+  ],
+  "codigoExemplo": "#include <stdio.h>\n\nint main() {\n    printf(\"Olá, calouro!\\n\");\n    return 0;\n}",
+  "promptTerminal": "PS C:\\Users\\voce\\codigos> "
+ },
+ "c_topicos": [
+  {
+   "id": "sistemas",
+   "nome": "Sistemas e burocracia"
+  },
+  {
+   "id": "emailic",
+   "nome": "E-mail do IC"
+  },
+  {
+   "id": "regras",
+   "nome": "Regras da UFAL"
+  },
+  {
+   "id": "campus",
+   "nome": "Campus"
+  },
+  {
+   "id": "assistencia",
+   "nome": "Assistência"
+  },
+  {
+   "id": "vamu",
+   "nome": "Carteira VAMU"
+  },
+  {
+   "id": "prog",
+   "nome": "Primeiro período"
+  }
+ ],
+ "c_cards": [
+  {
+   "id": "matricula",
+   "topic": "sistemas",
+   "t": "Matrícula Institucional x Acadêmica",
+   "p": "A **Institucional** é a entrega de documentos (hoje geralmente online) logo depois que você passa no SiSU. A **Acadêmica** é o seu vínculo com as disciplinas, feito no SIGAA a cada novo semestre.",
+   "li": [
+    "No **1º período** as matérias já vêm definidas: você não precisa se matricular nas disciplinas agora.",
+    "A partir do **2º semestre**, é você quem monta a própria grade."
+   ]
+  },
+  {
+   "id": "sigaa",
+   "topic": "sistemas",
+   "t": "SIGAA: notas, faltas, horários e atestado",
+   "p": "O **SIGAA** é o sistema principal. É por ele que você acompanha suas turmas, notas e faltas, e emite os documentos mais pedidos no campus.",
+   "li": [
+    "**Atestado de Matrícula**: necessário para quase tudo na universidade.",
+    "**Histórico Escolar Analítico**."
+   ]
+  },
+  {
+   "id": "nti",
+   "topic": "sistemas",
+   "t": "E-mail institucional e Wi-Fi da UFAL",
+   "p": "Gerenciados pelo **NTI** (Núcleo de Tecnologia da Informação). Você precisa criar suas credenciais de rede para ter o e-mail institucional e conectar seus dispositivos à rede sem fio **Eduroam**.",
+   "busca": "wifi eduroam internet"
+  },
+  {
+   "id": "trancamento",
+   "topic": "sistemas",
+   "t": "Trancamento de curso ou disciplina",
+   "p": "O pedido é feito à **coordenação do curso**, por formulário, dentro do prazo do Calendário Acadêmico. O curso pode ficar trancado por no máximo **4 semestres (2 anos)**."
+  },
+  {
+   "id": "emailic",
+   "topic": "emailic",
+   "t": "E-mail @ic.ufal.br: para que serve e como criar",
+   "p": "O IC tem infraestrutura de TI própria, independente da reitoria. O e-mail @ic.ufal.br não é só uma caixa de entrada: é a credencial para **logar nos computadores dos laboratórios** (distribuições Linux) e acessar redes e servidores internos e o Wi-Fi do IC.",
+   "li": [
+    "**Como criar**: a solicitação costuma ser feita no início do semestre ao Setor de TI do IC.",
+    "Leve o **Atestado de Matrícula do SIGAA** para comprovar o vínculo e receber as credenciais."
+   ],
+   "busca": "laboratório lab linux ti"
+  },
+  {
+   "id": "vantagens",
+   "topic": "emailic",
+   "t": "Vantagens de um e-mail .edu.br / .ufal.br",
+   "p": "Para quem faz Computação, esta é a informação mais valiosa: o e-mail institucional libera dezenas de ferramentas profissionais gratuitas.",
+   "li": [
+    "**GitHub Student Developer Pack**: GitHub Copilot, domínios gratuitos por um ano, servidores e dezenas de serviços para desenvolvimento.",
+    "**JetBrains**: licenças originais e gratuitas das melhores IDEs (IntelliJ IDEA para Java, PyCharm, WebStorm).",
+    "**Microsoft Azure e AWS Educate**: créditos de nuvem, fundamentais em Redes e Sistemas Distribuídos.",
+    "**Design**: Notion Premium, Figma for Education e Canva Pro.",
+    "**Drive educacional**: costuma vir do Google Workspace, com bem mais espaço que uma conta pessoal gratuita."
+   ],
+   "busca": "github copilot jetbrains azure aws notion figma canva grátis"
+  },
+  {
+   "id": "notas",
+   "topic": "regras",
+   "t": "Notas: AB1, AB2 e Reavaliação",
+   "p": "O semestre tem duas notas, a **AB1** e a **AB2**. O professor decide como compô-las (provas, listas do Huxley, trabalhos...), mas a conta final é sempre a mesma:",
+   "stats": [
+    {
+     "n": "≥ 7,0",
+     "d": "média de AB1 e AB2: aprovado direto"
+    },
+    {
+     "n": "< 5,0",
+     "d": "reprovado por nota, sem recuperação"
+    },
+    {
+     "n": "5,0 a 6,9",
+     "d": "vai para a Reavaliação"
+    },
+    {
+     "n": "≥ 5,5",
+     "d": "nova média exigida após a Reavaliação"
+    }
+   ],
+   "p2": "A Reavaliação é uma prova de todo o conteúdo do semestre e a nota dela **substitui a sua menor AB**. Acesse a aba **Calculadora** no menu para simular suas notas.",
+   "busca": "média reavaliação final prova"
+  },
+  {
+   "id": "faltas",
+   "topic": "regras",
+   "t": "Limite de faltas: a regra dos 25%",
+   "p": "Você precisa de **75% de presença** nas aulas. Como a conta na UFAL leva em consideração as aulas, certifique-se da sua assiduidade.",
+   "li": [
+    "**Reprovação por Falta (RF)**: estourou o limite de 25%, está reprovado, mesmo com 10 em todas as provas.",
+    "Quem reprova por falta **perde o direito à Reavaliação**."
+   ],
+   "busca": "presença rf reprovação"
+  },
+  {
+   "id": "monitoria",
+   "topic": "regras",
+   "t": "Monitoria: seu maior salva-vidas",
+   "p": "Monitores são veteranos que cursaram a disciplina com excelência e ajudam o professor. Têm horários no IC para tirar dúvidas, ajudar com as listas do Huxley e revisar antes das provas. As matérias iniciais (Matemática Discreta, P1, Cálculo) são densas: não tenha vergonha de procurá-los!",
+   "li": [
+    "**Como virar monitor**: a partir do 2º período, com nota alta em uma matéria, você pode concorrer nos editais. Pode ser remunerada (bolsa) ou voluntária."
+   ]
+  },
+  {
+   "id": "horas",
+   "topic": "regras",
+   "t": "Horas complementares e extensão",
+   "p": "Para pegar o diploma não basta passar nas disciplinas da grade: é preciso viver a universidade.",
+   "li": [
+    "**Atividades Complementares (Horas Flexíveis)**: eventos de tecnologia, maratonas de programação, semanas acadêmicas, artigos, cursos de idiomas, estágio. Guarde todos os certificados em uma pasta na nuvem desde o 1º período!",
+    "**Projetos de Extensão**: com a curricularização da extensão, todos os cursos exigem projetos que levem conhecimento à sociedade, como ensinar programação em escolas públicas ou criar sistemas para ONGs."
+   ],
+   "tip": "Acompanhe os murais do IC e os grupos de WhatsApp das turmas. Sempre que surgir edital de **Extensão**, **Iniciação Científica (PIBIC)** ou **Monitoria**, tente participar. Além de adiantar horas obrigatórias, é nesses projetos que você faz networking com professores e colegas.",
+   "busca": "pibic iniciação científica extensão horas flexíveis certificados"
+  },
+  {
+   "id": "ru",
+   "topic": "campus",
+   "t": "Restaurante Universitário (RU)",
+   "p": "Almoço e jantar custam **R$ 3,00** para estudantes de graduação. Leve o **comprovante de matrícula atualizado** e um **documento com foto**. O cardápio do dia costuma sair no Instagram oficial da Ufal (@ufaloficial).",
+   "busca": "almoço jantar comida restaurante"
+  },
+  {
+   "id": "bc",
+   "topic": "campus",
+   "t": "Biblioteca Central (BC)",
+   "p": "O empréstimo é gratuito com o cadastro do SIGAA. Atrasos geram multa diária, paga obrigatoriamente via **GRU** (Guia de Recolhimento da União).",
+   "li": [
+    "Atenção: **débitos pendentes na biblioteca impedem a colação de grau**."
+   ],
+   "busca": "livros empréstimo multa"
+  },
+  {
+   "id": "hu",
+   "topic": "campus",
+   "t": "Atendimento médico no HU",
+   "p": "Os estudantes podem agendar consultas no **Hospital Universitário (HU)** apresentando o comprovante de matrícula autenticado pelo DRCA e um documento oficial.",
+   "busca": "saúde médico hospital"
+  },
+  {
+   "id": "proest",
+   "topic": "assistencia",
+   "t": "PROEST: isenção no RU, bolsas e residência",
+   "p": "Estudantes em situação de vulnerabilidade social podem pedir **isenção no RU** e concorrer a bolsas pelos editais da **PROEST** (Pró-Reitoria Estudantil). A PROEST também gerencia a **Residência Universitária** e bolsas de apoio.",
+   "busca": "auxílio bolsa residência moradia"
+  },
+  {
+   "id": "vamu",
+   "topic": "vamu",
+   "t": "VAMU: como solicitar pela primeira vez",
+   "p": "Em Maceió, o Passe Livre Estudantil garante viagens gratuitas nos ônibus urbanos (com limite mensal de embarques) para ir e voltar da universidade. Reúna os documentos (marque o que já tem):",
+   "check": [
+    "RG e CPF",
+    "Comprovante de residência (validade de até 3 meses)",
+    "Foto 3x4 atual",
+    "Atestado de Matrícula atualizado"
+   ],
+   "p2": "O cadastro e o agendamento são feitos no **site oficial do VAMU Maceió**; a retirada é nos postos físicos (como no Centro ou em terminais de integração).",
+   "busca": "ônibus passe livre transporte carteirinha"
+  },
+  {
+   "id": "vamu2",
+   "topic": "vamu",
+   "t": "VAMU: Atestado do SIGAA e recadastramento",
+   "p": "O VAMU é rigoroso com a documentação.",
+   "li": [
+    "O Atestado de Matrícula do SIGAA deve ter **assinatura digital ou código de verificação** (emitido automaticamente).",
+    "A cada início de ano letivo, envie o comprovante do novo semestre no site e pague a taxa de recadastramento (geralmente PIX ou boleto). **Sem revalidar, o cartão é bloqueado.**"
+   ],
+   "busca": "ônibus passe livre transporte carteirinha"
+  },
+  {
+   "id": "meia",
+   "topic": "vamu",
+   "t": "Meia-entrada cultural: o VAMU não vale",
+   "p": "A carteira VAMU **não vale como documento nacional do estudante** para meia-entrada em cinemas e shows. Para eventos culturais, emita a carteira da **UNE** ou use o aplicativo **ID Jovem** (se for elegível).",
+   "busca": "cinema show une dne"
+  },
+  {
+   "id": "c",
+   "topic": "prog",
+   "t": "P1 e a linguagem C",
+   "p": "Em P1 você mergulha nos fundamentos da lógica de programação com **C**. Se nunca escreveu uma linha de código, não se assuste: as aulas começam do zero. Você vai lidar com variáveis, laços de repetição e os famosos **ponteiros**. Dominar C agora facilita aprender qualquer outra linguagem depois.",
+   "busca": "programação 1 p1"
+  },
+  {
+   "id": "huxley",
+   "topic": "prog",
+   "t": "Pratique no The Huxley",
+   "p": "O Huxley é um **juiz online** muito usado pelos professores do IC para passar listas de exercícios. Há centenas de problemas por nível de dificuldade: você escreve o código em C, envia na plataforma e ela testa automaticamente se a lógica está correta. Ótimo para treinar para as provas e pegar a sintaxe.",
+   "tip": "Não espere a primeira lista da faculdade sair. Crie sua conta no Huxley, procure os problemas de **nível 1** e comece a brincar com C. A prática constante é o único segredo para passar direto em P1!",
+   "busca": "the huxley juiz online exercícios"
+  },
+  {
+   "id": "terminal",
+   "topic": "prog",
+   "t": "VS Code e terminal: compilar C",
+   "p": "A ferramenta oficial dos professores é o **Visual Studio Code**, um editor leve e o mais usado no mercado. Nas aulas do IC, o código em C costuma ser compilado e executado direto no **Terminal do Windows**. Antes, instale o compilador **GCC (via MinGW)**; em geral os professores ensinam na primeira semana.",
+   "li": [
+    "**1.** Escreva e salve o código com a extensão `.c` (ex.: `meu_programa.c`).",
+    "**2.** Abra o terminal no VS Code: Terminal > Novo Terminal (ou `Ctrl + '`).",
+    "**3.** Compile: `gcc meu_programa.c -o meu_programa` (`-o` define o nome do executável).",
+    "**4.** Execute: `.\\meu_programa.exe`."
+   ],
+   "tip": "A **seta para cima** repete comandos anteriores. Alterou o código? Salve (**Ctrl + S**), compile de novo e só então execute. Se esquecer de compilar, você roda a versão velha!",
+   "busca": "vscode gcc mingw compilar executar terminal",
+   "sim": true
+  }
+ ],
+ "c_quem": [
+  {
+   "id": "q1",
+   "q": "Quero trancar uma disciplina ou o curso",
+   "a": "Coordenação do curso",
+   "d": "O pedido é feito por formulário, dentro do prazo do Calendário Acadêmico.",
+   "card": "trancamento"
+  },
+  {
+   "id": "q2",
+   "q": "Quero ajustar minha grade",
+   "a": "Coordenação do curso",
+   "d": "Ajustes de grade passam pela coordenação. A partir do 2º semestre a matrícula nas disciplinas é feita por você no SIGAA.",
+   "card": "matricula"
+  },
+  {
+   "id": "q3",
+   "q": "Preciso do meu diploma ou de registro acadêmico",
+   "a": "DRCA",
+   "d": "O DRCA cuida de registro acadêmico e diploma.",
+   "card": "sigaa"
+  },
+  {
+   "id": "q4",
+   "q": "Preciso do Atestado de Matrícula",
+   "a": "SIGAA (você mesmo emite)",
+   "d": "Emita pelo SIGAA. O atestado precisa ter assinatura digital ou código de verificação.",
+   "card": "sigaa"
+  },
+  {
+   "id": "q5",
+   "q": "Não consigo acessar o Wi-Fi ou o e-mail da UFAL",
+   "a": "NTI",
+   "d": "O NTI gerencia suas credenciais de rede, o e-mail institucional e o Eduroam.",
+   "card": "nti"
+  },
+  {
+   "id": "q6",
+   "q": "Quero logar nos computadores do laboratório",
+   "a": "Setor de TI do IC",
+   "d": "Peça o e-mail @ic.ufal.br no início do semestre, levando o Atestado de Matrícula.",
+   "card": "emailic"
+  },
+  {
+   "id": "q7",
+   "q": "Preciso de comprovante autenticado para o HU",
+   "a": "DRCA",
+   "d": "O HU pede o comprovante de matrícula autenticado pelo DRCA e um documento oficial.",
+   "card": "hu"
+  },
+  {
+   "id": "q8",
+   "q": "Preciso de isenção no RU ou de uma bolsa",
+   "a": "PROEST",
+   "d": "Acompanhe os editais da Pró-Reitoria Estudantil. Ela também cuida da Residência Universitária.",
+   "card": "proest"
+  }
+ ],
+ "c_terminal": [
+  {
+   "id": "j63qs46snp",
+   "t": "Escreva e salve",
+   "d": "No VS Code, crie um arquivo, escreva o código em C e salve com a extensão .c, em uma pasta fácil de achar.",
+   "cmd": "",
+   "out": ""
+  },
+  {
+   "id": "n8004gesnp",
+   "t": "Abra o terminal",
+   "d": "No VS Code: Terminal > Novo Terminal (ou Ctrl + '). Uma aba preta abre embaixo, já apontando para a pasta do arquivo.",
+   "cmd": "",
+   "out": ""
+  },
+  {
+   "id": "s4fsoz6snp",
+   "t": "Compile",
+   "d": "O gcc traduz o seu código para algo que o computador executa. Se não aparecer erro, deu certo.",
+   "cmd": "gcc meu_programa.c -o meu_programa",
+   "out": ""
+  },
+  {
+   "id": "c17oa71snp",
+   "t": "Execute",
+   "d": "Agora rode o programa gerado. O resultado aparece ali mesmo no terminal.",
+   "cmd": ".\\meu_programa.exe",
+   "out": "Olá, calouro!"
+  }
+ ],
+ "op_categorias": [
+  {
+   "id": "pesquisa",
+   "nome": "Pesquisa & Labs"
+  },
+  {
+   "id": "ensino",
+   "nome": "Monitoria & Ensino"
+  },
+  {
+   "id": "extensao",
+   "nome": "Extensão"
+  },
+  {
+   "id": "mercado",
+   "nome": "Estágio & Mercado"
+  }
+ ],
+ "op_secoes": [
+  {
+   "id": "labs",
+   "categoria": "pesquisa",
+   "icone": "🔬",
+   "titulo": "Laboratórios e Pesquisa",
+   "subtitulo": "Iniciação científica, bolsas de pesquisa e grupos de estudo.",
+   "itens": [
+    {
+     "id": "pibic",
+     "titulo": "Iniciação Científica (PIBIC/PIBITI)",
+     "descricao": "Bolsas anuais (CNPq/FAPEAL) para desenvolver projetos de pesquisa orientados por professores. Ótimo para quem deseja seguir carreira acadêmica ou mestrado.",
+     "link": "#",
+     "tags": [
+      "bolsa",
+      "pesquisa",
+      "cnpq"
+     ],
+     "img": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&q=80&w=400"
+    },
+    {
+     "id": "nees",
+     "titulo": "NEES - Computação na Educação",
+     "descricao": "O Núcleo de Excelência em Tecnologias Sociais é um dos maiores laboratórios do IC, focado em inteligência artificial e sistemas para o Ministério da Educação.",
+     "link": "#",
+     "tags": [
+      "laboratório",
+      "ia",
+      "desenvolvimento"
+     ],
+     "img": ""
+    },
+    {
+     "id": "edge",
+     "titulo": "Edge Computing (LACC)",
+     "descricao": "Laboratório de Computação em Nuvem e Borda. Projetos focados em cidades inteligentes, IoT e redes.",
+     "link": "#",
+     "tags": [
+      "laboratório",
+      "redes",
+      "iot"
+     ],
+     "img": ""
+    }
+   ]
+  },
+  {
+   "id": "monitoria",
+   "categoria": "ensino",
+   "icone": "👨‍🏫",
+   "titulo": "Monitoria e Ensino",
+   "subtitulo": "Ajude outros alunos, reforce seu conhecimento e ganhe bolsa.",
+   "itens": [
+    {
+     "id": "mon-ic",
+     "titulo": "Monitoria do Instituto de Computação",
+     "descricao": "Editais semestrais para monitoria remunerada ou voluntária nas disciplinas base (Programação 1, Matemática Discreta, Cálculo). Exige nota alta na matéria.",
+     "link": "#",
+     "tags": [
+      "bolsa",
+      "ensino",
+      "p1"
+     ],
+     "img": ""
+    }
+   ]
+  },
+  {
+   "id": "ext",
+   "categoria": "extensao",
+   "icone": "🚀",
+   "titulo": "Projetos de Extensão",
+   "subtitulo": "Aplique a computação na sociedade e cumpra suas ACEs.",
+   "itens": [
+    {
+     "id": "maratona",
+     "titulo": "Maratona de Programação",
+     "descricao": "Treinamentos semanais para competições de algoritmos (ICPC). Desenvolve raciocínio lógico rápido e é muito valorizado por Big Techs.",
+     "link": "#",
+     "tags": [
+      "competição",
+      "algoritmos",
+      "c++",
+      "extensão"
+     ],
+     "img": ""
+    },
+    {
+     "id": "meninas",
+     "titulo": "Meninas na Computação",
+     "descricao": "Projeto que visa incentivar alunas do ensino médio e fundamental a ingressarem nas carreiras de exatas e tecnologia.",
+     "link": "#",
+     "tags": [
+      "inclusão",
+      "sociedade",
+      "extensão"
+     ],
+     "img": ""
+    }
+   ]
+  },
+  {
+   "id": "mercado",
+   "categoria": "mercado",
+   "icone": "💼",
+   "titulo": "Estágio e Mercado",
+   "subtitulo": "Empresas juniores, vagas e preparação para a carreira.",
+   "itens": [
+    {
+     "id": "ej",
+     "titulo": "Empresa Júnior",
+     "descricao": "Viva a experiência de uma empresa real ainda na graduação. Desenvolva sites, sistemas e lide com clientes reais sob a orientação de professores.",
+     "link": "#",
+     "tags": [
+      "mercado",
+      "web",
+      "experiência"
+     ],
+     "img": ""
+    },
+    {
+     "id": "mural",
+     "titulo": "Mural de Estágios",
+     "descricao": "Acompanhe as vagas divulgadas pela coordenação em parceria com empresas locais e nacionais (remoto).",
+     "link": "#",
+     "tags": [
+      "vagas",
+      "trabalho",
+      "remoto"
+     ],
+     "img": ""
+    }
+   ]
+  }
+ ],
+ "d_cursos": [
+  {
+   "id": "cc",
+   "nome": "Ciência da Computação",
+   "un": "h",
+   "resumo": [
+    {
+     "label": "Duração",
+     "valor": "8 a 12 semestres"
+    },
+    {
+     "label": "Carga horária",
+     "valor": "2.952 h em disciplinas"
+    },
+    {
+     "label": "Obrigatórias",
+     "valor": "24 disciplinas (2.016 h)"
+    },
+    {
+     "label": "Eletivas",
+     "valor": "mínimo de 576 h"
+    },
+    {
+     "label": "Extensão",
+     "valor": "5 práticas (375 h)"
+    }
+   ],
+   "fluxo": "Os semestres seguem da esquerda para a direita. As eletivas do fluxo podem ser escolhidas entre as ênfases e o catálogo de eletivas abaixo.",
+   "fonte": "Fonte: PPC do curso de Ciência da Computação (2019, versão final). Pré-requisitos e correquisitos conforme as ementas do PPC.",
+   "notas": [
+    "Cada ênfase reúne 5 disciplinas. Segundo o PPC, quem cumprir as obrigatórias do curso e três eletivas da mesma ênfase recebe o certificado de conclusão de ênfase.",
+    "O PPC usa o código COMP393 para Redes Neurais e Aprendizado Profundo e também para FPGA; por isso o código de FPGA aparece em branco aqui.",
+    "As práticas de extensão não têm ementa no PPC, então seus pré-requisitos aparecem como \"não consta\"."
+   ],
+   "enfases": [
+    {
+     "nome": "Computação Visual",
+     "disciplinas": [
+      "Cálculo 3",
+      "Aprendizagem de Máquina",
+      "Redes Neurais e Aprendizado Profundo",
+      "Processamento Digital de Imagens",
+      "Visão Computacional"
+     ]
+    },
+    {
+     "nome": "Sistemas Inteligentes",
+     "disciplinas": [
+      "Cálculo 3",
+      "Aprendizagem de Máquina",
+      "Redes Neurais e Aprendizado Profundo",
+      "Computação Evolucionária",
+      "Ciência de Dados"
+     ]
+    },
+    {
+     "nome": "Sistemas de Computação",
+     "disciplinas": [
+      "Cálculo 3",
+      "Sistemas Digitais",
+      "FPGA",
+      "Sistemas Embarcados",
+      "Microcontroladores e Aplicações"
+     ]
+    },
+    {
+     "nome": "Sistemas de Informação",
+     "disciplinas": [
+      "Conceitos de Linguagem de Programação",
+      "Sistemas Distribuídos",
+      "Interação Homem-Máquina",
+      "Gerência de Projeto",
+      "Segurança de Sistemas Computacionais"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ec",
+   "nome": "Engenharia de Computação",
+   "un": "h/a",
+   "resumo": [
+    {
+     "label": "Duração",
+     "valor": "10 semestres"
+    },
+    {
+     "label": "Carga horária",
+     "valor": "3.650 h no total"
+    },
+    {
+     "label": "Obrigatórias",
+     "valor": "2.550 h (3.060 h/a)"
+    },
+    {
+     "label": "Eletivas",
+     "valor": "650 h (780 h/a)"
+    },
+    {
+     "label": "Estágio e TCC",
+     "valor": "160 h e 90 h"
+    }
+   ],
+   "fluxo": "Os semestres seguem da esquerda para a direita. O 7º, o 9º e o 10º períodos reservam espaço para eletivas, e o estágio supervisionado é no 9º.",
+   "fonte": "Fonte: PPC do curso de Engenharia de Computação (versão atual). As cargas horárias estão em horas-aula, como no PPC.",
+   "notas": [
+    "O PPC não define pré-requisitos formais, apenas diz que pode haver quando for o caso. Por isso o fluxo mostra só a ordem por período.",
+    "O TCC (90 h) e as atividades complementares (200 h) não são disciplinas e por isso não aparecem no fluxo.",
+    "O PPC repete algumas eletivas com códigos diferentes (por exemplo Redes de Petri e Inteligência Artificial 2); mantive como estão no documento."
+   ],
+   "enfases": []
+  },
+  {
+   "id": "ia",
+   "nome": "Inteligência Artificial",
+   "un": "h",
+   "resumo": [
+    {
+     "label": "Duração",
+     "valor": "9 a 14 semestres"
+    },
+    {
+     "label": "Obrigatórias",
+     "valor": "27 componentes"
+    },
+    {
+     "label": "Eletivas de perfil",
+     "valor": "mínimo de 660 h"
+    },
+    {
+     "label": "Atividades complementares",
+     "valor": "240 h"
+    },
+    {
+     "label": "Extensão",
+     "valor": "mínimo de 320 h"
+    }
+   ],
+   "fluxo": "Os semestres seguem da esquerda para a direita, conforme o Mapa de Disciplinas por Semestre do PPC. A partir do 3º período cada semestre inclui eletivas.",
+   "fonte": "Fonte: PPC provisório do curso de Inteligência Artificial. Por ser provisório, o documento ainda tem lacunas e pode mudar.",
+   "notas": [
+    "Os códigos das disciplinas ainda estão como \"IAXXX\" no PPC, por isso aparecem em branco aqui.",
+    "O PPC deixa em branco os pré-requisitos da maioria das disciplinas. Aparecem apenas os que estão preenchidos.",
+    "Há divergências dentro do PPC: o texto cita Cálculo 1 no 1º período e Metodologia Científica no 9º, enquanto o Mapa de Disciplinas por Semestre põe Cálculo 1 no 2º e Metodologia no 8º. Segui o Mapa.",
+    "A carga horária do TCC aparece como 60 h, 72 h e 180 h em partes diferentes do PPC, por isso fica em branco."
+   ],
+   "enfases": []
+  }
+ ],
+ "d_disciplinas": [
+  {
+   "id": "zalh5ctsnp",
+   "curso": "cc",
+   "per": "1",
+   "cod": "COMP359",
+   "nome": "Programação 1",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM002"
+  },
+  {
+   "id": "4rtxa5hsnp",
+   "curso": "cc",
+   "per": "1",
+   "cod": "COMP360",
+   "nome": "Lógica para Computação",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM014"
+  },
+  {
+   "id": "pd9mu3ssnp",
+   "curso": "cc",
+   "per": "1",
+   "cod": "COMP361",
+   "nome": "Computação, Sociedade e Ética",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM047, CCOM046"
+  },
+  {
+   "id": "lndqnjlsnp",
+   "curso": "cc",
+   "per": "1",
+   "cod": "COMP362",
+   "nome": "Matemática Discreta",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM010"
+  },
+  {
+   "id": "mh6ejcosnp",
+   "curso": "cc",
+   "per": "1",
+   "cod": "COMP363",
+   "nome": "Cálculo Diferencial e Integral",
+   "ch": 144,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM004, CCOM011"
+  },
+  {
+   "id": "wkw1mfgsnp",
+   "curso": "cc",
+   "per": "2",
+   "cod": "COMP364",
+   "nome": "Estrutura de Dados",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Programação 1"
+   ],
+   "co": [],
+   "equiv": "CCOM009"
+  },
+  {
+   "id": "gcncgc4snp",
+   "curso": "cc",
+   "per": "2",
+   "cod": "COMP365",
+   "nome": "Banco de Dados",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM021"
+  },
+  {
+   "id": "uoyeehlsnp",
+   "curso": "cc",
+   "per": "2",
+   "cod": "COMP366",
+   "nome": "Organização e Arquitetura de Computadores",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM026"
+  },
+  {
+   "id": "3dquwgvsnp",
+   "curso": "cc",
+   "per": "2",
+   "cod": "COMP367",
+   "nome": "Geometria Analítica",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM005"
+  },
+  {
+   "id": "dfyqqygsnp",
+   "curso": "cc",
+   "per": "3",
+   "cod": "COMP368",
+   "nome": "Redes de Computadores",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Programação 1"
+   ],
+   "co": [],
+   "equiv": "CCOM032"
+  },
+  {
+   "id": "u2mpfclsnp",
+   "curso": "cc",
+   "per": "3",
+   "cod": "COMP369",
+   "nome": "Teoria dos Grafos",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Estrutura de Dados",
+    "Matemática Discreta"
+   ],
+   "co": [],
+   "equiv": "CCOM030, CCOM039"
+  },
+  {
+   "id": "04ozkijsnp",
+   "curso": "cc",
+   "per": "3",
+   "cod": "COMP370",
+   "nome": "Probabilidade e Estatística",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Cálculo Diferencial e Integral"
+   ],
+   "co": [],
+   "equiv": "CCOM022"
+  },
+  {
+   "id": "dkr865jsnp",
+   "curso": "cc",
+   "per": "3",
+   "cod": "COMP371",
+   "nome": "Álgebra Linear",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Geometria Analítica"
+   ],
+   "co": [],
+   "equiv": "CCOM012"
+  },
+  {
+   "id": "2rlgvfrsnp",
+   "curso": "cc",
+   "per": "4",
+   "cod": "COMP372",
+   "nome": "Programação 2",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Estrutura de Dados",
+    "Banco de Dados",
+    "Redes de Computadores"
+   ],
+   "co": [
+    "Programação 3"
+   ],
+   "equiv": "CCOM016"
+  },
+  {
+   "id": "q6qylllsnp",
+   "curso": "cc",
+   "per": "4",
+   "cod": "COMP373",
+   "nome": "Programação 3",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Estrutura de Dados",
+    "Banco de Dados",
+    "Redes de Computadores"
+   ],
+   "co": [
+    "Programação 2"
+   ],
+   "equiv": "CCOM007, CCOM006"
+  },
+  {
+   "id": "k53apthsnp",
+   "curso": "cc",
+   "per": "4",
+   "cod": "COMP374",
+   "nome": "Projeto e Análise de Algoritmos",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Estrutura de Dados",
+    "Teoria dos Grafos"
+   ],
+   "co": [],
+   "equiv": "CCOM020"
+  },
+  {
+   "id": "ujvu47bsnp",
+   "curso": "cc",
+   "per": "4",
+   "cod": "COMP376",
+   "nome": "Teoria da Computação",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM008, CCOM015"
+  },
+  {
+   "id": "4xdsksrsnp",
+   "curso": "cc",
+   "per": "4",
+   "cod": "COMP377",
+   "nome": "Prática de Extensão em Ciência da Computação 1",
+   "ch": 75,
+   "tipo": "X",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "79gjjgksnp",
+   "curso": "cc",
+   "per": "5",
+   "cod": "COMP378",
+   "nome": "Sistemas Operacionais",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Organização e Arquitetura de Computadores"
+   ],
+   "co": [],
+   "equiv": "CCOM034"
+  },
+  {
+   "id": "cceo245snp",
+   "curso": "cc",
+   "per": "5",
+   "cod": "COMP379",
+   "nome": "Compiladores",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Estrutura de Dados",
+    "Teoria da Computação"
+   ],
+   "co": [],
+   "equiv": "CCOM035"
+  },
+  {
+   "id": "5me83kzsnp",
+   "curso": "cc",
+   "per": "5",
+   "cod": "COMP380",
+   "nome": "Inteligência Artificial",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Lógica para Computação",
+    "Estrutura de Dados"
+   ],
+   "co": [],
+   "equiv": "CCOM033"
+  },
+  {
+   "id": "h2esb4fsnp",
+   "curso": "cc",
+   "per": "5",
+   "cod": "COMP381",
+   "nome": "Computação Gráfica",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM041"
+  },
+  {
+   "id": "02lf9lwsnp",
+   "curso": "cc",
+   "per": "5",
+   "cod": "COMP383",
+   "nome": "Prática de Extensão em Ciência da Computação 2",
+   "ch": 75,
+   "tipo": "X",
+   "preModo": "lista",
+   "pre": [
+    "Prática de Extensão em Ciência da Computação 1"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "gf7bl7csnp",
+   "curso": "cc",
+   "per": "6",
+   "cod": "COMP382",
+   "nome": "Projeto e Desenvolvimento de Sistemas",
+   "ch": 288,
+   "tipo": "O",
+   "preModo": "ate5",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM003, CCOM023, CCOM028, CCOM031, CCOM036, CCOM042"
+  },
+  {
+   "id": "4p9m37bsnp",
+   "curso": "cc",
+   "per": "6",
+   "cod": "COMP384",
+   "nome": "Prática de Extensão em Ciência da Computação 3",
+   "ch": 75,
+   "tipo": "X",
+   "preModo": "lista",
+   "pre": [
+    "Prática de Extensão em Ciência da Computação 2"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "fw90wj7snp",
+   "curso": "cc",
+   "per": "7",
+   "cod": "COMP386",
+   "nome": "Metodologia de Pesquisa e Trabalho Individual",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM001, CCOM013"
+  },
+  {
+   "id": "zr7jhirsnp",
+   "curso": "cc",
+   "per": "7",
+   "cod": "COMP387",
+   "nome": "Noções de Direito",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM045"
+  },
+  {
+   "id": "df64mjqsnp",
+   "curso": "cc",
+   "per": "7",
+   "cod": "COMP388",
+   "nome": "Prática de Extensão em Ciência da Computação 4",
+   "ch": 75,
+   "tipo": "X",
+   "preModo": "lista",
+   "pre": [
+    "Prática de Extensão em Ciência da Computação 3"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "zmwpjaqsnp",
+   "curso": "cc",
+   "per": "8",
+   "cod": "COMP385",
+   "nome": "Prática de Extensão em Ciência da Computação 5",
+   "ch": 75,
+   "tipo": "X",
+   "preModo": "lista",
+   "pre": [
+    "Prática de Extensão em Ciência da Computação 4"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "sbd2wzcsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP404",
+   "nome": "Cálculo 3",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Cálculo Diferencial e Integral"
+   ],
+   "co": [],
+   "equiv": "CCOM025"
+  },
+  {
+   "id": "n1fxql8snp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP389",
+   "nome": "Conceitos de Linguagem de Programação",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM027"
+  },
+  {
+   "id": "t7x1qwtsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP390",
+   "nome": "Aprendizagem de Máquina",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Cálculo 3"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "qjmi870snp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP391",
+   "nome": "Sistemas Digitais",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Cálculo 3"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "p7m81g3snp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP392",
+   "nome": "Sistemas Distribuídos",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": "CCOM044"
+  },
+  {
+   "id": "nrtg3q6snp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP393",
+   "nome": "Redes Neurais e Aprendizado Profundo",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "v5vunagsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "—",
+   "nome": "FPGA",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "7owvf8tsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP395",
+   "nome": "Interação Homem-Máquina",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Programação 3"
+   ],
+   "co": [],
+   "equiv": "CCOM043, CCOM046"
+  },
+  {
+   "id": "e9omksvsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP396",
+   "nome": "Processamento Digital de Imagens",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Computação Gráfica"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "1zwiz5ysnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP397",
+   "nome": "Computação Evolucionária",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "b2yy7sesnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP398",
+   "nome": "Sistemas Embarcados",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "h8lie2bsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP399",
+   "nome": "Gerência de Projeto",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Projeto e Desenvolvimento de Sistemas"
+   ],
+   "co": [],
+   "equiv": "CCOM048"
+  },
+  {
+   "id": "vae8o0usnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP400",
+   "nome": "Visão Computacional",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "wly6uj2snp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP401",
+   "nome": "Ciência de Dados",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Probabilidade e Estatística"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "qmch59fsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP402",
+   "nome": "Microcontroladores e Aplicações",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "ftjvrhqsnp",
+   "curso": "cc",
+   "per": "N",
+   "cod": "COMP403",
+   "nome": "Segurança de Sistemas Computacionais",
+   "ch": 72,
+   "tipo": "N",
+   "preModo": "lista",
+   "pre": [
+    "Redes de Computadores"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "wtxb2yqsnp",
+   "curso": "cc",
+   "per": "2",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "h10jmxzsnp",
+   "curso": "cc",
+   "per": "3",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "rsve2iqsnp",
+   "curso": "cc",
+   "per": "4",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "xq5z8v4snp",
+   "curso": "cc",
+   "per": "5",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "0w1gvatsnp",
+   "curso": "cc",
+   "per": "6",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "oy93gybsnp",
+   "curso": "cc",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "xq1svppsnp",
+   "curso": "cc",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "crz9624snp",
+   "curso": "cc",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "6lc5n80snp",
+   "curso": "cc",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "5b2vdc1snp",
+   "curso": "cc",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "39zdoi6snp",
+   "curso": "cc",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "l6ov6awsnp",
+   "curso": "cc",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "k8bh7r6snp",
+   "curso": "cc",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "tde1dhasnp",
+   "curso": "ec",
+   "per": "1",
+   "cod": "ECOM001",
+   "nome": "Inglês Instrumental",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "1yxfqpksnp",
+   "curso": "ec",
+   "per": "1",
+   "cod": "ECOM002",
+   "nome": "Programação 1",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "g2dnt40snp",
+   "curso": "ec",
+   "per": "1",
+   "cod": "ECOM003",
+   "nome": "Matemática Discreta",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "m4dh5trsnp",
+   "curso": "ec",
+   "per": "1",
+   "cod": "ECOM004",
+   "nome": "Cálculo 1",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "rh2m6uesnp",
+   "curso": "ec",
+   "per": "1",
+   "cod": "ECOM005",
+   "nome": "Geometria Analítica",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "znfgjwrsnq",
+   "curso": "ec",
+   "per": "1",
+   "cod": "ECOM006",
+   "nome": "Introdução à Engenharia da Computação",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "tddslchsnq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM007",
+   "nome": "Lógica Aplicada à Computação",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "p4gmloxsnq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM008",
+   "nome": "Estrutura de Dados",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "nk7c752snq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM009",
+   "nome": "Física 1",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "01sl8m7snq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM010",
+   "nome": "Cálculo 2",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "8re9cd3snq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM011",
+   "nome": "Álgebra Linear",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "iar026hsnq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM012",
+   "nome": "Circuitos Digitais",
+   "ch": 30,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "dtdot3ysnq",
+   "curso": "ec",
+   "per": "2",
+   "cod": "ECOM013",
+   "nome": "Desenho",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "th4zj9lsnq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM014",
+   "nome": "Linguagens Formais, Autômatos e Computabilidade",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "y2yfbtksnq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM015",
+   "nome": "Projeto de Software",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "xbb8mp6snq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM016",
+   "nome": "Física 2",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "e4rw6prsnq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM017",
+   "nome": "Cálculo 3",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "01trdkjsnq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM018",
+   "nome": "Metodologia da Pesquisa e do Trabalho Científico",
+   "ch": 30,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "i9sqi2fsnq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM019",
+   "nome": "Sistemas Digitais",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "hwsubn2snq",
+   "curso": "ec",
+   "per": "3",
+   "cod": "ECOM057",
+   "nome": "Química Tecnológica",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "a8y6uhcsnq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM020",
+   "nome": "Probabilidade e Estatística",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "txajoqwsnq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM021",
+   "nome": "Engenharia de Software",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "q5t2p30snq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM022",
+   "nome": "Física 3",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "7esl91osnq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM023",
+   "nome": "Cálculo 4",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "mfelf60snq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM024",
+   "nome": "Variáveis Complexas",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "tp2p6wgsnq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM025",
+   "nome": "Organização e Arquitetura de Computadores",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "vucw005snq",
+   "curso": "ec",
+   "per": "4",
+   "cod": "ECOM026",
+   "nome": "Física Experimental 3",
+   "ch": 30,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "dpifud4snq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM027",
+   "nome": "Projeto e Análise de Algoritmos",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "iht2fhdsnq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM028",
+   "nome": "Circuitos Elétricos",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "wqtz52vsnq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM029",
+   "nome": "Redes de Computadores",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "ymkz36asnq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM030",
+   "nome": "Sinais e Sistemas",
+   "ch": 90,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "l0dhq1psnq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM031",
+   "nome": "Inteligência Artificial",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "ihbnp4isnq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM032",
+   "nome": "Sistemas Operacionais",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "npewep2snq",
+   "curso": "ec",
+   "per": "5",
+   "cod": "ECOM033",
+   "nome": "Teoria dos Grafos",
+   "ch": 30,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "ef62y01snq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM034",
+   "nome": "Princípios de Comunicação",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "nn1qvqesnq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM035",
+   "nome": "Eletrônica",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "jfguhhpsnq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM036",
+   "nome": "Métodos Numéricos",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "qbfg04isnq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM037",
+   "nome": "Sistemas de Controle 1",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "znx5ax0snq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM048",
+   "nome": "Computador, Sociedade e Ética",
+   "ch": 30,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "2kt0bmwsnq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM040",
+   "nome": "Empreendedorismo",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "k49fr0asnq",
+   "curso": "ec",
+   "per": "6",
+   "cod": "ECOM118",
+   "nome": "Fenômenos de Transporte",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "rrw3n0psnq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "ECOM058",
+   "nome": "Sistemas de Controle 2",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "5rbepudsnq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "ECOM041",
+   "nome": "Banco de Dados",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "zqyied6snq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "ECOM059",
+   "nome": "Microcontroladores e Aplicações",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "pq081lysnq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "ECOM060",
+   "nome": "Instrumentação Eletrônica",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "h3eqlljsnq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "ECOM063",
+   "nome": "Processamento Digital de Sinais",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "8cjgarpsnq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "ECOM046",
+   "nome": "Noções de Direito",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "lz9vloesnq",
+   "curso": "ec",
+   "per": "7",
+   "cod": "—",
+   "nome": "Disciplinas Eletivas",
+   "ch": "",
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "m7ydd02snq",
+   "curso": "ec",
+   "per": "8",
+   "cod": "ECOM042",
+   "nome": "Sistemas Embarcados",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "1qu79issnq",
+   "curso": "ec",
+   "per": "8",
+   "cod": "ECOM061",
+   "nome": "Automação Industrial",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "raznbscsnq",
+   "curso": "ec",
+   "per": "8",
+   "cod": "ECOM039",
+   "nome": "Computação Gráfica e Processamento de Imagens",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "6qds9vhsnq",
+   "curso": "ec",
+   "per": "8",
+   "cod": "ECOM062",
+   "nome": "Robótica",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "x8jjme3snq",
+   "curso": "ec",
+   "per": "8",
+   "cod": "ECOM044",
+   "nome": "Sistemas Distribuídos",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "b3rcumnsnq",
+   "curso": "ec",
+   "per": "8",
+   "cod": "ECOM119",
+   "nome": "Mecânica dos Sólidos",
+   "ch": 60,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "3tphmx9snq",
+   "curso": "ec",
+   "per": "9",
+   "cod": "ECOM126",
+   "nome": "Estágio Supervisionado",
+   "ch": 160,
+   "tipo": "S",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "1ojps02snq",
+   "curso": "ec",
+   "per": "9",
+   "cod": "—",
+   "nome": "Disciplinas Eletivas",
+   "ch": "",
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "tjqm90dsnq",
+   "curso": "ec",
+   "per": "10",
+   "cod": "—",
+   "nome": "Disciplinas Eletivas",
+   "ch": "",
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "70pfdaisnq",
+   "curso": "ia",
+   "per": "1",
+   "cod": "—",
+   "nome": "Matemática Discreta para Computação",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "falexjwsnq",
+   "curso": "ia",
+   "per": "1",
+   "cod": "—",
+   "nome": "Programação 1",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "rkcwa05snq",
+   "curso": "ia",
+   "per": "1",
+   "cod": "—",
+   "nome": "Introdução à Inteligência Artificial",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "6we706psnq",
+   "curso": "ia",
+   "per": "1",
+   "cod": "—",
+   "nome": "Introdução à Ciência de Dados",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "6vlkoe5snq",
+   "curso": "ia",
+   "per": "2",
+   "cod": "—",
+   "nome": "Cálculo 1",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "nenhum",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "7gscja2snq",
+   "curso": "ia",
+   "per": "2",
+   "cod": "—",
+   "nome": "Programação 2",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Programação 1"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "pz0lvzmsnq",
+   "curso": "ia",
+   "per": "2",
+   "cod": "—",
+   "nome": "Lógica para Inteligência Artificial",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "3zn6oknsnq",
+   "curso": "ia",
+   "per": "2",
+   "cod": "—",
+   "nome": "Estatística e Probabilidade para Computação",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "q8oehi5snq",
+   "curso": "ia",
+   "per": "3",
+   "cod": "—",
+   "nome": "Cálculo 2",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "yehfe1asnq",
+   "curso": "ia",
+   "per": "3",
+   "cod": "—",
+   "nome": "Banco de Dados",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "6jw76qvsnq",
+   "curso": "ia",
+   "per": "3",
+   "cod": "—",
+   "nome": "Álgebra Linear e Geometria Analítica",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "28taht2snq",
+   "curso": "ia",
+   "per": "3",
+   "cod": "—",
+   "nome": "Ciência de Dados",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "cg809w0snq",
+   "curso": "ia",
+   "per": "4",
+   "cod": "—",
+   "nome": "Cálculo 3",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "a3sdz13snq",
+   "curso": "ia",
+   "per": "4",
+   "cod": "—",
+   "nome": "Programação 3",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "qgdjn5bsnq",
+   "curso": "ia",
+   "per": "4",
+   "cod": "—",
+   "nome": "Inteligência Artificial Simbólica",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "9gka5lbsnq",
+   "curso": "ia",
+   "per": "4",
+   "cod": "—",
+   "nome": "Aprendizado de Máquina Supervisionado",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "qeeo3ahsnq",
+   "curso": "ia",
+   "per": "5",
+   "cod": "—",
+   "nome": "Teoria da Computação e Autômatos",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "tjmu6etsnq",
+   "curso": "ia",
+   "per": "5",
+   "cod": "—",
+   "nome": "Ética em Inteligência Artificial",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "dk2wg5ssnq",
+   "curso": "ia",
+   "per": "5",
+   "cod": "—",
+   "nome": "Aprendizado por Reforço",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "acpst2csnq",
+   "curso": "ia",
+   "per": "5",
+   "cod": "—",
+   "nome": "Aprendizado de Máquina Não Supervisionado",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "ogm8q6isnq",
+   "curso": "ia",
+   "per": "6",
+   "cod": "—",
+   "nome": "Visão Computacional",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "eb979jisnq",
+   "curso": "ia",
+   "per": "6",
+   "cod": "—",
+   "nome": "Engenharia de Software para Inteligência Artificial",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "gchydeesnq",
+   "curso": "ia",
+   "per": "6",
+   "cod": "—",
+   "nome": "Redes Neurais e Aprendizado Profundo",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "22z8mflsnq",
+   "curso": "ia",
+   "per": "6",
+   "cod": "—",
+   "nome": "Processamento de Linguagem Natural",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "d4zvtnmsnq",
+   "curso": "ia",
+   "per": "7",
+   "cod": "—",
+   "nome": "Inteligência Artificial Generativa e Modelos de Linguagem",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "lista",
+   "pre": [
+    "Aprendizado de Máquina Supervisionado",
+    "Processamento de Linguagem Natural"
+   ],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "hfpnkrpsnq",
+   "curso": "ia",
+   "per": "8",
+   "cod": "—",
+   "nome": "Metodologia Científica",
+   "ch": 72,
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "n8o7ovnsnq",
+   "curso": "ia",
+   "per": "9",
+   "cod": "—",
+   "nome": "Trabalho de Conclusão de Curso (TCC)",
+   "ch": "",
+   "tipo": "O",
+   "preModo": "naoconsta",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "17xfdmzsnq",
+   "curso": "ia",
+   "per": "3",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "6s4okpesnq",
+   "curso": "ia",
+   "per": "4",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "97kzs2lsnq",
+   "curso": "ia",
+   "per": "5",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "ds4l7vfsnq",
+   "curso": "ia",
+   "per": "6",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "era48wxsnq",
+   "curso": "ia",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "m7nrsy9snq",
+   "curso": "ia",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "4p3xk2rsnq",
+   "curso": "ia",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "y9okdc1snq",
+   "curso": "ia",
+   "per": "7",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "1glbg0esnq",
+   "curso": "ia",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "s9tpmeksnq",
+   "curso": "ia",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "retz2yusnq",
+   "curso": "ia",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "psqc3mesnq",
+   "curso": "ia",
+   "per": "8",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "pd0rc8ysnq",
+   "curso": "ia",
+   "per": "9",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "304svnfsnq",
+   "curso": "ia",
+   "per": "9",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "u8fuhv0snq",
+   "curso": "ia",
+   "per": "9",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  },
+  {
+   "id": "7kpjf4ysnq",
+   "curso": "ia",
+   "per": "9",
+   "cod": "—",
+   "nome": "Eletiva",
+   "ch": 72,
+   "tipo": "E",
+   "preModo": "var",
+   "pre": [],
+   "co": [],
+   "equiv": ""
+  }
+ ],
+ "ia_config": {
+  "nome_assistente": "Assistente GIC",
+  "modelo": "gpt-4o-mini",
+  "prompt_sistema": "Você é o assistente virtual do GIC (Guia do Ingressante em Computação) do Instituto de Computação da UFAL. Responda de forma clara, acolhedora e objetiva usando exclusivamente as informações oficiais da base de conhecimento abaixo. Se não tiver certeza ou se o assunto exigir protocolo formal, oriente o aluno a procurar a secretaria ou coordenação do IC.",
+  "mensagem_boas_vindas": "Olá! Sou o assistente do GIC. Como posso ajudar no seu início de curso no IC-UFAL?",
+  "sugestoes_rapidas": [
+   "Como funciona a média (AB1 e AB2)?",
+   "Como solicitar o e-mail @ic.ufal.br?",
+   "Quais documentos preciso para o VAMU?",
+   "Como trancar uma disciplina?"
+  ],
+  "mensagem_fallback": "Para esse caso específico, recomendo confirmar diretamente com a secretaria ou a coordenação do seu curso no IC."
+ },
+ "ia_conhecimento": [
+  {
+   "id": "ia-notas",
+   "ativo": true,
+   "categoria": "regras",
+   "intencao": "Cálculo de notas (AB1, AB2, Reavaliação e Final)",
+   "instrucao": "Explique que o semestre possui AB1 e AB2. Média >= 7,0 aprova direto; média < 5,0 reprova por nota; entre 5,0 e 6,9 o aluno faz a Reavaliação, que substitui a menor AB e exige nova média >= 5,5. Sugira usar a aba Calculadora do portal.",
+   "palavras_chave": "nota, ab1, ab2, reavaliação, média, final, reprovação",
+   "encaminhar_secretaria": false
+  },
+  {
+   "id": "ia-email-ic",
+   "ativo": true,
+   "categoria": "sistemas",
+   "intencao": "Criação e uso do e-mail @ic.ufal.br",
+   "instrucao": "Informe que o e-mail @ic.ufal.br é gerenciado pelo Setor de TI do IC e serve também para login nos computadores Linux dos laboratórios e acesso à rede interna. A solicitação é feita no início do semestre levando o Atestado de Matrícula do SIGAA.",
+   "palavras_chave": "email, ic.ufal.br, laboratório, linux, login, ti",
+   "encaminhar_secretaria": false
+  },
+  {
+   "id": "ia-trancamento",
+   "ativo": true,
+   "categoria": "matricula",
+   "intencao": "Trancamento de disciplina ou curso",
+   "instrucao": "Esclareça que o trancamento de disciplina ou curso segue os prazos do Calendário Acadêmico da UFAL e é solicitado à coordenação do curso por formulário (máximo de 4 semestres para trancamento de curso).",
+   "palavras_chave": "trancar, trancamento, cancelar matéria, desistir",
+   "encaminhar_secretaria": true
+  },
+  {
+   "id": "ia-equivalencia",
+   "ativo": true,
+   "categoria": "matricula",
+   "intencao": "Aproveitamento de estudos e equivalência de disciplinas",
+   "instrucao": "Informe que o aproveitamento de disciplinas cursadas em outra instituição ou currículo antigo passa por análise do colegiado. Oriente o aluno a separar histórico escolar e ementas e abrir processo na secretaria.",
+   "palavras_chave": "equivalência, aproveitamento, dispensa, transferência",
+   "encaminhar_secretaria": true
+  }
+ ]
+}

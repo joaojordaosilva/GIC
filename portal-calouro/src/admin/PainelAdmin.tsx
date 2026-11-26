@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { useState, useMemo, useEffect, useRef, useId } from 'react';
+import { apiAdmin } from './apiAdmin';
 
 const STORAGE_KEY = 'gic-admin-conteudo-v2';
 
@@ -176,61 +177,6 @@ const OP_SECOES = [
       { id: 'ej', titulo: 'Empresa Júnior', descricao: 'Viva a experiência de uma empresa real ainda na graduação. Desenvolva sites, sistemas e lide com clientes reais sob a orientação de professores.', link: '#', tags: ['mercado', 'web', 'experiência'], img: '' },
       { id: 'mural', titulo: 'Mural de Estágios', descricao: 'Acompanhe as vagas divulgadas pela coordenação em parceria com empresas locais e nacionais (remoto).', link: '#', tags: ['vagas', 'trabalho', 'remoto'], img: '' }
     ] }
-];
-
-const TUT_CONFIG = {
-  titulo: 'Guia e Tutoriais do Aluno',
-  subtitulo: 'Clique nos tópicos para visualizar o passo a passo de cada procedimento acadêmico.'
-};
-
-const TUT_SECOES = [
-  {
-    id: 'sigaa',
-    icone: '📂',
-    titulo: 'SIGAA - Sistema Integrado de Gestão de Atividades Acadêmicas',
-    itens: [
-      {
-        id: 'trancamento-sigaa',
-        titulo: 'Como trancar uma disciplina ou curso?',
-        descricao: 'Para realizar o trancamento, o aluno deve seguir o caminho demonstrado abaixo diretamente no sistema acadêmico:',
-        passos: [
-          'Acesse o SIGAA com seu login e senha institucional.',
-          'Navegue até a aba **Ensino > Matrícula On-Line**.',
-          'Selecione a opção **Trancamento de Matrícula em Componente Curricular** (para disciplinas) ou a opção equivalente para o curso.',
-          'Confira os dados, confirme a solicitação e guarde o comprovante.'
-        ],
-        img: 'https://portal.ufrrj.br/wp-content/uploads/2019/03/Trancamento-de-Matr%C3%ADcula-1-1.png',
-        imgAlt: 'Exemplo da tela de trancamento de matrícula'
-      },
-      {
-        id: 'emitir-documentos',
-        titulo: 'Como emitir o histórico escolar ou declaração de matrícula?',
-        descricao: '',
-        passos: [
-          'No menu inicial do discente, acesse a aba **Ensino**.',
-          'Clique em **Emitir Declaração de Vínculo** ou **Emitir Histórico**.',
-          'O documento em PDF será gerado com código de autenticação digital.'
-        ],
-        img: '',
-        imgAlt: ''
-      }
-    ]
-  },
-  {
-    id: 'carteirinha-acesso',
-    icone: '📂',
-    titulo: 'Carteirinha Estudantil e Acesso ao Campus',
-    itens: [
-      {
-        id: 'identidade-estudantil',
-        titulo: 'Como solicitar a identidade estudantil física/digital?',
-        descricao: 'O calouro deve comparecer ao setor de atendimento acadêmico ou solicitar via requerimento online anexando documento oficial com foto e comprovante de matrícula ativo.',
-        passos: [],
-        img: '',
-        imgAlt: ''
-      }
-    ]
-  }
 ];
 
 const IA_CONFIG = {
@@ -505,7 +451,6 @@ function seedDisciplinas() {
   return [...cc, ...ec, ...ia];
 }
 
-/* Monta o estado inicial completo combinando todos os seeds das páginas */
 function estadoInicial() {
   return {
     home_hero: clone(HOME_HERO),
@@ -520,9 +465,7 @@ function estadoInicial() {
     d_cursos: clone(D_CURSOS),
     d_disciplinas: seedDisciplinas(),
     ia_config: clone(IA_CONFIG),
-    ia_conhecimento: clone(IA_CONHECIMENTO),
-    tut_config: clone(TUT_CONFIG),
-    tut_secoes: clone(TUT_SECOES)
+    ia_conhecimento: clone(IA_CONHECIMENTO)
   };
 }
 
@@ -534,7 +477,7 @@ export const repositorio = {
     } catch (e) { return estadoInicial(); }
   },
   salvar(estado) {
-    /* Persistência local; substituir por chamada à API quando o back-end estiver integrado */
+    // TODO (Back-end): trocar por fetch('/api/conteudo', { method: 'PUT', body: JSON.stringify(estado) })
     localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
   }
 };
@@ -633,50 +576,6 @@ const COLECOES = {
       { k: 'out', label: 'Saída do programa', tipo: 'text' }
     ] },
 
-  /* Coleções da página de Tutoriais (tópicos, passo a passo e cabeçalho) */
-  tut_secoes: {
-    id: 'tut_secoes',
-    pagina: 'tutoriais',
-    titulo: 'Tópicos e tutoriais',
-    descr: 'Grupos principais e os tutoriais passo a passo dentro de cada um.',
-    rotuloNovo: 'Novo tópico',
-    slugDe: 'titulo',
-    tituloItem: (i) => `${i.icone || ''} ${i.titulo}`.trim(),
-    subItem: (i) => `${(i.itens || []).length} tutorial(is)`,
-    novo: () => ({ icone: '📂', itens: [] }),
-    campos: [
-      { k: 'id', label: 'ID', tipo: 'text', somenteNovo: true, ajuda: 'Gerado automaticamente do título.' },
-      { k: 'icone', label: 'Ícone (emoji)', tipo: 'text', ph: '📂' },
-      { k: 'titulo', label: 'Título do tópico principal', tipo: 'text', obrigatorio: true, largo: true },
-      {
-        k: 'itens',
-        label: 'Tutoriais deste tópico',
-        tipo: 'grupo',
-        fechado: true,
-        resumo: (g) => g.titulo || 'Novo tutorial',
-        campos: [
-          { k: 'id', tipo: 'text', oculto: true },
-          { k: 'titulo', label: 'Pergunta / Título do tutorial', tipo: 'text', obrigatorio: true, largo: true },
-          { k: 'descricao', label: 'Texto introdutório (opcional)', tipo: 'textarea', linhas: 3 },
-          { k: 'passos', label: 'Passo a passo numerado', tipo: 'lista', longo: true, addLabel: 'Adicionar passo', ajuda: 'Use **texto** para destacar em negrito.' },
-          { k: 'img', label: 'URL da imagem de exemplo (opcional)', tipo: 'text', ph: 'https://...' },
-          { k: 'imgAlt', label: 'Descrição da imagem (alt)', tipo: 'text', ph: 'Ex.: Tela de trancamento no SIGAA' }
-        ]
-      }
-    ]
-  },
-  tut_config: {
-    id: 'tut_config',
-    pagina: 'tutoriais',
-    singleton: true,
-    titulo: 'Cabeçalho da página',
-    descr: 'Título e instrução exibidos no topo da aba Tutoriais.',
-    campos: [
-      { k: 'titulo', label: 'Título da página', tipo: 'text', obrigatorio: true, largo: true },
-      { k: 'subtitulo', label: 'Subtítulo / orientação', tipo: 'textarea', linhas: 2 }
-    ]
-  },
-
   d_cursos: { id: 'd_cursos', pagina: 'disciplinas', titulo: 'Cursos', descr: 'Resumo, textos, notas e ênfases de cada curso.', rotuloNovo: 'Novo curso',
     refs: [{ col: 'd_disciplinas', k: 'curso', rot: 'disciplinas' }],
     tituloItem: (i) => i.nome, subItem: (i, s) => `${(s.d_disciplinas || []).filter((d) => d.curso === i.id).length} disciplina(s) · id: ${i.id}`,
@@ -770,11 +669,9 @@ const COLECOES = {
     ] }
 };
 
-/* Mapeamento das páginas exibidas no menu lateral e na visão geral */
 const PAGINAS = [
   { id: 'inicio', nome: 'Início', icone: '🏠', descr: 'Capa do site e carrossel de notícias.', cols: ['home_hero', 'home_noticias'] },
   { id: 'calouro', nome: 'Sou calouro', icone: '🎓', descr: 'Guia rápido, tópicos, "quem resolve" e simulador de terminal.', cols: ['c_cards', 'c_topicos', 'c_quem', 'c_terminal', 'c_config'] },
-  { id: 'tutoriais', nome: 'Tutoriais', icone: '📖', descr: 'Guias passo a passo e procedimentos acadêmicos.', cols: ['tut_secoes', 'tut_config'] },
   { id: 'disciplinas', nome: 'Matriz Curricular', icone: '📚', descr: 'Cursos, fluxo padrão, ênfases e catálogo de disciplinas.', cols: ['d_disciplinas', 'd_cursos'] },
   { id: 'oportunidades', nome: 'Oportunidades', icone: '🚀', descr: 'Laboratórios, monitoria, extensão e mercado.', cols: ['op_secoes', 'op_categorias'] },
   { id: 'chatbot', nome: 'Assistente IA', icone: '🤖', descr: 'Base de conhecimento, prompt de sistema e sugestões do chatbot.', cols: ['ia_conhecimento', 'ia_config'] }
@@ -1134,7 +1031,13 @@ function ColecaoEditor(props) {
 const contar = (col, store) => (col.singleton ? 'configuração' : `${(store[col.id] || []).length} item(ns)`);
 
 export default function PainelAdmin({ onVoltarSite, onLogout }) {
-  const [estado, setEstado] = useState(() => repositorio.carregar());
+  // O conteúdo vem do back-end (PostgreSQL). Começa com os dados iniciais só para a tela não ficar vazia
+  // e fica bloqueado até a carga terminar, para nunca salvar por cima do banco sem ter lido.
+  const [estado, setEstado] = useState(() => estadoInicial());
+  const [revisao, setRevisao] = useState(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erroCarga, setErroCarga] = useState('');
+  const [salvando, setSalvando] = useState(false);
   const [sujo, setSujo] = useState(false);
   const [pagina, setPagina] = useState('painel');
   const [colAtiva, setColAtiva] = useState({});
@@ -1149,6 +1052,28 @@ export default function PainelAdmin({ onVoltarSite, onLogout }) {
     toastTimer.current = setTimeout(() => setToast(''), 2600);
   };
 
+  const carregar = () => {
+    setCarregando(true);
+    setErroCarga('');
+    apiAdmin.carregar()
+      .then(({ revisao: rev, conteudo }) => {
+        setEstado({ ...estadoInicial(), ...conteudo });
+        setRevisao(rev);
+        setSujo(false);
+        if (Object.keys(conteudo).length === 0) {
+          // banco vazio: o painel mostra os dados originais do site; salvar grava tudo no banco
+          setSujo(true);
+          aviso('Banco vazio: clique em "Salvar alterações" para gravar os dados iniciais.');
+        }
+      })
+      .catch((e) => {
+        if (e.status === 401) { onLogout && onLogout(); return; }
+        setErroCarga(e.message || 'Não foi possível carregar o conteúdo.');
+      })
+      .finally(() => setCarregando(false));
+  };
+  useEffect(() => { carregar(); }, []);
+
   const setCol = (id, valor) => {
     setEstado((p) => ({ ...p, [id]: typeof valor === 'function' ? valor(p[id]) : valor }));
     setSujo(true);
@@ -1161,9 +1086,21 @@ export default function PainelAdmin({ onVoltarSite, onLogout }) {
     return () => window.removeEventListener('beforeunload', h);
   }, [sujo]);
 
-  const salvarTudo = () => {
-    try { repositorio.salvar(estado); setSujo(false); aviso('Alterações salvas.'); }
-    catch (e) { aviso('Não foi possível salvar. Tente novamente.'); }
+  const salvarTudo = async () => {
+    if (salvando) return;
+    setSalvando(true);
+    try {
+      const r = await apiAdmin.salvar(estado, revisao);
+      setEstado({ ...estadoInicial(), ...r.conteudo }); // ids definitivos vindos do banco
+      setRevisao(r.revisao);
+      setSujo(false);
+      aviso('Alterações salvas.');
+    } catch (e) {
+      if (e.status === 401) { aviso('Sua sessão expirou. Entre novamente.'); onLogout && onLogout(); }
+      else aviso(e.message || 'Não foi possível salvar. Tente novamente.');
+    } finally {
+      setSalvando(false);
+    }
   };
   const exportar = () => {
     const blob = new Blob([JSON.stringify(estado, null, 2)], { type: 'application/json' });
@@ -1202,6 +1139,26 @@ export default function PainelAdmin({ onVoltarSite, onLogout }) {
   const colId = pg ? colAtiva[pagina] || cols[0].id : null;
   const col = colId ? COLECOES[colId] : null;
 
+  if (carregando || erroCarga) {
+    return (
+      <div className="adm" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, textAlign: 'center' }}>
+        <style>{CSS}</style>
+        {carregando ? (
+          <p>Carregando conteúdo…</p>
+        ) : (
+          <div style={{ maxWidth: 420 }}>
+            <p><strong>Não foi possível carregar o conteúdo.</strong></p>
+            <p>{erroCarga}</p>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button type="button" className="adm-btn" onClick={carregar}>Tentar novamente</button>
+              {onLogout && <button type="button" className="adm-btn" onClick={onLogout}>Sair da conta</button>}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="adm">
       <style>{CSS}</style>
@@ -1214,7 +1171,7 @@ export default function PainelAdmin({ onVoltarSite, onLogout }) {
         </div>
         <span className="adm-flex" />
         <span className={`adm-status ${sujo ? 'dirty' : ''}`}>{sujo ? '● Alterações não salvas' : '✓ Tudo salvo'}</span>
-        <button type="button" className="adm-btn save-top" disabled={!sujo} onClick={salvarTudo}>Salvar alterações</button>
+        <button type="button" className="adm-btn save-top" disabled={!sujo || salvando} onClick={salvarTudo}>{salvando ? 'Salvando…' : 'Salvar alterações'}</button>
       </header>
 
       <div className={`adm-scrim ${menu ? 'open' : ''}`} onClick={() => setMenu(false)} />
@@ -1246,7 +1203,7 @@ export default function PainelAdmin({ onVoltarSite, onLogout }) {
           <>
             <div className="adm-hero">
               <h2>Visão geral do GIC</h2>
-              <p>Escolha uma seção para editar textos, cards, tutoriais, matriz curricular, oportunidades e a base de conhecimento da IA.</p>
+              <p>Escolha uma seção para editar textos, cards, matriz curricular, oportunidades e a base de conhecimento da IA.</p>
             </div>
             <div className="adm-cards">
               {PAGINAS.map((p) => (
@@ -1265,7 +1222,7 @@ export default function PainelAdmin({ onVoltarSite, onLogout }) {
                 </section>
               ))}
             </div>
-            <p className="adm-note">As edições ficam em rascunho até você clicar em “Salvar alterações”. Hoje o salvamento é local (navegador); depois o back-end assume o salvamento no banco.</p>
+            <p className="adm-note">As alterações são gravadas no banco de dados ao clicar em "Salvar alterações".</p>
           </>
         )}
 
@@ -1366,7 +1323,6 @@ const CSS = `
 }
 .adm-status.dirty { background: var(--amber-bg); color: #6b4b00; }
 
-/* Barra lateral com rolagem independente */
 .adm-side {
   background: var(--blue-deep);
   color: #fff;
@@ -1411,7 +1367,6 @@ const CSS = `
 }
 .adm-scrim { display: none; }
 
-/* Área principal com rolagem independente */
 .adm-main {
   padding: 26px 32px 80px;
   min-width: 0;

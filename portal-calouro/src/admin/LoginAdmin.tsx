@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { apiAdmin } from './apiAdmin';
 
 interface LoginAdminProps {
   onLoginSucesso: () => void;
@@ -10,8 +11,9 @@ export default function LoginAdmin({ onLoginSucesso, onVoltarSite }: LoginAdminP
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
+  const [enviando, setEnviando] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErro('');
 
@@ -20,11 +22,14 @@ export default function LoginAdmin({ onLoginSucesso, onVoltarSite }: LoginAdminP
       return;
     }
 
-    // Login temporário só para o front-end (depois o back-end assume aqui)
-    if (email.trim() === 'admin@ic.ufal.br' && senha === 'admin123') {
+    setEnviando(true);
+    try {
+      await apiAdmin.login(email.trim(), senha);
       onLoginSucesso();
-    } else {
-      setErro('Credenciais inválidas. Use: admin@ic.ufal.br e admin123');
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : 'Não foi possível entrar. Tente novamente.');
+    } finally {
+      setEnviando(false);
     }
   };
 
@@ -99,6 +104,7 @@ export default function LoginAdmin({ onLoginSucesso, onVoltarSite }: LoginAdminP
           cursor: pointer;
         }
         .gic-login__btn:hover { background: #004085; }
+        .gic-login__btn:disabled { opacity: 0.7; cursor: wait; }
         .gic-login__voltar {
           background: transparent;
           border: 1px solid #d9dfea;
@@ -126,7 +132,7 @@ export default function LoginAdmin({ onLoginSucesso, onVoltarSite }: LoginAdminP
           <input
             id="adm-email"
             type="email"
-            placeholder="admin@ic.ufal.br"
+            placeholder="seu.email@ic.ufal.br"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="username"
@@ -147,8 +153,8 @@ export default function LoginAdmin({ onLoginSucesso, onVoltarSite }: LoginAdminP
 
         {erro && <p className="gic-login__erro" role="alert">{erro}</p>}
 
-        <button type="submit" className="gic-login__btn">
-          Entrar no painel
+        <button type="submit" className="gic-login__btn" disabled={enviando}>
+          {enviando ? 'Entrando…' : 'Entrar no painel'}
         </button>
 
         <button type="button" className="gic-login__voltar" onClick={onVoltarSite}>
