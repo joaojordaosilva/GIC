@@ -37,6 +37,11 @@ export function tratarErros(err, req, res, next) {
         erro: 'Operação bloqueada: há registros que dependem deste.',
         detalhe: err.detail || undefined
       });
+    case '23514': // check_violation
+      return res.status(422).json({
+        erro: 'Algum valor está fora do que as regras do banco permitem.',
+        detalhe: err.constraint || undefined
+      });
     case '22001': // string_data_right_truncation
       return res.status(422).json({ erro: 'Algum texto excede o tamanho permitido pelo banco.' });
     case '22P02': // invalid_text_representation

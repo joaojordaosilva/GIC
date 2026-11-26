@@ -17,8 +17,13 @@ import { consultarDisciplinas } from './ler.js';
 //  existentes: Map  ref -> id  das linhas que já existem na tabela
 //  devolve: Map ref -> id (de todos os itens, novos e antigos)
 // ---------------------------------------------------------------------------
-const ARRAY_PG = { text: 'text[]', int: 'int[]', boolean: 'boolean[]', jsonb: 'text[]' };
-const expr = (pg, ref) => (pg === 'jsonb' ? `${ref}::jsonb` : ref);
+const ARRAY_PG = { text: 'text[]', int: 'int[]', boolean: 'boolean[]', jsonb: 'text[]', csv: 'text[]' };
+const expr = (pg, ref) => {
+  if (pg === 'jsonb') return `${ref}::jsonb`;
+  // texto "a, b, c" do painel -> lista do Postgres {a,b,c}
+  if (pg === 'csv') return `array_remove(regexp_split_to_array(btrim(${ref}), '\\s*,\\s*'), '')`;
+  return ref;
+};
 const serializar = (c, v) => (c.pg === 'jsonb' ? JSON.stringify(v ?? null) : v ?? null);
 
 export async function sincronizarTabela(client, { tabela, colunas, itens, existentes }) {
@@ -310,7 +315,7 @@ async function gravarConhecimento(ctx, itens) {
     colunas: [
       { col: 'pergunta', pg: 'text', valor: (k) => k.intencao },
       { col: 'resposta', pg: 'text', valor: (k) => k.instrucao },
-      { col: 'palavras_chave', pg: 'text', valor: (k) => k.palavras_chave },
+      { col: 'palavras_chave', pg: 'csv', valor: (k) => k.palavras_chave },
       { col: 'encaminhar_secretaria', pg: 'boolean', valor: (k) => k.encaminhar_secretaria },
       { col: 'categoria', pg: 'text', valor: (k) => k.categoria },
       { col: 'ativo', pg: 'boolean', valor: (k) => k.ativo },

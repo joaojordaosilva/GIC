@@ -136,8 +136,10 @@ export async function lerConteudo(db, { publico = false } = {}) {
   }
 
   if (quer('ia_conhecimento')) {
-    const { rows } = await db.query(
-      `SELECT id, ref_id, categoria, pergunta, resposta, palavras_chave, encaminhar_secretaria, ativo
+      const { rows } = await db.query(
+      `SELECT id, ref_id, categoria, pergunta, resposta,
+              array_to_string(palavras_chave, ', ') AS palavras_chave,
+              encaminhar_secretaria, ativo
        FROM faqs_chatbot ORDER BY ordem, id`
     );
     conteudo.ia_conhecimento = montarConhecimento(rows);

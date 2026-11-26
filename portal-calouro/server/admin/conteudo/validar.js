@@ -88,7 +88,7 @@ function disciplinas(itens) {
     const ref = idItem(d, rotulo);
 
     const per = texto(d.per, `${rotulo} · período`, { obrigatorio: true, max: 2 }).toUpperCase();
-    if (!/^(\d{1,2}|N|C)$/.test(per) || (/^\d/.test(per) && (Number(per) < 1 || Number(per) > 20))) {
+    if (!/^(\d{1,2}|N|C)$/.test(per) || (/^\d/.test(per) && (Number(per) < 1 || Number(per) > 12))) {
       throw erro(`${rotulo}: período inválido ("${per}").`);
     }
     if (!(d.tipo in TIPO_PARA_BANCO)) throw erro(`${rotulo}: tipo inválido ("${d.tipo}").`);
@@ -103,7 +103,7 @@ function disciplinas(itens) {
     let ch = null;
     if (d.ch !== '' && d.ch !== null && d.ch !== undefined) {
       ch = Number(d.ch);
-      if (!Number.isInteger(ch) || ch < 0 || ch > 10000) throw erro(`${rotulo}: carga horária inválida.`);
+      if (!Number.isInteger(ch) || ch < 1 || ch > 10000) throw erro(`${rotulo}: carga horária inválida.`);
     }
 
     return {
