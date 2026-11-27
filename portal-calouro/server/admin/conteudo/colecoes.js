@@ -13,6 +13,7 @@ export const COLECOES = {
   op_secoes: { forma: 'lista', onde: 'tabela' }, // -> oportunidades + tags + oportunidades_tags
   d_cursos: { forma: 'lista', onde: 'tabela' }, // -> cursos
   d_disciplinas: { forma: 'lista', onde: 'tabela' }, // -> disciplinas + matrizes_curriculares + pre_requisitos
+  tutoriais: { forma: 'lista', onde: 'tabela' }, // -> tutoriais
   ia_config: { forma: 'objeto', onde: 'json' },
   ia_conhecimento: { forma: 'lista', onde: 'tabela' } // -> faqs_chatbot
 };
@@ -24,6 +25,7 @@ export const SENSIVEIS = ['ia_config', 'ia_conhecimento'];
 export const ORDEM_GRAVACAO = [
   'd_cursos',
   'd_disciplinas',
+  'tutoriais',
   'home_noticias',
   'ia_conhecimento',
   'op_categorias',

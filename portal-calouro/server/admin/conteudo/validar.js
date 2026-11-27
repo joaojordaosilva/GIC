@@ -265,5 +265,31 @@ export function validarConteudo(conteudo) {
     saida[chave] = NORMALIZADORES[chave] ? NORMALIZADORES[chave](v) : v;
   }
 
+  function tutoriais(itens) {
+  const r = itens.map((t, i) => {
+    const ctx = `Tutorial #${i + 1}`;
+    return {
+      ref: idItem(t, ctx),
+      titulo: texto(t.titulo, `${ctx} · título`, { obrigatorio: true, max: 150 }),
+      categoria: texto(t.categoria, `${ctx} · categoria`, { max: 50 }),
+      conteudo: texto(t.conteudo, `${ctx} · conteúdo`, { max: 20000 }),
+      img: urlSegura(t.img, `${ctx} · URL da imagem`),
+      ativo: t.ativo !== false
+    };
+  });
+    unicos(r, 'ref', 'Tutoriais');
+    return r;
+  }
+
+  const NORMALIZADORES = {
+  d_cursos: cursos,
+  d_disciplinas: disciplinas,
+  home_noticias: noticias,
+  ia_conhecimento: conhecimento,
+  op_categorias: categoriasOportunidade,
+  op_secoes: secoesOportunidades,
+  tutoriais
+  };
+
   return saida;
 }

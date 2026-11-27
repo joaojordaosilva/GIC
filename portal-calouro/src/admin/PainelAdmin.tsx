@@ -149,6 +149,25 @@ const HOME_NOTICIAS = [
     img: 'https://noticias.ufal.br/estudante/noticias/2025/10/ufal-aprova-calendario-academico-2026-com-inicio-em-23-de-fevereiro/@@images/image-400-9e740ca6b4901d3daf2be2c98cb3ca65.jpeg', link: 'https://site-oficial-do-ic.br' }
 ];
 
+const TUTORIAIS = [
+  {
+    id: 'tut-sigaa',
+    ativo: true,
+    categoria: 'Sistemas',
+    titulo: 'Como emitir o Atestado de Matrícula no SIGAA',
+    conteudo: '1. Acesse o SIGAA com suas credenciais.\n2. Vá em Ensino → Emitir Atestado de Matrícula.\n3. Salve o PDF com o código de verificação digital.',
+    img: ''
+  },
+  {
+    id: 'tut-gcc',
+    ativo: true,
+    categoria: 'Programação',
+    titulo: 'Como compilar e rodar código C no VS Code',
+    conteudo: '1. Instale o compilador GCC (MinGW).\n2. Salve o arquivo como programa.c.\n3. No terminal, execute: gcc programa.c -o programa && .\\programa.exe',
+    img: ''
+  }
+];
+
 const OP_CATEGORIAS = [
   { id: 'pesquisa', nome: 'Pesquisa & Labs' },
   { id: 'ensino', nome: 'Monitoria & Ensino' },
@@ -455,6 +474,7 @@ function estadoInicial() {
   return {
     home_hero: clone(HOME_HERO),
     home_noticias: clone(HOME_NOTICIAS),
+    tutoriais: clone(TUTORIAIS),
     c_config: clone(C_CONFIG),
     c_topicos: clone(C_TOPICOS),
     c_cards: clone(C_CARDS),
@@ -521,7 +541,24 @@ const COLECOES = {
       { k: 'link', label: 'Link da notícia', tipo: 'text', ph: 'https://...' },
       { k: 'ativo', label: 'Exibir no site', tipo: 'bool' }
     ] },
-
+    tutoriais: {
+    id: 'tutoriais',
+    pagina: 'tutoriais',
+    titulo: 'Tutoriais',
+    descr: 'Guias passo a passo salvos diretamente na tabela tutoriais do banco.',
+    rotuloNovo: 'Novo tutorial',
+    slugDe: 'titulo',
+    tituloItem: (i) => i.titulo,
+    subItem: (i) => `${i.categoria || 'Geral'} · ${i.ativo === false ? 'Oculto' : 'Visível'}`,
+    novo: () => ({ categoria: 'Geral', ativo: true }),
+    campos: [
+      { k: 'id', tipo: 'text', oculto: true },
+      { k: 'titulo', label: 'Título do tutorial', tipo: 'text', obrigatorio: true, largo: true },
+      { k: 'categoria', label: 'Categoria', tipo: 'text', ph: 'Ex.: Sistemas, Programação, Campus' },
+      { k: 'conteudo', label: 'Conteúdo / Passo a passo', tipo: 'textarea', linhas: 6, obrigatorio: true },
+      { k: 'img', label: 'URL da imagem (opcional)', tipo: 'text', ph: 'https://...' },
+      { k: 'ativo', label: 'Exibir no site', tipo: 'bool' }
+    ]},
   c_config: { id: 'c_config', pagina: 'calouro', singleton: true, titulo: 'Textos e ajustes', descr: 'Cabeçalho, busca, calculadora de faltas e código de exemplo do terminal.',
     campos: [
       { k: 'titulo', label: 'Título da página', tipo: 'text', largo: true },
@@ -672,6 +709,7 @@ const COLECOES = {
 const PAGINAS = [
   { id: 'inicio', nome: 'Início', icone: '🏠', descr: 'Capa do site e carrossel de notícias.', cols: ['home_hero', 'home_noticias'] },
   { id: 'calouro', nome: 'Sou calouro', icone: '🎓', descr: 'Guia rápido, tópicos, "quem resolve" e simulador de terminal.', cols: ['c_cards', 'c_topicos', 'c_quem', 'c_terminal', 'c_config'] },
+  { id: 'tutoriais', nome: 'Tutoriais', icone: '📖', descr: 'Guias passo a passo e tutoriais práticos para os alunos.', cols: ['tutoriais'] },
   { id: 'disciplinas', nome: 'Matriz Curricular', icone: '📚', descr: 'Cursos, fluxo padrão, ênfases e catálogo de disciplinas.', cols: ['d_disciplinas', 'd_cursos'] },
   { id: 'oportunidades', nome: 'Oportunidades', icone: '🚀', descr: 'Laboratórios, monitoria, extensão e mercado.', cols: ['op_secoes', 'op_categorias'] },
   { id: 'chatbot', nome: 'Assistente IA', icone: '🤖', descr: 'Base de conhecimento, prompt de sistema e sugestões do chatbot.', cols: ['ia_conhecimento', 'ia_config'] }

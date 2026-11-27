@@ -426,6 +426,32 @@ async function gravarSecoesOportunidades(ctx, secoes) {
     ]
   });
 
+  async function gravarTutoriais(ctx, itens) {
+  const { client, usuarioId, gerenciadas } = ctx;
+  const existentes = await existentesDe(client, 'tutoriais');
+  checarIdsReservados(itens, existentes, 'O tutorial');
+
+  if (gerenciadas.has('tutoriais')) {
+    await removerAusentes(client, 'tutoriais', existentes, new Set(itens.map((t) => t.ref)));
+  }
+
+  const comOrdem = itens.map((t, i) => ({ ...t, ordem: i }));
+  await sincronizarTabela(client, {
+    tabela: 'tutoriais',
+    itens: comOrdem,
+    existentes,
+    colunas: [
+      { col: 'titulo', pg: 'text', valor: (t) => t.titulo },
+      { col: 'categoria', pg: 'text', valor: (t) => t.categoria || null },
+      { col: 'conteudo', pg: 'text', valor: (t) => t.conteudo || null },
+      { col: 'imagem_url', pg: 'text', valor: (t) => t.img || null },
+      { col: 'ordem', pg: 'int', valor: (t) => t.ordem },
+      { col: 'ativo', pg: 'boolean', valor: (t) => t.ativo },
+      { col: 'criado_por', pg: 'int', valor: () => usuarioId, soInsert: true }
+    ]
+  }); 
+  }
+
   if (achatados.length) {
     const opIds = achatados.map((o) => idPorRef.get(o.ref));
     await client.query('DELETE FROM oportunidades_tags WHERE oportunidade_id = ANY($1::bigint[])', [opIds]);

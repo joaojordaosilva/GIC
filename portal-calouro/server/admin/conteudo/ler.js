@@ -201,6 +201,14 @@ export async function lerConteudo(db, { publico = false } = {}) {
     conteudo.op_secoes = montarSecoesOportunidades(rows);
   }
 
+  if (quer('tutoriais')) {
+    const { rows } = await db.query(
+      `SELECT id, ref_id, titulo, categoria, conteudo, imagem_url, ativo
+       FROM tutoriais ORDER BY ordem, id`
+    );
+    conteudo.tutoriais = montarTutoriais(rows);
+  }
+
   for (const [chave, def] of Object.entries(COLECOES)) {
     if (def.onde === 'json' && quer(chave) && salvas.get(chave) !== null) {
       conteudo[chave] = salvas.get(chave);
@@ -213,3 +221,13 @@ export async function lerRevisao(db) {
   const { rows } = await db.query('SELECT revisao FROM conteudo_revisao WHERE id = 1');
   return rows[0]?.revisao ?? 0;
 }
+
+export const montarTutoriais = (rows) =>
+  rows.map((t) => ({
+    id: idPainel(t.ref_id, t.id),
+    titulo: t.titulo,
+    categoria: t.categoria ?? '',
+    conteudo: t.conteudo ?? '',
+    img: t.imagem_url ?? '',
+    ativo: t.ativo
+  }));
