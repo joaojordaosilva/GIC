@@ -1,10 +1,11 @@
 // @ts-nocheck
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useConteudo } from '../context/ConteudoContext';
 
 /* =====================================================================
-   DADOS DOS CURSOS
+   DADOS PADRÃO DOS CURSOS (FALLBACK)
    ===================================================================== */
 const CC_TXT = `1|COMP359|Programação 1|72|O
 1|COMP360|Lógica para Computação|72|O
@@ -320,7 +321,7 @@ Engenharia de Requisitos
 Introdução a Libras
 Língua Inglesa Instrumental 1`;
 
-const EQUIVALENCIAS = {
+const EQUIVALENCIAS_PADRAO = {
   "Programação 1": "CCOM002",
   "Lógica para Computação": "CCOM014",
   "Computação, Sociedade e Ética": "CCOM047, CCOM046",
@@ -365,7 +366,8 @@ function parse(txt, def) {
       uid: getUid(),
       per: isNaN(+per) ? per : +per, cod: p[1], nome: p[2], ch: p[3] ? +p[3] : null, tipo: p[4],
       pre: pre === "" ? def : pre === "?" ? null : pre === "-" ? [] : (pre === "@5" || pre === "var") ? pre : pre.split(";"),
-      co: (p[6] || "").split(";").filter(Boolean)
+      co: (p[6] || "").split(";").filter(Boolean),
+      equiv: ""
     };
   });
 }
@@ -373,12 +375,12 @@ function catalogo(txt, ch) {
   return txt.trim().split("\n").map(l => {
     const p = l.split("|");
     return p.length > 1
-      ? { uid: getUid(), per: "C", cod: p[0], nome: p[1], ch: +p[2], tipo: "E", pre: null, co: [] }
-      : { uid: getUid(), per: "C", cod: "—", nome: p[0], ch: ch, tipo: "E", pre: null, co: [] };
+      ? { uid: getUid(), per: "C", cod: p[0], nome: p[1], ch: +p[2], tipo: "E", pre: null, co: [], equiv: "" }
+      : { uid: getUid(), per: "C", cod: "—", nome: p[0], ch: ch, tipo: "E", pre: null, co: [], equiv: "" };
   });
 }
 function slots(lista, per, n, ch) {
-  for (let i = 0; i < n; i++) lista.push({ uid: getUid(), per, cod: "—", nome: "Eletiva", ch, tipo: "E", pre: "var", co: [] });
+  for (let i = 0; i < n; i++) lista.push({ uid: getUid(), per, cod: "—", nome: "Eletiva", ch, tipo: "E", pre: "var", co: [], equiv: "" });
 }
 
 const CC = parse(CC_TXT, []);
@@ -392,7 +394,7 @@ const IA = parse(IA_TXT, null);
 [[3, 1], [4, 1], [5, 1], [6, 1], [7, 4], [8, 4], [9, 4]].forEach(([p, n]) => slots(IA, p, n, 72));
 IA.push(...catalogo(IA_CAT, 72));
 
-const CURSOS = {
+const CURSOS_PADRAO = {
   cc: {
     nome: "Ciência da Computação", un: "h", disc: CC, enfases: CC_ENF,
     resumo: [["Duração", "8 a 12 semestres"], ["Carga horária", "2.952 h em disciplinas"], ["Obrigatórias", "24 disciplinas (2.016 h)"], ["Eletivas", "mínimo de 576 h"], ["Extensão", "5 práticas (375 h)"]],
@@ -450,6 +452,62 @@ function preTxt(d) {
 const reach = (g, n, s = new Set()) => { (g[n] || []).forEach(x => { if (!s.has(x)) { s.add(x); reach(g, x, s); } }); return s; };
 
 export default function Disciplinas() {
+  const { conteudo } = useConteudo();
+
+  // Mescla cursos e disciplinas do banco com os padrões
+  const CURSOS = useMemo(() => {
+    const cursosBanco = Array.isArray(conteudo.d_cursos) ? conteudo.d_cursos : [];
+    const discsBanco = Array.isArray(conteudo.d_disciplinas) ? conteudo.d_disciplinas : [];
+
+    if (cursosBanco.length === 0) return CURSOS_PADRAO;
+
+    const mapa = {};
+    cursosBanco.forEach((cb) => {
+      const discsDoCurso = discsBanco
+        .filter((d) => d.curso === cb.id)
+        .map((d, idx) => {
+          const perNum = Number(d.per);
+          const perVal = !isNaN(perNum) && String(d.per).trim() !== '' ? perNum : d.per;
+          let preVal = [];
+          if (d.preModo === 'naoconsta') preVal = null;
+          else if (d.preModo === 'ate5') preVal = '@5';
+          else if (d.preModo === 'var') preVal = 'var';
+          else if (d.preModo === 'nenhum') preVal = [];
+          else preVal = Array.isArray(d.pre) ? d.pre : [];
+
+          return {
+            uid: d.id || `${cb.id}_${idx}`,
+            per: perVal,
+            cod: d.cod || '—',
+            nome: d.nome,
+            ch: d.ch !== '' && d.ch !== null && d.ch !== undefined ? Number(d.ch) : null,
+            tipo: d.tipo || 'O',
+            pre: preVal,
+            co: Array.isArray(d.co) ? d.co : [],
+            equiv: d.equiv || '',
+          };
+        });
+
+      const padrao = CURSOS_PADRAO[cb.id];
+      mapa[cb.id] = {
+        nome: cb.nome || padrao?.nome || cb.id.toUpperCase(),
+        un: cb.un || padrao?.un || 'h',
+        disc: discsDoCurso.length > 0 ? discsDoCurso : (padrao?.disc || []),
+        enfases: Array.isArray(cb.enfases) && cb.enfases.length > 0
+          ? cb.enfases.map((e) => Array.isArray(e) ? e : [e.nome, e.disciplinas || []])
+          : (padrao?.enfases || null),
+        resumo: Array.isArray(cb.resumo) && cb.resumo.length > 0
+          ? cb.resumo.map((r) => Array.isArray(r) ? r : [r.label, r.valor])
+          : (padrao?.resumo || []),
+        fluxo: cb.fluxo || padrao?.fluxo || '',
+        fonte: cb.fonte || padrao?.fonte || '',
+        notas: Array.isArray(cb.notas) && cb.notas.length > 0 ? cb.notas : (padrao?.notas || []),
+      };
+    });
+
+    return Object.keys(mapa).length > 0 ? mapa : CURSOS_PADRAO;
+  }, [conteudo.d_cursos, conteudo.d_disciplinas]);
+
   const [cid, setCid] = useState('cc');
   const [sel, setSel] = useState(null);
   const [fp, setFp] = useState('all');
@@ -458,7 +516,14 @@ export default function Disciplinas() {
   const [expandirRelatorio, setExpandirRelatorio] = useState(false);
   const [concluidasUid, setConcluidasUid] = useState(new Set());
 
-  const curso = CURSOS[cid];
+  useEffect(() => {
+    const keys = Object.keys(CURSOS);
+    if (keys.length > 0 && !CURSOS[cid]) {
+      setCid(keys[0]);
+    }
+  }, [CURSOS, cid]);
+
+  const curso = CURSOS[cid] || Object.values(CURSOS)[0];
 
   const concluidasNomes = useMemo(() => {
     return new Set(curso.disc.filter(d => concluidasUid.has(d.uid)).map(d => d.nome));
@@ -477,7 +542,7 @@ export default function Disciplinas() {
     const byPer = {};
     flow.forEach(d => (byPer[d.per] = byPer[d.per] || []).push(d));
     return { PRE: pre, SUC: suc, flowDisc: flow, byPeriodo: byPer };
-  }, [cid]);
+  }, [curso]);
 
   const { liberadas, bloqueadas, concluidasList, horasEletivas, horasExtensao } = useMemo(() => {
     const lib = [];
@@ -718,9 +783,9 @@ export default function Disciplinas() {
               
               <div className="note" style={{ borderLeftColor: '#0056b3', backgroundColor: '#eef4fb' }}>
                   <strong>Como usar o Simulador:</strong><br/>
-                  1. Na tabela abaixo, marque a caixa de seleção (✓) nas disciplinas, ACEs ou Eletivas que você já concluiu.<br/>
-                  2. O sistema calcula automaticamente o que foi liberado e o progresso da sua carga horária.<br/>
-                  3. Clique no botão azul para baixar o relatório PDF, ou no botão cinza para o ver na tela.
+1. Na tabela abaixo, marque a caixa de seleção (✓) nas disciplinas, ACEs ou Eletivas que você já concluiu.<br/>
+2. O sistema calcula automaticamente o que foi liberado e o progresso da sua carga horária.<br/>
+3. Clique no botão azul para baixar o relatório PDF, ou no botão cinza para o ver na tela.
               </div>
 
               <div className="summary" style={{ marginTop: '15px', marginBottom: '25px' }}>
@@ -812,7 +877,7 @@ export default function Disciplinas() {
                         {linhasTabela.length === 0 ? (
                           <tr><td colSpan={7}>Nenhuma disciplina encontrada.</td></tr>
                         ) : (
-                          linhasTabela.map((d, i) => {
+                          linhasTabela.map((d) => {
                             const ef = enfasesDe(d);
                             return (
                               <tr key={d.uid} className={concluidasUid.has(d.uid) ? 'tr-concluida' : ''}>
@@ -829,7 +894,7 @@ export default function Disciplinas() {
                                 <td>{d.nome} {ef && <small>{ef}</small>}</td>
                                 <td>{chTxt(curso, d)}</td>
                                 <td><span className={"tag" + (d.tipo === "O" ? " o" : "")}>{TIPOS[d.tipo]}</span></td>
-                                <td>{EQUIVALENCIAS[d.nome] || "-"}</td>
+                                <td>{d.equiv || EQUIVALENCIAS_PADRAO[d.nome] || "-"}</td>
                               </tr>
                             );
                           })

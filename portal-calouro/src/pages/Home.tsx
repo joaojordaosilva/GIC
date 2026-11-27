@@ -1,8 +1,28 @@
 import { useEffect } from 'react';
+import { useConteudo } from '../context/ConteudoContext';
 
+const NOTICIAS_PADRAO = [
+  {
+    id: 'padrao-1',
+    titulo: 'Bem-vindo ao semestre!',
+    descricao: 'Mensagem de boas-vindas e informações iniciais para os calouros.',
+    img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcQEada5uJkQhYaFCpTQsNUVAW2FOGIJ15x8-prG0c42noVd4SGh7mPQkF&s=10',
+    link: 'https://site-oficial-do-ic.br',
+    ativo: true,
+  },
+  {
+    id: 'padrao-2',
+    titulo: 'Calendário Acadêmico',
+    descricao: 'Confira as datas importantes e os prazos do ano letivo de 2026.',
+    img: 'https://noticias.ufal.br/estudante/noticias/2025/10/ufal-aprova-calendario-academico-2026-com-inicio-em-23-de-fevereiro/@@images/image-400-9e740ca6b4901d3daf2be2c98cb3ca65.jpeg',
+    link: 'https://site-oficial-do-ic.br',
+    ativo: true,
+  },
+];
 
 function Home({ setPaginaAtiva }: { setPaginaAtiva: (pagina: string) => void }) {
-  
+  const { conteudo } = useConteudo();
+
   useEffect(() => {
     const W = 1440, H = 560, MOBILE = 900;
     const viewport = document.getElementById('viewport');
@@ -19,7 +39,6 @@ function Home({ setPaginaAtiva }: { setPaginaAtiva: (pagina: string) => void }) 
       }
       const scale = Math.min(1, vw / W);
       stage.style.transform = `scale(${scale})`;
-      // Sinais matemáticos corrigidos aqui:
       stage.style.marginLeft = vw > W ? `${(vw - W) / 2}px` : '0';
       viewport.style.height = `${H * scale}px`;
     }
@@ -29,6 +48,24 @@ function Home({ setPaginaAtiva }: { setPaginaAtiva: (pagina: string) => void }) 
 
     return () => window.removeEventListener('resize', fit);
   }, []);
+
+  const hero = conteudo.home_hero ?? {};
+  const marcaHero = hero.marca || 'GIC';
+  const tituloHero = hero.titulo || 'Guia do Ingressante em Computação';
+  const textoHero =
+    hero.texto ||
+    'Encontre aqui todos os guias, mapas e dicas essenciais para se orientar no instituto e na universidade. Tudo o que você precisa saber no seu primeiro período reunido em um só lugar.';
+  const botaoLabel = hero.botaoLabel || 'Sou calouro';
+  const botaoDestino = hero.botaoDestino || 'calouro';
+  const painelCodigo: string[] =
+    Array.isArray(hero.painelCodigo) && hero.painelCodigo.length > 0
+      ? hero.painelCodigo
+      : ['curso1 = "CC";', 'curso2 = "EC";', 'curso3 = "IA";'];
+
+  const noticiasBanco = Array.isArray(conteudo.home_noticias)
+    ? conteudo.home_noticias.filter((n) => n.ativo !== false)
+    : [];
+  const noticias = noticiasBanco.length > 0 ? noticiasBanco : NOTICIAS_PADRAO;
 
   return (
     <>
@@ -43,19 +80,34 @@ function Home({ setPaginaAtiva }: { setPaginaAtiva: (pagina: string) => void }) 
                 <path d="M83 48 L90.5 48 L92 60 L81.5 60 Z" fill="#ffffff" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round" />
               </svg>
               <div className="brand__divider"></div>
-              <div className="brand__name">GIC</div>
+              <div className="brand__name">{marcaHero}</div>
             </div>
-            <h1 className="title">Guia do Ingressante em Computação</h1>
-            <p className="text">Encontre aqui todos os guias, mapas e dicas essenciais para se orientar no instituto e na universidade. Tudo o que você precisa saber no seu primeiro período reunido em um só lugar.</p>
+            <h1 className="title">{tituloHero}</h1>
+            <p className="text">{textoHero}</p>
             <div className="actions">
-              {/* O botão agora aciona a mudança de página */}
-              <a className="btn" href="#" onClick={(e) => { e.preventDefault(); setPaginaAtiva('calouro'); }}>Sou calouro</a>
+              <a
+                className="btn"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPaginaAtiva(botaoDestino);
+                }}
+              >
+                {botaoLabel}
+              </a>
             </div>
           </div>
           <div className="panels" aria-hidden="true">
             <div className="panel panel--code">
               <div className="kw">class Aluno {'{'}</div>
-              <div className="attr">curso1 = "CC";<br/>curso2 = "EC";<br/>curso3 = "IA";</div>
+              <div className="attr">
+                {painelCodigo.map((linha, idx) => (
+                  <span key={idx}>
+                    {linha}
+                    <br />
+                  </span>
+                ))}
+              </div>
               <div className="fn">bemVindo();</div>
               <div className="kw">{'}'}</div>
             </div>
@@ -83,23 +135,26 @@ function Home({ setPaginaAtiva }: { setPaginaAtiva: (pagina: string) => void }) 
         <section>
           <h3>Notícias e Avisos</h3>
           <div className="carousel">
-            <a href="https://site-oficial-do-ic.br" className="news-card" target="_blank" rel="noreferrer">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcQEada5uJkQhYaFCpTQsNUVAW2FOGIJ15x8-prG0c42noVd4SGh7mPQkF&s=10" alt="Bem vindo" />
-              <div>
-                <h4>Bem-vindo ao semestre!</h4>
-                <p>Mensagem de boas-vindas e informações iniciais para os novos alunos.</p>
-              </div>
-            </a>
-            <a href="https://site-oficial-do-ic.br" className="news-card" target="_blank" rel="noreferrer">
-              <img src="https://noticias.ufal.br/estudante/noticias/2025/10/ufal-aprova-calendario-academico-2026-com-inicio-em-23-de-fevereiro/@@images/image-400-9e740ca6b4901d3daf2be2c98cb3ca65.jpeg" alt="Calendário Acadêmico" />
-              <div>
-                <h4>Calendário Acadêmico</h4>
-                <p>Confira as datas importantes e os prazos do ano letivo de 2026.</p>
-              </div>
-            </a>
+            {noticias.map((n) => (
+              <a
+                key={n.id}
+                href={n.link || '#'}
+                className="news-card"
+                target={n.link && n.link !== '#' ? '_blank' : undefined}
+                rel="noreferrer"
+                onClick={(e) => {
+                  if (!n.link || n.link === '#') e.preventDefault();
+                }}
+              >
+                {n.img && <img src={n.img} alt={n.titulo} />}
+                <div>
+                  <h4>{n.titulo}</h4>
+                  <p>{n.descricao}</p>
+                </div>
+              </a>
+            ))}
           </div>
         </section>
-
       </main>
     </>
   );

@@ -7,23 +7,30 @@ import Calculadora from './pages/Calculadora';
 import Calouro from './pages/Calouro';
 import Chatbot from './pages/Chatbot';
 import AreaAdmin from './admin/AreaAdmin';
+import { ConteudoProvider, useConteudo } from './context/ConteudoContext';
 
 const naAreaAdmin = () => window.location.hash.startsWith('#/admin');
 
-function App() {
+function ConteudoApp() {
   const [paginaAtiva, setPaginaAtiva] = useState('inicio');
   const [emAdmin, setEmAdmin] = useState(naAreaAdmin);
+  const { recarregar } = useConteudo();
 
   useEffect(() => {
-    const aoMudarHash = () => setEmAdmin(naAreaAdmin());
+    const aoMudarHash = () => {
+      const agoraAdmin = naAreaAdmin();
+      setEmAdmin(agoraAdmin);
+      if (!agoraAdmin) recarregar();
+    };
     window.addEventListener('hashchange', aoMudarHash);
     return () => window.removeEventListener('hashchange', aoMudarHash);
-  }, []);
+  }, [recarregar]);
 
   const voltarParaGic = () => {
     window.location.hash = '';
     setEmAdmin(false);
     setPaginaAtiva('inicio');
+    recarregar();
     window.scrollTo(0, 0);
   };
 
@@ -64,7 +71,6 @@ function App() {
         {renderizarPagina()}
       </div>
 
-      {/* O rodapé SÓ aparece se não estivermos na página do Chatbot */}
       {paginaAtiva !== 'chatbot' && (
         <footer className="site-footer">
           <div className="footer-content">
@@ -98,6 +104,14 @@ function App() {
         </a>
       )}
     </>
+  );
+}
+
+function App() {
+  return (
+    <ConteudoProvider>
+      <ConteudoApp />
+    </ConteudoProvider>
   );
 }
 

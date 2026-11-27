@@ -1,8 +1,9 @@
 // @ts-nocheck
 import { useState, useEffect, useMemo } from 'react';
+import { useConteudo } from '../context/ConteudoContext';
 
-// --- DADOS DA PÁGINA ---
-const TOPICOS = [
+// --- DADOS PADRÃO (FALLBACK) ---
+const TOPICOS_PADRAO = [
   { id: "sistemas", nome: "Sistemas e burocracia" },
   { id: "emailic", nome: "E-mail do IC" },
   { id: "regras", nome: "Regras da UFAL" },
@@ -12,7 +13,7 @@ const TOPICOS = [
   { id: "prog", nome: "Primeiro período" }
 ];
 
-const CARDS = [
+const CARDS_PADRAO = [
   /* Sistemas e burocracia */
   { id: "matricula", topic: "sistemas", t: "Matrícula Institucional x Acadêmica",
     p: "A **Institucional** é a entrega de documentos (hoje geralmente online) logo depois que você passa no SiSU. A **Acadêmica** é o seu vínculo com as disciplinas, feito no SIGAA a cada novo semestre.",
@@ -85,7 +86,7 @@ const CARDS = [
     tip: "A **seta para cima** repete comandos anteriores. Alterou o código? Salve (**Ctrl + S**), compile de novo e só então execute. Se esquecer de compilar, você roda a versão velha!", busca: "vscode gcc mingw compilar executar terminal", sim: true }
 ];
 
-const QUEM = [
+const QUEM_PADRAO = [
   { id: "q1", q: "Quero trancar uma disciplina ou o curso", a: "Coordenação do curso", d: "O pedido é feito por formulário, dentro do prazo do Calendário Acadêmico.", card: "trancamento" },
   { id: "q2", q: "Quero ajustar minha grade", a: "Coordenação do curso", d: "Ajustes de grade passam pela coordenação. A partir do 2º semestre a matrícula nas disciplinas é feita por você no SIGAA.", card: "matricula" },
   { id: "q3", q: "Preciso do meu diploma ou de registro acadêmico", a: "DRCA", d: "O DRCA cuida de registro acadêmico e diploma.", card: "sigaa" },
@@ -109,7 +110,7 @@ const PROMPT = "PS C:\\Users\\voce\\codigos> ";
 const norm = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
 const formatText = (text) => {
-  return text.split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, i) => {
+  return String(text || "").split(/(\*\*[^*]+\*\*|`[^`]+`)/).map((part, i) => {
     if (part.startsWith('**')) return <b key={i}>{part.slice(2, -2)}</b>;
     if (part.startsWith('`')) return <code key={i}>{part.slice(1, -1)}</code>;
     return part;
@@ -117,6 +118,55 @@ const formatText = (text) => {
 };
 
 export default function Calouro({ setPaginaAtiva }) {
+  const { conteudo } = useConteudo();
+
+  // Mescla dados do banco com fallback padrão
+  const TOPICOS = useMemo(() => {
+    if (Array.isArray(conteudo.c_topicos) && conteudo.c_topicos.length > 0) {
+      return conteudo.c_topicos;
+    }
+    return TOPICOS_PADRAO;
+  }, [conteudo.c_topicos]);
+
+  const CARDS = useMemo(() => {
+    if (Array.isArray(conteudo.c_cards) && conteudo.c_cards.length > 0) {
+      return conteudo.c_cards.map((c) => ({
+        id: c.id,
+        topic: c.topico || c.topic,
+        t: c.titulo || c.t,
+        p: c.paragrafo1 ?? c.p ?? '',
+        p2: c.paragrafo2 ?? c.p2 ?? '',
+        li: Array.isArray(c.lista) ? c.lista : Array.isArray(c.li) ? c.li : undefined,
+        check: Array.isArray(c.checklist) ? c.checklist : Array.isArray(c.check) ? c.check : undefined,
+        stats: Array.isArray(c.estatisticas) ? c.estatisticas : Array.isArray(c.stats) ? c.stats : undefined,
+        tip: c.dica ?? c.tip ?? '',
+        busca: c.busca ?? '',
+        sim: c.sim ?? (c.id === 'terminal'),
+        link: c.link,
+      }));
+    }
+    return CARDS_PADRAO;
+  }, [conteudo.c_cards]);
+
+  const QUEM = useMemo(() => {
+    if (Array.isArray(conteudo.c_quem) && conteudo.c_quem.length > 0) {
+      return conteudo.c_quem.map((item, idx) => ({
+        id: item.id || `q-${idx}`,
+        q: item.q || item.quem || '',
+        a: item.a || item.onde || '',
+        d: item.d || item.detalhe || '',
+        card: item.card || '',
+      }));
+    }
+    return QUEM_PADRAO;
+  }, [conteudo.c_quem]);
+
+  const cfg = conteudo.c_config ?? {};
+  const tituloHero = cfg.titulo || 'Bem-vindo, calouro!';
+  const subtituloHero =
+    cfg.subtitulo ||
+    'Teste as regras de falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.';
+
   const [topico, setTopico] = useState('todos');
   const [busca, setBusca] = useState('');
   const [tabAtiva, setTabAtiva] = useState('faltas');
@@ -159,6 +209,7 @@ export default function Calouro({ setPaginaAtiva }) {
   };
 
   const abreCard = (id) => {
+    if (!id) return;
     setTopico('todos');
     setBusca('');
     setAbertos(prev => new Set(prev).add(id));
@@ -179,11 +230,10 @@ export default function Calouro({ setPaginaAtiva }) {
 
   // --- Lógica de Faltas (Regra UFAL) ---
   const totalAulas = ch;
-  const maxFaltas = Math.floor(totalAulas * 0.25); // Ex: 72h -> 18 faltas permitidas no total
+  const maxFaltas = Math.floor(totalAulas * 0.25);
   const faltasMaxSlider = maxFaltas + 8;
   const pctFaltas = Math.min(100, (faltas / maxFaltas) * 100);
   
-  // Variáveis dinâmicas para a explicação textual 
   const diasSeguros = Math.floor(maxFaltas / 2);
   const faltasSeguras = diasSeguros * 2;
   const diasReprova = diasSeguros + 1;
@@ -226,12 +276,11 @@ export default function Calouro({ setPaginaAtiva }) {
       const txt = norm([c.t, c.p || "", c.p2 || "", (c.li || []).join(" "), (c.check || []).join(" "), c.tip || "", c.busca || ""].join(" "));
       return busca.split(/\s+/).every(w => txt.includes(w));
     });
-  }, [topico, busca]);
+  }, [CARDS, topico, busca]);
 
   return (
     <div className="page-calouro">
       <style>{`
-        /* --- ESTILOS DO BOTÃO VOLTAR E OUTRAS REGRAS QUE FALTAVAM --- */
         .btn-voltar { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 999px; cursor: pointer; font: 700 14px 'Montserrat', sans-serif; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
         .btn-voltar:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
         
@@ -331,8 +380,8 @@ export default function Calouro({ setPaginaAtiva }) {
             </button>
           </div>
           
-          <h1>Bem-vindo, calouro!</h1>
-          <p>Teste as regras de falta, descubra a quem recorrer e consulte o guia completo. Tudo o que você precisa saber para o seu primeiro período no IC.</p>
+          <h1>{tituloHero}</h1>
+          <p>{subtituloHero}</p>
           
           <div className="search">
             <input type="search" placeholder="Buscar: SIGAA, VAMU, faltas, Huxley..." value={busca} onChange={e => setBusca(e.target.value)} />
@@ -413,9 +462,11 @@ export default function Calouro({ setPaginaAtiva }) {
                   <div className="res ok">
                     <b className="big">Procure: {quemSel.a}</b>
                     {quemSel.d}
-                    <button className="btn ghost" style={{display: 'flex', marginTop: '10px'}} onClick={() => abreCard(quemSel.card)}>
-                      Ver no guia
-                    </button>
+                    {quemSel.card && (
+                      <button className="btn ghost" style={{display: 'flex', marginTop: '10px'}} onClick={() => abreCard(quemSel.card)}>
+                        Ver no guia
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <div className="res">Escolha uma situação acima.</div>
@@ -425,7 +476,7 @@ export default function Calouro({ setPaginaAtiva }) {
           </div>
         </section>
 
-        {/* DICA EXTRA: TERMINAL (Separado) */}
+        {/* DICA EXTRA: TERMINAL */}
         <section id="dica-terminal" className="sec" style={{paddingTop: '40px'}}>
           <div className="sec__head">
             <h2 style={{fontSize: '1.4rem', textTransform: 'uppercase', letterSpacing: '1px'}}>Dica Extra: Compilar C no terminal</h2>
@@ -503,7 +554,7 @@ export default function Calouro({ setPaginaAtiva }) {
                   <div className="body">
                     {c.p && <p>{formatText(c.p)}</p>}
                     
-                    {c.stats && (
+                    {c.stats && c.stats.length > 0 && (
                       <div className="stats">
                         {c.stats.map((s, i) => (
                           <div key={i}>
@@ -514,13 +565,13 @@ export default function Calouro({ setPaginaAtiva }) {
                       </div>
                     )}
 
-                    {c.li && (
+                    {c.li && c.li.length > 0 && (
                       <ul>
                         {c.li.map((liText, i) => <li key={i}>{formatText(liText)}</li>)}
                       </ul>
                     )}
 
-                    {c.check && (
+                    {c.check && c.check.length > 0 && (
                       <ul className="chk">
                         {c.check.map((item, i) => {
                           const key = `${c.id}:${i}`;

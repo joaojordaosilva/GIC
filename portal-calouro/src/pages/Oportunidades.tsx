@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
+import { useConteudo } from '../context/ConteudoContext';
 
 /* =====================================================================
    MOLDES DO TYPESCRIPT
@@ -22,16 +23,16 @@ interface SecaoOportunidade {
 }
 
 /* =====================================================================
-   DADOS DA PÁGINA
+   DADOS PADRÃO (FALLBACK)
    ===================================================================== */
-const CATEGORIAS = [
+const CATEGORIAS_PADRAO = [
   { id: "pesquisa", nome: "Pesquisa & Labs" },
   { id: "ensino", nome: "Monitoria & Ensino" },
   { id: "extensao", nome: "Extensão" },
   { id: "mercado", nome: "Estágio & Mercado" }
 ];
 
-const SECOES: SecaoOportunidade[] = [
+const SECOES_PADRAO: SecaoOportunidade[] = [
   {
     id: "labs",
     categoria: "pesquisa",
@@ -131,6 +132,38 @@ const SECOES: SecaoOportunidade[] = [
    PÁGINA PRINCIPAL
    ===================================================================== */
 export default function Oportunidades() {
+  const { conteudo } = useConteudo();
+
+  const CATEGORIAS = useMemo(() => {
+    if (Array.isArray(conteudo.op_categorias) && conteudo.op_categorias.length > 0) {
+      return conteudo.op_categorias;
+    }
+    return CATEGORIAS_PADRAO;
+  }, [conteudo.op_categorias]);
+
+  const SECOES: SecaoOportunidade[] = useMemo(() => {
+    if (Array.isArray(conteudo.op_secoes) && conteudo.op_secoes.length > 0) {
+      return conteudo.op_secoes.map((sec: any) => ({
+        id: sec.id,
+        categoria: sec.categoria,
+        icone: sec.icone || '📌',
+        titulo: sec.titulo,
+        subtitulo: sec.subtitulo || '',
+        itens: Array.isArray(sec.itens)
+          ? sec.itens.map((it: any) => ({
+              id: it.id,
+              titulo: it.titulo,
+              descricao: it.descricao || '',
+              link: it.link || '#',
+              img: it.img || undefined,
+              tags: Array.isArray(it.tags) ? it.tags : [],
+            }))
+          : [],
+      }));
+    }
+    return SECOES_PADRAO;
+  }, [conteudo.op_secoes]);
+
   const [busca, setBusca] = useState("");
   const [categoriaAtiva, setCategoriaAtiva] = useState("todos");
   
@@ -138,7 +171,6 @@ export default function Oportunidades() {
   const [btnShrunk, setBtnShrunk] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
 
-  // Estados e Referências para a Lógica de Arrastar (Drag & Drop) apenas no eixo Y
   const [btnPosY, setBtnPosY] = useState(100); 
   const [isDragging, setIsDragging] = useState(false);
   const dragInfo = useRef({ startX: 0, startY: 0, initY: 0, moved: false });
@@ -171,7 +203,6 @@ export default function Oportunidades() {
     return () => clearTimeout(timer);
   }, [scrolled, menuAberto, isDragging]);
 
-  /* --- Lógica de Drag Vertical --- */
   const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
     dragInfo.current = {
       startX: e.clientX, startY: e.clientY,
@@ -186,14 +217,12 @@ export default function Oportunidades() {
     const dy = e.clientY - dragInfo.current.startY;
     const dx = e.clientX - dragInfo.current.startX;
 
-    // Confirma que é um arrasto e não um clique acidental
     if (Math.abs(dy) > 5 || Math.abs(dx) > 5) {
       dragInfo.current.moved = true;
-      setBtnShrunk(true); // Encolhe ao arrastar
+      setBtnShrunk(true);
     }
 
     if (dragInfo.current.moved) {
-      // Limita a movimentação apenas à altura da tela (Y)
       setBtnPosY(Math.max(10, Math.min(window.innerHeight - 60, dragInfo.current.initY + dy)));
     }
   };
@@ -208,7 +237,6 @@ export default function Oportunidades() {
       e.preventDefault();
       return;
     }
-    // 1 clique abre o menu imediatamente, seja encolhido ou não
     setMenuAberto(true);
   };
 
@@ -241,7 +269,7 @@ export default function Oportunidades() {
     });
 
     return result;
-  }, [busca, categoriaAtiva]);
+  }, [SECOES, busca, categoriaAtiva]);
 
   const clicaLinkMenu = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
@@ -296,7 +324,6 @@ export default function Oportunidades() {
         </svg>
         <span className="btn-text">Navegar</span>
       </button>
-      {/* ==================================================================== */}
 
       <div className="page-hero">
         <div className="wrap">
@@ -369,7 +396,13 @@ export default function Oportunidades() {
                         ))}
                       </div>
 
-                      <a href={item.link} className="btn-more" onClick={e => { if (item.link === "#") e.preventDefault(); }}>
+                      <a
+                        href={item.link}
+                        className="btn-more"
+                        target={item.link && item.link !== "#" ? "_blank" : undefined}
+                        rel="noreferrer"
+                        onClick={e => { if (!item.link || item.link === "#") e.preventDefault(); }}
+                      >
                         Saiba mais
                       </a>
                     </div>
