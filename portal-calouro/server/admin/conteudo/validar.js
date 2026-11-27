@@ -179,16 +179,56 @@ const NORMALIZADORES = {
 // ---------------------------------------------------------------------------
 // Coleções JSONB: validação estrutural + URLs seguras onde há links
 // ---------------------------------------------------------------------------
-function validarSecoes(secoes) {
-  secoes.forEach((s, i) => {
-    if (s.itens === undefined) return;
-    if (!Array.isArray(s.itens)) throw erro(`Seção #${i + 1}: "itens" deve ser uma lista.`);
-    s.itens.forEach((it, j) => {
-      if (!ehObjeto(it)) throw erro(`Seção #${i + 1}, item #${j + 1}: formato inválido.`);
-      if (it.link !== undefined) urlSegura(it.link, `Seção #${i + 1}, item #${j + 1} · link`);
-      if (it.img !== undefined) urlSegura(it.img, `Seção #${i + 1}, item #${j + 1} · imagem`);
-    });
+function categoriasOportunidade(itens) {
+  const r = itens.map((c, i) => {
+    const ctx = `Categoria #${i + 1}`;
+    const ref = idItem(c, ctx);
+    return {
+      ref,
+      nome: texto(c.nome, `${ctx} · nome`, { obrigatorio: true, max: 100 })
+    };
   });
+  unicos(r, 'ref', 'Categorias de oportunidades');
+  return r;
+}
+
+function secoesOportunidades(itens) {
+  const refsItens = [];
+  const r = itens.map((s, i) => {
+    const ctx = `Seção #${i + 1}`;
+    const ref = idItem(s, ctx);
+    const categoria = texto(s.categoria, `${ctx} · categoria`, { obrigatorio: true, max: 60 });
+    const icone = texto(s.icone, `${ctx} · ícone`, { max: 50 });
+    const titulo = texto(s.titulo, `${ctx} · título`, { obrigatorio: true, max: 150 });
+    const subtitulo = texto(s.subtitulo, `${ctx} · subtítulo`, { max: 2000 });
+
+    if (s.itens !== undefined && !Array.isArray(s.itens)) {
+      throw erro(`${ctx}: "itens" deve ser uma lista.`);
+    }
+
+    const cards = (s.itens || []).map((it, j) => {
+      if (!ehObjeto(it)) throw erro(`${ctx}, item #${j + 1}: formato inválido.`);
+      const itemCtx = `${ctx}, item #${j + 1}`;
+      const itemRef = idItem(it, itemCtx);
+      refsItens.push({ id: itemRef });
+      return {
+        ref: itemRef,
+        titulo: texto(it.titulo, `${itemCtx} · título`, { obrigatorio: true, max: 150 }),
+        descricao: texto(it.descricao, `${itemCtx} · descrição`, { max: 5000 }),
+        link: urlSegura(it.link, `${itemCtx} · link`),
+        img: urlSegura(it.img, `${itemCtx} · imagem`),
+        tags: listaDeTextos(it.tags, `${itemCtx} · tags`, { maxItens: 30, maxTexto: 50 })
+          .map((t) => t.trim())
+          .filter(Boolean)
+      };
+    });
+
+    return { ref, categoria, icone, titulo, subtitulo, itens: cards };
+  });
+
+  unicos(r, 'ref', 'Seções de oportunidades');
+  unicos(refsItens, 'id', 'Oportunidades');
+  return r;
 }
 
 // ---------------------------------------------------------------------------
@@ -214,7 +254,14 @@ export function validarConteudo(conteudo) {
       if (!ehObjeto(it)) throw erro(`"${chave}" · item #${i + 1} tem formato inválido.`);
     });
 
-    if (chave === 'op_secoes') validarSecoes(v);
+  const NORMALIZADORES = {
+    d_cursos: cursos,
+    d_disciplinas: disciplinas,
+    home_noticias: noticias,
+    ia_conhecimento: conhecimento,
+    op_categorias: categoriasOportunidade,
+    op_secoes: secoesOportunidades
+    };
     saida[chave] = NORMALIZADORES[chave] ? NORMALIZADORES[chave](v) : v;
   }
 

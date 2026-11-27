@@ -96,6 +96,38 @@ export const montarConhecimento = (rows) =>
     encaminhar_secretaria: f.encaminhar_secretaria
   }));
 
+export const montarCategoriasOportunidade = (rows) =>
+  rows.map((c) => ({
+    id: idPainel(c.ref_id, c.id),
+    nome: c.nome
+  }));
+
+export function montarSecoesOportunidades(rows) {
+  const mapa = new Map();
+  for (const r of rows) {
+    const secaoId = r.secao_ref || `cat-${r.categoria_ref}`;
+    if (!mapa.has(secaoId)) {
+      mapa.set(secaoId, {
+        id: secaoId,
+        categoria: r.categoria_ref,
+        icone: r.secao_icone ?? '',
+        titulo: r.secao_titulo ?? r.categoria_nome,
+        subtitulo: r.secao_subtitulo ?? '',
+        itens: []
+      });
+    }
+    mapa.get(secaoId).itens.push({
+      id: idPainel(r.ref_id, r.id),
+      titulo: r.titulo,
+      descricao: r.descricao ?? '',
+      link: r.link ?? '',
+      img: r.imagem_url ?? '',
+      tags: r.tags ?? []
+    });
+  }
+  return [...mapa.values()];
+}
+
 // ---- Leitura completa --------------------------------------------------------
 
 // Devolve só as coleções que o painel já salvou alguma vez (registradas em conteudo_site).
@@ -136,13 +168,37 @@ export async function lerConteudo(db, { publico = false } = {}) {
   }
 
   if (quer('ia_conhecimento')) {
-      const { rows } = await db.query(
+    const { rows } = await db.query(
       `SELECT id, ref_id, categoria, pergunta, resposta,
               array_to_string(palavras_chave, ', ') AS palavras_chave,
               encaminhar_secretaria, ativo
        FROM faqs_chatbot ORDER BY ordem, id`
     );
     conteudo.ia_conhecimento = montarConhecimento(rows);
+  }
+
+  if (quer('op_categorias')) {
+    const { rows } = await db.query(
+      'SELECT id, ref_id, nome FROM categorias_oportunidade ORDER BY ordem, id'
+    );
+    conteudo.op_categorias = montarCategoriasOportunidade(rows);
+  }
+
+  if (quer('op_secoes')) {
+    const { rows } = await db.query(`
+      SELECT o.id, o.ref_id, o.secao_ref, o.secao_icone, o.secao_titulo, o.secao_subtitulo,
+             o.titulo, o.descricao, o.link, o.imagem_url,
+             COALESCE(c.ref_id, '${PREFIXO_ID_BANCO}' || c.id::text) AS categoria_ref,
+             c.nome AS categoria_nome,
+             COALESCE(array_agg(t.nome ORDER BY t.nome) FILTER (WHERE t.id IS NOT NULL), '{}') AS tags
+      FROM oportunidades o
+      JOIN categorias_oportunidade c ON c.id = o.categoria_id
+      LEFT JOIN oportunidades_tags ot ON ot.oportunidade_id = o.id
+      LEFT JOIN tags t ON t.id = ot.tag_id
+      GROUP BY o.id, c.id
+      ORDER BY o.ordem_secao, o.ordem, o.id
+    `);
+    conteudo.op_secoes = montarSecoesOportunidades(rows);
   }
 
   for (const [chave, def] of Object.entries(COLECOES)) {

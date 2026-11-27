@@ -327,11 +327,144 @@ async function gravarConhecimento(ctx, itens) {
 // ---------------------------------------------------------------------------
 // Orquestração
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Oportunidades (categorias_oportunidade + oportunidades + tags)
+// ---------------------------------------------------------------------------
+async function gravarCategoriasOportunidade(ctx, itens) {
+  const { client, gerenciadas } = ctx;
+  const existentes = await existentesDe(client, 'categorias_oportunidade');
+  checarIdsReservados(itens, existentes, 'A categoria');
+
+  if (gerenciadas.has('op_categorias')) {
+    const manter = new Set(itens.map((c) => c.ref));
+    const apagar = [...existentes.entries()].filter(([ref]) => !manter.has(ref)).map(([, id]) => id);
+    if (apagar.length) {
+      const { rows } = await client.query(
+        'SELECT 1 FROM oportunidades WHERE categoria_id = ANY($1::int[]) LIMIT 1',
+        [apagar]
+      );
+      if (rows.length) {
+        throw new ErroHttp(422, 'Não é possível remover uma categoria enquanto houver oportunidades vinculadas a ela.');
+      }
+      await client.query('DELETE FROM categorias_oportunidade WHERE id = ANY($1::int[])', [apagar]);
+      for (const [ref, id] of existentes) if (apagar.includes(id)) existentes.delete(ref);
+    }
+  }
+
+  const comOrdem = itens.map((c, i) => ({
+    ...c,
+    slugBanco: c.ref.slice(0, 50),
+    ordem: i
+  }));
+
+  await sincronizarTabela(client, {
+    tabela: 'categorias_oportunidade',
+    itens: comOrdem,
+    existentes,
+    colunas: [
+      { col: 'slug', pg: 'text', valor: (c) => c.slugBanco },
+      { col: 'nome', pg: 'text', valor: (c) => c.nome },
+      { col: 'ordem', pg: 'int', valor: (c) => c.ordem },
+      { col: 'ativo', pg: 'boolean', valor: () => true }
+    ]
+  });
+}
+
+async function gravarSecoesOportunidades(ctx, secoes) {
+  const { client, usuarioId, gerenciadas } = ctx;
+  const catExistentes = await existentesDe(client, 'categorias_oportunidade');
+
+  const achatados = [];
+  secoes.forEach((s, idxSecao) => {
+    const categoriaId = catExistentes.get(s.categoria);
+    if (!categoriaId) {
+      throw new ErroHttp(422, `A seção "${s.titulo}" aponta para a categoria "${s.categoria}", que não existe.`);
+    }
+    (s.itens || []).forEach((it, idxItem) => {
+      achatados.push({
+        ...it,
+        categoriaId,
+        secaoRef: s.ref,
+        secaoIcone: s.icone || null,
+        secaoTitulo: s.titulo,
+        secaoSubtitulo: s.subtitulo || null,
+        ordemSecao: idxSecao,
+        ordem: idxItem
+      });
+    });
+  });
+
+  const existentes = await existentesDe(client, 'oportunidades');
+  checarIdsReservados(achatados, existentes, 'A oportunidade');
+
+  if (gerenciadas.has('op_secoes')) {
+    await removerAusentes(client, 'oportunidades', existentes, new Set(achatados.map((o) => o.ref)));
+    for (const ref of [...existentes.keys()]) {
+      if (!achatados.some((o) => o.ref === ref)) existentes.delete(ref);
+    }
+  }
+
+  const idPorRef = await sincronizarTabela(client, {
+    tabela: 'oportunidades',
+    itens: achatados,
+    existentes,
+    colunas: [
+      { col: 'categoria_id', pg: 'int', valor: (o) => o.categoriaId },
+      { col: 'secao_ref', pg: 'text', valor: (o) => o.secaoRef },
+      { col: 'secao_icone', pg: 'text', valor: (o) => o.secaoIcone },
+      { col: 'secao_titulo', pg: 'text', valor: (o) => o.secaoTitulo },
+      { col: 'secao_subtitulo', pg: 'text', valor: (o) => o.secaoSubtitulo },
+      { col: 'titulo', pg: 'text', valor: (o) => o.titulo },
+      { col: 'descricao', pg: 'text', valor: (o) => o.descricao || null },
+      { col: 'link', pg: 'text', valor: (o) => o.link || null },
+      { col: 'imagem_url', pg: 'text', valor: (o) => o.img || null },
+      { col: 'ordem_secao', pg: 'int', valor: (o) => o.ordemSecao },
+      { col: 'ordem', pg: 'int', valor: (o) => o.ordem },
+      { col: 'ativo', pg: 'boolean', valor: () => true },
+      { col: 'criado_por', pg: 'int', valor: () => usuarioId, soInsert: true }
+    ]
+  });
+
+  if (achatados.length) {
+    const opIds = achatados.map((o) => idPorRef.get(o.ref));
+    await client.query('DELETE FROM oportunidades_tags WHERE oportunidade_id = ANY($1::bigint[])', [opIds]);
+
+    const todasTags = [...new Set(achatados.flatMap((o) => o.tags))];
+    if (todasTags.length) {
+      await client.query(
+        'INSERT INTO tags (nome) SELECT * FROM unnest($1::text[]) ON CONFLICT (nome) DO NOTHING',
+        [todasTags]
+      );
+      const { rows: tagRows } = await client.query('SELECT id, nome FROM tags WHERE nome = ANY($1::text[])', [todasTags]);
+      const tagIdPorNome = new Map(tagRows.map((t) => [t.nome, t.id]));
+
+      const relOp = [];
+      const relTag = [];
+      for (const o of achatados) {
+        const opId = idPorRef.get(o.ref);
+        for (const nomeTag of new Set(o.tags)) {
+          relOp.push(opId);
+          relTag.push(tagIdPorNome.get(nomeTag));
+        }
+      }
+      if (relOp.length) {
+        await client.query(
+          'INSERT INTO oportunidades_tags (oportunidade_id, tag_id) SELECT * FROM unnest($1::bigint[], $2::int[]) ON CONFLICT DO NOTHING',
+          [relOp, relTag]
+        );
+      }
+    }
+  }
+}
+
 const GRAVADORES = {
   d_cursos: gravarCursos,
   d_disciplinas: gravarDisciplinas,
   home_noticias: gravarNoticias,
-  ia_conhecimento: gravarConhecimento
+  ia_conhecimento: gravarConhecimento,
+  op_categorias: gravarCategoriasOportunidade,
+  op_secoes: gravarSecoesOportunidades
 };
 
 // Deve rodar dentro de uma transação aberta pelo chamador.

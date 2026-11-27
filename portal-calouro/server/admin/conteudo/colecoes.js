@@ -9,8 +9,8 @@ export const COLECOES = {
   c_cards: { forma: 'lista', onde: 'json' },
   c_quem: { forma: 'lista', onde: 'json' },
   c_terminal: { forma: 'lista', onde: 'json' },
-  op_categorias: { forma: 'lista', onde: 'json' },
-  op_secoes: { forma: 'lista', onde: 'json' },
+  op_categorias: { forma: 'lista', onde: 'tabela' }, // -> categorias_oportunidade
+  op_secoes: { forma: 'lista', onde: 'tabela' }, // -> oportunidades + tags + oportunidades_tags
   d_cursos: { forma: 'lista', onde: 'tabela' }, // -> cursos
   d_disciplinas: { forma: 'lista', onde: 'tabela' }, // -> disciplinas + matrizes_curriculares + pre_requisitos
   ia_config: { forma: 'objeto', onde: 'json' },
@@ -20,24 +20,23 @@ export const COLECOES = {
 // Não saem na rota pública GET /api/conteudo (prompt e base interna da IA).
 export const SENSIVEIS = ['ia_config', 'ia_conhecimento'];
 
-// Ordem de gravação: cursos antes das disciplinas (que dependem deles).
+// Ordem de gravação: cursos antes das disciplinas e categorias antes das seções.
 export const ORDEM_GRAVACAO = [
   'd_cursos',
   'd_disciplinas',
   'home_noticias',
   'ia_conhecimento',
+  'op_categorias',
+  'op_secoes',
   'home_hero',
   'c_config',
   'c_topicos',
   'c_cards',
   'c_quem',
   'c_terminal',
-  'op_categorias',
-  'op_secoes',
   'ia_config'
 ];
 
-// Tipo de disciplina: painel <-> enum do banco
 export const TIPO_PARA_BANCO = {
   O: 'OBRIGATORIA',
   E: 'ELETIVA',
@@ -51,8 +50,5 @@ export const TIPO_PARA_PAINEL = Object.fromEntries(
 
 export const PRE_MODOS = ['lista', 'nenhum', 'naoconsta', 'ate5', 'var'];
 
-// Disciplinas sem código (eletivas de fluxo, por exemplo) recebem um código sintético,
-// porque cod_disciplina é UNIQUE NOT NULL no schema.
 export const PREFIXO_SEM_CODIGO = 'SEM-';
-// Ids "db-123" referem-se a linhas criadas fora do painel (sem ref_id).
 export const PREFIXO_ID_BANCO = 'db-';
